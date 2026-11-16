@@ -16,17 +16,16 @@ Only `{{REPO}}` and `{{DEV_BRANCH}}` are substituted when pasting; everything el
 2. Create one routine per slot (worker A/B/C = same template, different cron offset) in the cloud UI, using the template's schedule line.
 3. Record which `core-vX.Y.Z` the pasted text came from in the routine's description.
 
-## Source of truth
-At each project's migration the core templates become the source of truth and replace the live cloud prompts. The old live prompts are not compared or merged.
-
 ## When a template changes
-A new `core-v` tag that edits `pipeline/routines/*.md` does NOT update running routines. The sync PR (pipeline/scripts/sync_core.sh) lists changed templates in its body; the owner (or R-hard with owner approval) re-pastes them into the cloud routines and updates the description. A routine whose recorded version lags the project's `core_version` by a minor or more is a defect.
+A new `core-v` tag that edits `hive/pipeline/routines/*.md` does NOT update running routines. The sync PR (`hive/pipeline/scripts/sync_core.sh`) lists changed templates in its body; the keeper (or the reviewer with keeper approval) re-pastes them into the cloud routines and updates the description. A routine whose recorded version lags the project's `core_version` by a minor or more is a defect.
 
 ## Templates
+Schedules are example defaults from one deployment.
+
 | File | Role | Model | Schedule |
 |---|---|---|---|
-| worker.md | slots A/B/C (light style) | light | hourly :13 / :33 / :53 |
-| w-hard.md | hard worker | strong | hourly :48 |
-| merger.md | R-merge / S-merge | light | every 30 min |
-| r-hard.md | Strong review queue, bump, conflicts | strong | 2 shifts/day |
-| s-hard.md | sweep, ledger, supply, health, lessons | strong | hourly |
+| worker.md | worker, slots A/B/C | light | hourly :13 / :33 / :53 |
+| hard-worker.md | hard-worker | strong | hourly :48 |
+| merger.md | merger (one or two instances) | light | every 30 min |
+| reviewer.md | reviewer: strong review queue, bump, conflicts | strong | 2 shifts/day |
+| supervisor.md | supervisor: sweep, ledger, supply, health, lessons | strong | hourly |

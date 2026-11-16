@@ -1,0 +1,3 @@
+# Leak guard config. "keeper: <handle>" sets the public handle that may appear whole.
+# Other lines: "<path> <sha256 of the stripped line>" waives a generic finding on that line.
+keeper: sunososobro-hub

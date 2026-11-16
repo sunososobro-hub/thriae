@@ -9,7 +9,7 @@ bl="$HOME/.thriae-blocklist"
 cat > "$hooks/pre-commit" <<'HOOK'
 #!/bin/sh
 root=$(git rev-parse --show-toplevel)
-exec python "$root/scripts/leak_check.py" --staged --blocklist "$HOME/.thriae-blocklist"
+exec python "$root/hive/scripts/leak_check.py" --staged --blocklist "$HOME/.thriae-blocklist"
 HOOK
 
 cat > "$hooks/pre-push" <<'HOOK'
@@ -19,7 +19,7 @@ zero=0000000000000000000000000000000000000000
 while read -r local_ref local_sha remote_ref remote_sha; do
   [ "$local_sha" = "$zero" ] && continue
   if [ "$remote_sha" = "$zero" ]; then range="$local_sha"; else range="$remote_sha..$local_sha"; fi
-  python "$root/scripts/leak_check.py" --range "$range" --blocklist "$HOME/.thriae-blocklist" || exit 1
+  python "$root/hive/scripts/leak_check.py" --range "$range" --blocklist "$HOME/.thriae-blocklist" || exit 1
 done
 exit 0
 HOOK

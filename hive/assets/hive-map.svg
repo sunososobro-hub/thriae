@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 592 334" width="592" height="334" role="img" aria-labelledby="t d">
+<title id="t">Thriae hive map</title>
+<desc id="d">The repo as a honeycomb. Top row, the door: README, AGENTS.md (the honey), LICENSE, .github. Below, the hive: the compass constitution, red leak-guard cells, purple contributors, green pipeline cells.</desc>
+<rect x="0" y="0" width="592" height="334" rx="16" fill="rgb(255,253,247)"/>
+<g font-family="Helvetica, Arial, sans-serif" text-anchor="middle">
+<polygon points="178.0,24.0 219.6,48.0 219.6,96.0 178.0,120.0 136.4,96.0 136.4,48.0" fill="rgb(250,246,235)" stroke="rgb(140,115,70)" stroke-width="2.5"/>
+<text x="178.0" y="76.0" font-size="11.5" fill="rgb(40,40,40)">README.md</text>
+<polygon points="261.1,24.0 302.7,48.0 302.7,96.0 261.1,120.0 219.6,96.0 219.6,48.0" fill="rgb(246,190,60)" stroke="rgb(170,110,20)" stroke-width="2.5"/>
+<text x="261.1" y="70.0" font-size="11.5" font-weight="bold" fill="rgb(40,40,40)">AGENTS.md</text>
+<text x="261.1" y="85.0" font-size="10" fill="rgb(90,90,90)">honey</text>
+<polygon points="344.3,24.0 385.8,48.0 385.8,96.0 344.3,120.0 302.7,96.0 302.7,48.0" fill="rgb(250,246,235)" stroke="rgb(140,115,70)" stroke-width="2.5"/>
+<text x="344.3" y="70.0" font-size="11.5" fill="rgb(40,40,40)">LICENSE</text>
+<text x="344.3" y="85.0" font-size="10" fill="rgb(90,90,90)">MIT</text>
+<polygon points="427.4,24.0 469.0,48.0 469.0,96.0 427.4,120.0 385.8,96.0 385.8,48.0" fill="rgb(250,246,235)" stroke="rgb(140,115,70)" stroke-width="2.5"/>
+<text x="427.4" y="70.0" font-size="11.5" fill="rgb(40,40,40)">.github</text>
+<text x="427.4" y="85.0" font-size="10" fill="rgb(90,90,90)">CONTRIBUTING</text>
+<polygon points="136.4,96.0 178.0,120.0 178.0,168.0 136.4,192.0 94.9,168.0 94.9,120.0" fill="rgb(246,206,206)" stroke="rgb(190,60,60)" stroke-width="2.5"/>
+<text x="136.4" y="142.0" font-size="11.5" fill="rgb(40,40,40)">leak_check</text>
+<text x="136.4" y="157.0" font-size="10" fill="rgb(90,90,90)">guard</text>
+<polygon points="219.6,96.0 261.1,120.0 261.1,168.0 219.6,192.0 178.0,168.0 178.0,120.0" fill="rgb(246,206,206)" stroke="rgb(190,60,60)" stroke-width="2.5"/>
+<text x="219.6" y="142.0" font-size="11.5" fill="rgb(40,40,40)">.leak-allow</text>
+<text x="219.6" y="157.0" font-size="10" fill="rgb(90,90,90)">guard</text>
+<polygon points="302.7,96.0 344.3,120.0 344.3,168.0 302.7,192.0 261.1,168.0 261.1,120.0" fill="rgb(216,231,248)" stroke="rgb(50,90,150)" stroke-width="2.5"/>
+<circle cx="302.7" cy="136.0" r="17" fill="rgb(255,255,255)" stroke="rgb(50,90,150)" stroke-width="2"/>
+<polygon points="302.7,121.0 307.7,136.0 302.7,151.0 297.7,136.0" fill="rgb(200,60,50)"/>
+<polygon points="302.7,151.0 307.7,136.0 297.7,136.0" fill="rgb(60,80,110)"/>
+<text x="302.7" y="170.0" font-size="9.5" font-weight="bold" fill="rgb(40,40,40)">CONSTITUTION</text>
+<polygon points="385.8,96.0 427.4,120.0 427.4,168.0 385.8,192.0 344.3,168.0 344.3,120.0" fill="rgb(228,216,246)" stroke="rgb(120,80,180)" stroke-width="2.5"/>
+<text x="385.8" y="142.0" font-size="9.5" fill="rgb(40,40,40)">CONTRIBUTORS</text>
+<text x="385.8" y="157.0" font-size="10" fill="rgb(90,90,90)">credit</text>
+<polygon points="469.0,96.0 510.6,120.0 510.6,168.0 469.0,192.0 427.4,168.0 427.4,120.0" fill="rgb(246,206,206)" stroke="rgb(190,60,60)" stroke-width="2.5"/>
+<text x="469.0" y="142.0" font-size="11.5" fill="rgb(40,40,40)">hooks+tests</text>
+<text x="469.0" y="157.0" font-size="10" fill="rgb(90,90,90)">guard</text>
+<polygon points="178.0,168.0 219.6,192.0 219.6,240.0 178.0,264.0 136.4,240.0 136.4,192.0" fill="rgb(210,236,210)" stroke="rgb(60,140,70)" stroke-width="2.5"/>
+<text x="178.0" y="214.0" font-size="11.5" fill="rgb(40,40,40)">core/</text>
+<text x="178.0" y="229.0" font-size="10" fill="rgb(90,90,90)">rules</text>
+<polygon points="261.1,168.0 302.7,192.0 302.7,240.0 261.1,264.0 219.6,240.0 219.6,192.0" fill="rgb(210,236,210)" stroke="rgb(60,140,70)" stroke-width="2.5"/>
+<text x="261.1" y="214.0" font-size="11.5" fill="rgb(40,40,40)">routines/</text>
+<text x="261.1" y="229.0" font-size="10" fill="rgb(90,90,90)">prompts</text>
+<polygon points="344.3,168.0 385.8,192.0 385.8,240.0 344.3,264.0 302.7,240.0 302.7,192.0" fill="rgb(210,236,210)" stroke="rgb(60,140,70)" stroke-width="2.5"/>
+<text x="344.3" y="214.0" font-size="11.5" fill="rgb(40,40,40)">scripts/</text>
+<text x="344.3" y="229.0" font-size="10" fill="rgb(90,90,90)">bootstrap</text>
+<polygon points="427.4,168.0 469.0,192.0 469.0,240.0 427.4,264.0 385.8,240.0 385.8,192.0" fill="rgb(210,236,210)" stroke="rgb(60,140,70)" stroke-width="2.5"/>
+<text x="427.4" y="214.0" font-size="11.5" fill="rgb(40,40,40)">project</text>
+<text x="427.4" y="229.0" font-size="10" fill="rgb(90,90,90)">template</text>
+</g>
+<g font-family="Helvetica, Arial, sans-serif" font-size="13" fill="rgb(70,60,40)" text-anchor="end">
+<text x="122" y="77" font-weight="bold">the door</text>
+<text x="122" y="92" font-size="11" fill="rgb(110,100,80)">repo root</text>
+<text x="81" y="149" font-weight="bold">the hive</text>
+<text x="81" y="164" font-size="11" fill="rgb(110,100,80)">hive/</text>
+<text x="122" y="221" font-weight="bold">pipeline</text>
+<text x="122" y="236" font-size="11" fill="rgb(110,100,80)">optional, hive/pipeline/</text>
+</g>
+<g font-family="Helvetica, Arial, sans-serif" font-size="12" fill="rgb(60,60,60)">
+<rect x="30" y="289" width="14" height="14" rx="3" fill="rgb(246,190,60)" stroke="rgb(170,110,20)" stroke-width="2"/>
+<text x="50" y="300">the rules</text>
+<rect x="129" y="289" width="14" height="14" rx="3" fill="rgb(216,231,248)" stroke="rgb(50,90,150)" stroke-width="2"/>
+<text x="149" y="300">constitution</text>
+<rect x="249" y="289" width="14" height="14" rx="3" fill="rgb(246,206,206)" stroke="rgb(190,60,60)" stroke-width="2"/>
+<text x="269" y="300">leak guard</text>
+<rect x="355" y="289" width="14" height="14" rx="3" fill="rgb(210,236,210)" stroke="rgb(60,140,70)" stroke-width="2"/>
+<text x="375" y="300">pipeline</text>
+<rect x="447" y="289" width="14" height="14" rx="3" fill="rgb(228,216,246)" stroke="rgb(120,80,180)" stroke-width="2"/>
+<text x="467" y="300">contributors</text>
+</g></svg>

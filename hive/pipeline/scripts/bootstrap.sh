@@ -2,7 +2,7 @@
 # bootstrap.sh - prepare a product repo for the Thriae pipeline.
 # Idempotently creates labels, the throttle and ledger issues, and a minimal ci.yml.
 #
-# Usage: pipeline/scripts/bootstrap.sh --project path/to/.agent/project.yml [--dry-run|--apply]
+# Usage: hive/pipeline/scripts/bootstrap.sh --project path/to/.agent/project.yml [--dry-run|--apply]
 # Default is --dry-run: prints what would be done, changes nothing.
 # Needs: gh (authenticated), awk, sed. Reads simple project.yml (scalars, one nesting level, block lists).
 set -euo pipefail
@@ -77,9 +77,9 @@ for s in todo doing review blocked frozen proposal; do add "status:$s" "ededed" 
 for p in P0 P1 P2 P3; do add "$p" "d93f0b" "priority"; done
 for m in light strong; do add "model:$m" "5319e7" "worker model"; done
 for t in bug enhancement eval documentation maint; do add "$t" "0e8a16" "issue type"; done
-for l in ok-to-work infra needs-strong needs-owner lesson lesson-accepted; do add "$l" "fbca04" "pipeline"; done
-while IFS= read -r a; do [ -n "$a" ] && add "area:$a" "1d76db" "area lock unit"; done < <(ylist areas)
-while IFS= read -r m; do [ -n "$m" ] && add "mode:$m" "c5def5" "mode"; done < <(ylist mode_labels)
+for l in ok-to-work infra needs-strong needs-keeper lesson lesson-accepted; do add "$l" "fbca04" "pipeline"; done
+while IFS= read -r a; do [ -n "$a" ] && add "area:$a" "1d76db" "area (one per issue)"; done < <(ylist areas)
+while IFS= read -r d; do [ -n "$d" ] && add "$d" "c5def5" "dimension"; done < <(ylist dimension_labels)
 
 EXISTING=""
 if [ "$MODE" = apply ]; then EXISTING=$(gh label list -R "$REPO" --limit 500 --json name --jq '.[].name'); fi
@@ -102,8 +102,8 @@ find_or_create() { # title body
     echo "[dry-run] ensure issue \"$title\" exists (body: ${body%%$'\n'*})"
   fi
 }
-find_or_create "[pipeline] throttle (faucet)" $'level: 2\nfocus:\n\nLevels: 0 off, 1 low, 2 normal, 3 high, 4 max. See .agent/core/rules.md section 5.'
-find_or_create "[health] pipeline check log" $'Ledger and health comments are posted here by S-hard. Pin this issue.'
+find_or_create "[pipeline] throttle" $'level: 2\nfocus:\n\nLevels: 0 off, 1 low, 2 normal, 3 high, 4 max. See .agent/core/rules.md section 5.'
+find_or_create "[pipeline] ledger" $'Ledger and health comments are posted here by the supervisor routine. Pin this issue.'
 
 # ---- minimal ci.yml (proposed as a PR, never pushed to dev) ----
 CI_PATH=".github/workflows/$WORKFLOW"

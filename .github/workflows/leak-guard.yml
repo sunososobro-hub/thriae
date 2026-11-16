@@ -1,8 +1,14 @@
 name: leak-guard
 
+# Runs on pull_request (never pull_request_target): fork PRs get no secrets
+# and no write token. Without LEAK_BLOCKLIST (fork PRs) only the generic
+# checks run and the job passes with a notice. Logs show category and file
+# only. Issues and comments are not scanned here: agents run
+# `python hive/scripts/leak_check.py --text FILE` on anything they post.
 on:
   push:
   pull_request:
+    types: [opened, edited, synchronize, reopened]
 
 permissions:
   contents: read
@@ -10,6 +16,8 @@ permissions:
 jobs:
   leak-guard:
     runs-on: ubuntu-latest
+    env:
+      LEAK_BLOCKLIST: ${{ secrets.LEAK_BLOCKLIST }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -17,31 +25,43 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Scan tree
+      - name: Self-test
+        run: python -m unittest discover -s hive/scripts
+      - name: Blocklist mode
         env:
-          LEAK_BLOCKLIST: ${{ secrets.LEAK_BLOCKLIST }}
-        run: python scripts/leak_check.py --tree
+          EVENT: ${{ github.event_name }}
+          HEAD_REPO: ${{ github.event.pull_request.head.repo.full_name }}
+          THIS_REPO: ${{ github.repository }}
+        run: |
+          if [ -n "$LEAK_BLOCKLIST" ]; then
+            echo "LEAK_ARGS=" >> "$GITHUB_ENV"
+          elif [ "$EVENT" = "pull_request" ] && [ "$HEAD_REPO" != "$THIS_REPO" ]; then
+            echo "::notice::LEAK_BLOCKLIST is not available to fork PRs; running the generic checks only"
+            echo "LEAK_ARGS=--allow-missing-blocklist" >> "$GITHUB_ENV"
+          else
+            echo "::error::LEAK_BLOCKLIST secret is missing"
+            exit 1
+          fi
+      - name: Scan tree
+        run: python hive/scripts/leak_check.py --tree $LEAK_ARGS
       - name: Scan pushed commits
         if: github.event_name == 'push'
         env:
-          LEAK_BLOCKLIST: ${{ secrets.LEAK_BLOCKLIST }}
           BEFORE: ${{ github.event.before }}
           AFTER: ${{ github.sha }}
-        run: python scripts/leak_check.py --range "$BEFORE..$AFTER"
+        run: python hive/scripts/leak_check.py --range "$BEFORE..$AFTER" $LEAK_ARGS
       - name: Scan pull request commits
         if: github.event_name == 'pull_request'
         env:
-          LEAK_BLOCKLIST: ${{ secrets.LEAK_BLOCKLIST }}
           BASE: ${{ github.event.pull_request.base.sha }}
           HEAD: ${{ github.event.pull_request.head.sha }}
-        run: python scripts/leak_check.py --range "$BASE..$HEAD"
+        run: python hive/scripts/leak_check.py --range "$BASE..$HEAD" $LEAK_ARGS
       - name: Scan pull request title and body
         if: github.event_name == 'pull_request'
         env:
-          LEAK_BLOCKLIST: ${{ secrets.LEAK_BLOCKLIST }}
           PR_TITLE: ${{ github.event.pull_request.title }}
           PR_BODY: ${{ github.event.pull_request.body }}
         run: |
           f="$RUNNER_TEMP/pr_text.txt"
           printf '%s\n%s\n' "$PR_TITLE" "$PR_BODY" > "$f"
-          python scripts/leak_check.py --text "$f"
+          python hive/scripts/leak_check.py --text "$f" $LEAK_ARGS

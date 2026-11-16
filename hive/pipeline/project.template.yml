@@ -1,12 +1,14 @@
 # .agent/project.yml - per-project configuration for the Thriae pipeline core.
 # Copy to <project repo>/.agent/project.yml. This file is a protected path (Strong PASS).
 # core/rules.md refers to these keys as <key>. Required keys are marked (required).
+# Numbers are example defaults from one deployment; tune them.
 
 repo: owner/name                  # (required) GitHub slug
 public: false                     # true enables core/public-repo.md
-owner_account: <owner>    # (required) account whose "Strong review: PASS" counts, and issue-comment owner
+keeper_account: <keeper>          # (required) the human who owns the project; issue-comment decisions
+reviewer_account: ""              # account whose "Strong review: PASS" counts; empty = keeper_account (single-account setup)
 collaborators: []                 # extra accounts treated as collaborators (public repos)
-core_version: core-v0.1.1         # (required) vendored core tag; bumped only by pipeline/scripts/sync_core.sh PRs
+core_version: core-v0.2.0         # (required) vendored core tag; bumped only by hive/pipeline/scripts/sync_core.sh PRs
 
 dev_branch: dev                   # fast lane, where PRs merge
 main_branch: main                 # quality lane
@@ -21,13 +23,15 @@ ci:
   runner: ubuntu-latest           # used by bootstrap.sh when generating ci.yml
   setup: ""                       # optional shell lines run before verify.test in generated ci.yml
 
-areas:                            # (required) one area:* label per issue; area lock works on these
+areas:                            # (required) one area:* label per issue; the area rule works on these
   - core
   - ci
   - docs
-mode_labels: [shared]             # mode:* values; e.g. [listen, speak, two-way, shared]
+dimension_labels: []              # optional extra labels, e.g. [platform:web, platform:mobile]
 
-protected_paths:                  # need Strong PASS. core/rules.md always adds (release_lane: snapshot adds the release paths below) .agent/core/** and .agent/project.yml
+# Protected paths need a Strong PASS. core/rules.md always adds .agent/core/** and .agent/project.yml.
+# With release_lane: snapshot, also list the release paths in the commented block below.
+protected_paths:
   - ".github/workflows/ci.yml"
   # when release_lane: snapshot, also list (adjust names):
   # - ".github/workflows/release*.yml"
@@ -39,17 +43,17 @@ protected_paths:                  # need Strong PASS. core/rules.md always adds 
   - ".agent/core/**"
   - ".agent/project.yml"
 
-throttle_issue: 0                 # issue number; body line 1 "level: N", optional line 2 "focus: a, b". Printed by bootstrap.sh
-ledger_issue: 0                   # issue number of the pinned "[health] pipeline check log". Printed by bootstrap.sh
-usage_line_prefix: "usage"        # PR body last line is "<prefix>: ... minutes=N" 
+throttle_issue: 0                 # issue number of "[pipeline] throttle"; body line 1 "level: N", optional line 2 "focus: a, b". Printed by bootstrap.sh
+ledger_issue: 0                   # issue number of the pinned "[pipeline] ledger". Printed by bootstrap.sh
+usage_line_prefix: "<project>-usage"  # replace <project>; PR body last line is "<prefix>: ... minutes=N"
 
-budget_targets:                   # percent of usage minutes per type over 48 h; should sum to ~100
+budget_targets:                   # percent of usage minutes per row over 48 h; all rows sum to 100
   bug: 25
-  enhancement: 45
+  enhancement: 35
   eval: 10
   documentation: 5
   maint: 5
-  qa: 15                          # informational rows (not picked)
+  qa: 15                          # informational rows (logged, never picked)
   idea: 5
 infra_cap_pct: 10
 max_doing: 10
@@ -57,20 +61,20 @@ orphan_timeout_min:
   light: 20
   strong: 45
 
-model_strong_domains:               # only these go to the strong model; everything else the light model
+model_strong_domains:             # only these go to the strong model; everything else the light model
   - concurrency / threading
   # - <your hardest domain>
   # - <another domain>
 
 git_identity:
-  name: <owner>
-  email: <id>+<owner>@users.noreply.github.com
+  name: <account>
+  email: <id>+<account>@users.noreply.github.com
 
 # Only read when release_lane: snapshot
 release:
   version_file: "pyproject.toml"
   required_checks: [ci]
-  deferrable_checks: []
+  deferrable_checks: []           # e.g. a workflow that needs a self-hosted hardware runner
   defer_wait_min: 30
   min_hours_between: 3
-hw_nightly: false
+device_nightly: false             # optional; see core/release-lane.md "hardware-dependent code"
