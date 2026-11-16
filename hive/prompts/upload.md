@@ -23,11 +23,16 @@ Everything I see (questions, tables, drafts, lists) is in my language. Only what
 My language = the words I typed with this prompt; if none, my OS/system locale or the prose language of my rules/memory files; if still unclear, English. Use it for everything I see.
 
 ## Step 0: Scope (ask first, before reading anything)
-Ask me ONE yes/no question in my language (translate it). Never a menu, never ask me for paths: "I'll look through everything an AI follows on this computer: rules files in your projects, your global rules, and your saved memory/feedback notes. Read-only; nothing leaves without your yes; private things stay here. OK? (yes = everything, recommended / no = only this folder)". Default = yes.
+Ask me ONE yes/no question in my language (translate it). Never a menu, never ask me for paths: "I'll look through everything an AI follows on this computer: rules files in your projects, your global rules, and your saved memory/feedback notes. Read-only; nothing leaves without your yes; private things stay here. The overview takes about 1 minute. OK? (yes = everything, recommended / no = only this folder)". Default = yes.
 - yes: find things yourself. Rules files (AGENTS.md, CLAUDE.md, .cursorrules, .github/copilot-instructions.md) in the current folder, its git repos and common project folders under my home dir (depth <= 4, <= 60 s, skip node_modules, .git, caches, build output); global rules (~/.claude/CLAUDE.md, ~/.codex/AGENTS.md and similar); agent memory notes (e.g. ~/.claude/projects/*/memory/). no: only this folder's rules files.
 - Before reading any content, list what you found as a count per source.
 - Everything stays on this machine. Read-only, never modify. Never quote raw text from these files in a draft. Personal preferences and private topics stay local (🏠, never sent).
 - Only redacted drafts I said yes to leave this machine.
+
+## Speed (two passes)
+- Pass 1, fast (target under 1 minute): read only cheap signals: file names, headings, memory index lines and front-matter descriptions, and the section titles of Thriae AGENTS.md. Identical files count once. Anything Thriae AGENTS.md already covers is "already covered": count it, never draft it. Show the summary table right after pass 1.
+- Pass 2: deep-read only the remaining 🍯 candidates, and only for the batch being drafted (5 at a time). Show batch 1 as soon as its 5 are ready; do not wait for all sources.
+- Helpers in parallel are fine, but each returns short candidate lines, never full file contents.
 
 ## 1. Find candidates
 - Read only what Step 0 covered (rules files, global rules, memory notes) and recent agent failures (red CI runs, reverted or closed PRs, repeated review comments).
@@ -38,7 +43,8 @@ Ask me ONE yes/no question in my language (translate it). Never a menu, never as
   - a failure that keeps happening although a rule covers it = a "rule not working" report.
 
 ## 2. Sort
-- 🍯 universal: any AI team would hit it. Only these are sent, REWRITTEN as a generic rule in your own words, never copied text.
+- 🍯 universal and NEW (not already covered by Thriae): any AI team would hit it. Only these are sent, REWRITTEN as a generic rule in your own words, never copied text.
+- ✅ already covered: count only. Draft it only as "strengthens section N" when I have a real measured failure for it.
 - 🏠 project-only: true here, not elsewhere. Keep it local.
 - 🧹 dead: no longer helps. Send only if it is a Thriae rule; otherwise suggest removing it locally.
 
@@ -53,11 +59,11 @@ No numbers or no link: leave them empty and add "Pain only, no evidence yet." Th
 
 ## 4. Redact and check
 - Remove project, account and repo names, people, internal ticket numbers, paths, hostnames, cost figures and secrets. Describe instead of naming.
-- Search for a local Thriae clone (a folder with hive/scripts/leak_check.py). Found: use it automatically, saving each draft to a file and running `python hive/scripts/leak_check.py --text FILE` from its root; fix every hit. Not found: skip and say so.
-- Duplicates: if a section of Thriae AGENTS.md covers it, add "duplicate of section N" or "strengthens section N". Search open `lesson` issues in <THRIAE_CORE_REPO>.
+- Leak check, never skipped: use a local Thriae clone if there is one (a folder with hive/scripts/leak_check.py); otherwise download hive/scripts/leak_check.py from <THRIAE_CORE_REPO> into a temp folder (gh api or raw URL). Save each draft to a file and run `python -I leak_check.py --text FILE`; fix every hit. If both fail, tell me and do a careful manual check.
+- Duplicates: also search open `lesson` issues in <THRIAE_CORE_REPO>.
 
 ## 5. Ask before sending
-Pacing (I will not know to ask), all in my language: first show a short summary table per source/project with counts 🍯/🏠/🧹 and one line each. Then show drafts in batches of up to 5, each shown in full in my language (not just a summary), with the note "will be sent in English" (I may ask to see the English text first). Ask per draft: "Send? (yes / edit / no)".
+All in my language. First the summary table per source/project with columns 🍯 new / ✅ already covered / 🏠 / 🧹 and one line each. Then drafts in batches of up to 5, each shown in full in my language (not just a summary), with the note "will be sent in English" (I may ask to see the English text first). Ask per draft: "Send? (yes / edit / no)".
 - yes: translate to English, write the body with one `### <field label>` heading per field and run
   `gh issue create --repo <THRIAE_CORE_REPO> --title "[lesson] <summary>" --label lesson --body-file FILE`
   (label refused: run again without `--label`). No gh, or it fails: print a prefilled link,
