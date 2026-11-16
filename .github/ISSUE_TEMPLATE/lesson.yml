@@ -1,5 +1,5 @@
 name: Lesson
-description: Propose a rule change backed by what you measured.
+description: Propose a rule change. Evidence makes it count; pain only is OK, it waits for evidence.
 title: "[lesson] "
 labels: ["lesson"]
 body:
@@ -24,17 +24,17 @@ body:
   - type: textarea
     id: measured
     attributes:
-      label: Measured before and after
-      description: Numbers or counts, same method on both sides (for example failed PRs per week).
+      label: Measured before and after (optional)
+      description: Numbers or counts, same method on both sides (for example failed PRs per week). Optional - pain only is OK; it waits for evidence.
     validations:
-      required: true
+      required: false
   - type: input
     id: evidence
     attributes:
-      label: Link to evidence
-      description: A public log, CI run, PR or write-up.
+      label: Link to evidence (optional)
+      description: A public log, CI run, PR or write-up. Optional - pain only is OK; it waits for evidence.
     validations:
-      required: true
+      required: false
   - type: input
     id: credit
     attributes:

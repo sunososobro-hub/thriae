@@ -4,9 +4,9 @@ One AGENTS.md, distilled from real agent failures.
 
 <p align="center"><img src="hive/assets/pain-cure.svg" alt="Four pains and their cures: same mistake again becomes one file for any tool; a rules file that keeps growing becomes every rule has evidence; agents that collide become dead rules removed; private data leaks become a built-in leak guard" width="900"></p>
 
-<p align="center"><img src="hive/assets/who.svg" alt="Who is it for: anyone who codes with AI agents (Claude Code, Codex, Cursor), solo developer or team" width="900"></p>
+<p align="center"><img src="hive/assets/get-the-honey.svg" alt="Get the honey: your AI agent (Claude Code, Codex or Cursor) plus the AGENTS.md honey jar, copied into your project with your project block filled in (Claude Code also needs CLAUDE.md), and the agent stops repeating mistakes. When: a new project, or the same mistake again" width="900"></p>
 
-<p align="center"><img src="hive/assets/quickstart.svg" alt="Quickstart: 1 copy AGENTS.md, 2 fill your project block, 3 done. Claude Code also needs CLAUDE.md. When: a new project, or an agent repeats a mistake. Works with Claude Code, Codex and Cursor" width="900"></p>
+<p align="center">Already have rules? <a href="hive/prompts/distill.md">📋 Paste the distill prompt first</a></p>
 
 <p align="center"><img src="hive/assets/how-it-grows.svg" alt="How a rule grows: failure, lesson plus evidence, 3 projects confirm, rule, and when it stops helping it is removed. Now: 1 of 3 projects; seed rules wait for 2 more projects" width="900"></p>
 
@@ -21,6 +21,10 @@ One AGENTS.md, distilled from real agent failures.
 <p align="center">In Greek myth the Thriae were three bee-nymphs who spoke the truth after eating honey.</p>
 
 <p align="center"><img src="hive/assets/hive-map.svg" alt="Repo layout as a honeycomb: the door row holds README, AGENTS.md (the honey), LICENSE, .github and CLAUDE.md; below it the hive holds the compass constitution, red leak-guard cells, purple contributors and green pipeline cells" width="600"></p>
+
+<p align="center"><a href="hive/prompts/distill.md"><img src="hive/assets/paste-prompt.svg" alt="Distill prompt: 1 paste the prompt into your AI agent, 2 it sorts your rules into universal, project-only and dead, 3 it sends the universal ones as lessons after you say yes, 4 overwrite your rules file with AGENTS.md? you decide" width="900"></a></p>
+
+<p align="center"><a href="hive/prompts/distill.md">📋 Copy the prompt</a></p>
 
 <p align="center"><a href=".github/CONTRIBUTING.md"><img src="hive/assets/contribute-flow.svg" alt="How to contribute: 1 file a lesson, 2 quarantine check, 3 rewritten, never pasted, 4 three projects confirm, 5 one in, one out under a 250-line cap, 6 credit. A good lesson: a real failure with numbers, a one or two line rule, no names, paths or secrets" width="900"></a></p>
 
@@ -45,7 +49,8 @@ These are seed rules from one production pipeline. A rule becomes shared wisdom 
 ## Quickstart
 1. Copy `AGENTS.md` into the root of your repo and fill in its "Fill in for your project" block.
 2. For Claude Code, also copy `CLAUDE.md` (one line, `@AGENTS.md`, so Claude Code loads it). Codex, Cursor and similar tools read `AGENTS.md` directly.
-3. Optional: `hive/pipeline/` for scheduled agents (see its README), and `hive/scripts/leak_check.py` as a leak guard.
+3. Already have a rules file? Paste [`hive/prompts/distill.md`](hive/prompts/distill.md) into your agent first: it sorts your rules, sends the universal ones back (after your yes) and merges the rest into the project block.
+4. Optional: `hive/pipeline/` for scheduled agents (see its README), and `hive/scripts/leak_check.py` as a leak guard.
 
 ## Leak guard limits
 `hive/scripts/leak_check.py` blocks blocklisted terms, emails, home paths, tokens and session links in commits, PRs and files. It cannot catch:
@@ -56,7 +61,7 @@ These are seed rules from one production pipeline. A rule becomes shared wisdom 
 - anything already pushed: it reports, it cannot un-publish.
 
 ## Contribute a lesson
-Open an issue with the Lesson form: what happened, the rule that changed, measured before and after, a link to the evidence. Redact private names first. The full flow is in [`.github/CONTRIBUTING.md`](.github/CONTRIBUTING.md); the rules about rules are in [`hive/CONSTITUTION.md`](hive/CONSTITUTION.md).
+Easiest: paste [`hive/prompts/distill.md`](hive/prompts/distill.md) into your AI agent and say yes to the drafts it shows you. Or open an issue with the Lesson form yourself: what happened, the rule that changed, measured before and after, a link to the evidence. Redact private names first. The full flow is in [`.github/CONTRIBUTING.md`](.github/CONTRIBUTING.md); the rules about rules are in [`hive/CONSTITUTION.md`](hive/CONSTITUTION.md).
 
 ## License
 MIT. See [`LICENSE`](LICENSE).

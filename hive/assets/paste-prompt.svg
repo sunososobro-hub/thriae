@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 275" width="900" height="275" role="img" aria-labelledby="t d">
+<title id="t">Distill prompt</title>
+<desc id="d">Four steps: 1 paste the distill prompt into your AI agent, 2 it sorts your rules into universal, project-only and dead, 3 it sends the universal ones as lessons after you say yes, 4 it offers to overwrite your rules file with Thriae's AGENTS.md plus your project rules, and you decide.</desc>
+<rect x="1" y="1" width="898" height="273" rx="20" fill="rgb(255,251,240)" stroke="rgb(230,214,178)" stroke-width="2"/>
+<rect x="30" y="30" width="186" height="190" rx="18" fill="rgb(220,233,248)" stroke="rgb(50,90,150)" stroke-width="2.5"/>
+<circle cx="52" cy="52" r="14" fill="rgb(50,90,150)"/><text x="52" y="58" font-family="Helvetica, Arial, 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif" font-size="15" fill="rgb(255,255,255)" text-anchor="middle" font-weight="bold">1</text>
+<text x="123.0" y="106" font-family="'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif" font-size="44" fill="rgb(42,36,24)" text-anchor="middle">📋</text>
+<text x="123.0" y="146" font-family="Helvetica, Arial, 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif" font-size="18" fill="rgb(110,100,80)" text-anchor="middle">paste the</text>
+<text x="123.0" y="172" font-family="Helvetica, Arial, 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif" font-size="21" fill="rgb(42,36,24)" text-anchor="middle" font-weight="bold">prompt</text>
+<line x1="219" y1="115" x2="234.0" y2="115.0" stroke="rgb(110,100,80)" stroke-width="3" stroke-linecap="round"/>
+<polygon points="246,115 234.0,108.0 234.0,122.0" fill="rgb(110,100,80)"/>
+<rect x="248" y="30" width="186" height="190" rx="18" fill="rgb(253,236,190)" stroke="rgb(170,110,20)" stroke-width="2.5"/>
+<circle cx="270" cy="52" r="14" fill="rgb(170,110,20)"/><text x="270" y="58" font-family="Helvetica, Arial, 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif" font-size="15" fill="rgb(255,255,255)" text-anchor="middle" font-weight="bold">2</text>
+<text x="341.0" y="106" font-family="'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif" font-size="32" fill="rgb(42,36,24)" text-anchor="middle">🍯🏠🧹</text>
+<text x="341.0" y="146" font-family="Helvetica, Arial, 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif" font-size="18" fill="rgb(110,100,80)" text-anchor="middle">sort your</text>
+<text x="341.0" y="172" font-family="Helvetica, Arial, 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif" font-size="21" fill="rgb(42,36,24)" text-anchor="middle" font-weight="bold">rules</text>
+<line x1="437" y1="115" x2="452.0" y2="115.0" stroke="rgb(110,100,80)" stroke-width="3" stroke-linecap="round"/>
+<polygon points="464,115 452.0,108.0 452.0,122.0" fill="rgb(110,100,80)"/>
+<rect x="466" y="30" width="186" height="190" rx="18" fill="rgb(214,238,214)" stroke="rgb(60,140,70)" stroke-width="2.5"/>
+<circle cx="488" cy="52" r="14" fill="rgb(60,140,70)"/><text x="488" y="58" font-family="Helvetica, Arial, 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif" font-size="15" fill="rgb(255,255,255)" text-anchor="middle" font-weight="bold">3</text>
+<text x="559.0" y="106" font-family="'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif" font-size="44" fill="rgb(42,36,24)" text-anchor="middle">📮</text>
+<text x="559.0" y="146" font-family="Helvetica, Arial, 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif" font-size="18" fill="rgb(110,100,80)" text-anchor="middle">send the 🍯</text>
+<text x="559.0" y="172" font-family="Helvetica, Arial, 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif" font-size="21" fill="rgb(42,36,24)" text-anchor="middle" font-weight="bold">lessons</text>
+<rect x="489.0" y="184" width="140" height="26" rx="13.0" fill="rgb(255,255,255)" stroke="rgb(190,60,60)" stroke-width="2"/>
+<text x="559.0" y="202" font-family="Helvetica, Arial, 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif" font-size="13" fill="rgb(190,60,60)" text-anchor="middle" font-weight="bold">✋ you say yes</text>
+<line x1="655" y1="115" x2="670.0" y2="115.0" stroke="rgb(110,100,80)" stroke-width="3" stroke-linecap="round"/>
+<polygon points="682,115 670.0,108.0 670.0,122.0" fill="rgb(110,100,80)"/>
+<rect x="684" y="30" width="186" height="190" rx="18" fill="rgb(232,222,248)" stroke="rgb(120,80,180)" stroke-width="2.5"/>
+<circle cx="706" cy="52" r="14" fill="rgb(120,80,180)"/><text x="706" y="58" font-family="Helvetica, Arial, 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif" font-size="15" fill="rgb(255,255,255)" text-anchor="middle" font-weight="bold">4</text>
+<text x="777.0" y="106" font-family="'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif" font-size="44" fill="rgb(42,36,24)" text-anchor="middle">🔄</text>
+<text x="777.0" y="146" font-family="Helvetica, Arial, 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif" font-size="18" fill="rgb(110,100,80)" text-anchor="middle">overwrite?</text>
+<text x="777.0" y="172" font-family="Helvetica, Arial, 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif" font-size="21" fill="rgb(42,36,24)" text-anchor="middle" font-weight="bold">you decide</text>
+<text x="450" y="252" font-family="Helvetica, Arial, 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif" font-size="15" fill="rgb(110,100,80)" text-anchor="middle">nothing is sent or overwritten without your yes</text>
+</svg>

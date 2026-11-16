@@ -1,3 +1,4 @@
+<!-- thriae core-v0.2.0 (keep this line: the distill prompt compares your copy against this version) -->
 # AGENTS.md
 
 Working rules for AI coding agents (Claude Code, Codex, Cursor, any tool that reads `AGENTS.md`).

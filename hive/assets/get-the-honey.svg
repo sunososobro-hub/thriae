@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 410" width="900" height="410" role="img" aria-labelledby="t d">
+<title id="t">Get the honey</title>
+<desc id="d">Your AI agent (Claude Code, Codex or Cursor) plus the AGENTS.md honey jar, copied into your project with your project block filled in (Claude Code also needs CLAUDE.md), and your agent stops repeating mistakes. When: a new project, or the same mistake again.</desc>
+<rect x="1" y="1" width="898" height="408" rx="20" fill="rgb(255,251,240)" stroke="rgb(230,214,178)" stroke-width="2"/>
+<rect x="30" y="40" width="240" height="200" rx="18" fill="rgb(220,233,248)" stroke="rgb(50,90,150)" stroke-width="2"/>
+<text x="150" y="128" font-family="'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif" font-size="64" fill="rgb(42,36,24)" text-anchor="middle">🤖</text>
+<text x="150" y="172" font-family="Helvetica, Arial, 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif" font-size="22" fill="rgb(42,36,24)" text-anchor="middle" font-weight="bold">your AI agent</text>
+<rect x="40" y="196" width="86" height="28" rx="14.0" fill="rgb(255,255,255)" stroke="rgb(50,90,150)" stroke-width="2"/>
+<text x="83.0" y="215" font-family="Helvetica, Arial, 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif" font-size="13" fill="rgb(50,90,150)" text-anchor="middle" font-weight="bold">Claude Code</text>
+<rect x="132" y="196" width="62" height="28" rx="14.0" fill="rgb(255,255,255)" stroke="rgb(50,90,150)" stroke-width="2"/>
+<text x="163.0" y="215" font-family="Helvetica, Arial, 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif" font-size="13" fill="rgb(50,90,150)" text-anchor="middle" font-weight="bold">Codex</text>
+<rect x="200" y="196" width="62" height="28" rx="14.0" fill="rgb(255,255,255)" stroke="rgb(50,90,150)" stroke-width="2"/>
+<text x="231.0" y="215" font-family="Helvetica, Arial, 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif" font-size="13" fill="rgb(50,90,150)" text-anchor="middle" font-weight="bold">Cursor</text>
+<line x1="280" y1="140" x2="324.0" y2="140.0" stroke="rgb(110,100,80)" stroke-width="4" stroke-linecap="round"/>
+<polygon points="336,140 324.0,133.0 324.0,147.0" fill="rgb(110,100,80)"/>
+<g transform="translate(-317,-162.8) scale(1.3)">
+<path d="M548 168 h84 v14 q16 12 16 30 v68 q0 12 -12 12 h-92 q-12 0 -12 -12 v-68 q0 -18 16 -30z" fill="rgb(232,163,23)" stroke="rgb(170,110,20)" stroke-width="2.5"/>
+<rect x="542" y="156" width="96" height="16" rx="4" fill="rgb(253,236,190)" stroke="rgb(170,110,20)" stroke-width="2"/>
+<rect x="548" y="222" width="84" height="30" rx="6" fill="rgb(255,255,255)"/>
+</g>
+<text x="450" y="152" font-family="Helvetica, Arial, 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif" font-size="18" fill="rgb(42,36,24)" text-anchor="middle" font-weight="bold">AGENTS.md</text>
+<text x="450" y="248" font-family="Helvetica, Arial, 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif" font-size="17" fill="rgb(42,36,24)" text-anchor="middle" font-weight="bold">copy into your project</text>
+<rect x="330" y="262" width="240" height="34" rx="17.0" fill="rgb(255,255,255)" stroke="rgb(170,110,20)" stroke-width="2"/>
+<text x="450" y="285" font-family="Helvetica, Arial, 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif" font-size="15" fill="rgb(42,36,24)" text-anchor="middle">✏️ + your project block</text>
+<rect x="330" y="304" width="240" height="34" rx="17.0" fill="rgb(255,255,255)" stroke="rgb(110,100,80)" stroke-width="2"/>
+<text x="450" y="327" font-family="Helvetica, Arial, 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif" font-size="15" fill="rgb(42,36,24)" text-anchor="middle">Claude Code: + CLAUDE.md</text>
+<line x1="570" y1="140" x2="614.0" y2="140.0" stroke="rgb(60,140,70)" stroke-width="5" stroke-linecap="round"/>
+<polygon points="626,140 614.0,133.0 614.0,147.0" fill="rgb(60,140,70)"/>
+<rect x="636" y="30" width="240" height="220" rx="20" fill="rgb(60,140,70)" stroke="rgb(35,95,45)" stroke-width="4"/>
+<text x="756" y="124" font-family="'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif" font-size="72" fill="rgb(42,36,24)" text-anchor="middle">😌</text>
+<text x="756" y="178" font-family="Helvetica, Arial, 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif" font-size="25" fill="rgb(255,255,255)" text-anchor="middle" font-weight="bold">stops repeating</text>
+<text x="756" y="210" font-family="Helvetica, Arial, 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif" font-size="25" fill="rgb(255,255,255)" text-anchor="middle" font-weight="bold">mistakes</text>
+<rect x="210" y="356" width="480" height="36" rx="18.0" fill="rgb(253,236,190)" stroke="rgb(170,110,20)" stroke-width="2"/>
+<text x="450" y="380" font-family="Helvetica, Arial, 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif" font-size="16" fill="rgb(42,36,24)" text-anchor="middle" font-weight="bold">when: 🆕 new project · 🔁 same mistake again</text>
+</svg>
