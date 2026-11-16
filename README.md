@@ -8,6 +8,10 @@ One AGENTS.md, distilled from real agent failures.
 
 <p align="center"><a href="hive/prompts/download.md">⬇️ Get the honey: paste the download prompt</a> · already have rules? <a href="hive/prompts/upload.md">⬆️ share them first</a></p>
 
+<p align="center"><img src="hive/assets/factory.svg" alt="Door 2, the factory: issue, worker, review, merge, release, and lessons flow back into AGENTS.md. Candidate, evidence from 1 project so far (1/3)" width="900"></p>
+
+<p align="center"><b>Door 2: 🏭 the factory (optional).</b> Scheduled agents take issues to releases. Candidate, 1/3: evidence from 1 project so far. <a href="hive/pipeline/README.md">Open the factory</a></p>
+
 <p align="center"><img src="hive/assets/how-it-grows.svg" alt="How a rule grows: failure, lesson plus evidence, 3 projects confirm, rule, and when it stops helping it is removed. Now: 1 of 3 projects; seed rules wait for 2 more projects" width="900"></p>
 
 <p align="center"><img src="hive/assets/hive-architecture.svg" alt="Architecture: the compass constitution guards the flow; the keeper is scout number one and holds the brake. Bees from your projects bring lessons into quarantine; when 3 projects confirm, the rule goes into the AGENTS.md honey jar, reaches everyone, and lessons come back with credit" width="900"></p>

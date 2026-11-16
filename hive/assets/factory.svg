@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 380" width="900" height="380" role="img" aria-labelledby="t d">
+<title id="t">The factory</title>
+<desc id="d">Factory line: issue, worker, review, merge, release. Workers read the rules in AGENTS.md; review turns mistakes into lessons that flow back into AGENTS.md. Candidate, 1 of 3 projects.</desc>
+<rect x="1" y="1" width="898" height="378" rx="20" fill="rgb(255,251,240)" stroke="rgb(230,214,178)" stroke-width="2"/>
+<text x="30" y="52" font-family="Helvetica, Arial, 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif" font-size="30" fill="rgb(42,36,24)" font-weight="bold">🏭 The factory</text>
+<rect x="700" y="26" width="170" height="36" rx="18" fill="rgb(255,255,255)" stroke="rgb(160,110,20)" stroke-width="2"/><text x="785" y="50" font-family="Helvetica, Arial, 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif" font-size="16" fill="rgb(160,110,20)" text-anchor="middle" font-weight="bold">candidate 1/3</text>
+<rect x="30" y="100" width="130" height="130" rx="18" fill="rgb(220,233,248)" stroke="rgb(50,90,150)" stroke-width="2"/>
+<text x="95" y="162" font-family="Helvetica, Arial, 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif" font-size="50" fill="rgb(42,36,24)" text-anchor="middle">📝</text>
+<text x="95" y="210" font-family="Helvetica, Arial, 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif" font-size="20" fill="rgb(42,36,24)" text-anchor="middle" font-weight="bold">issue</text>
+<path d="M168 165 L194 165 M186 156 L195 165 L186 174" fill="none" stroke="rgb(42,36,24)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="202" y="100" width="130" height="130" rx="18" fill="rgb(255,236,190)" stroke="rgb(160,110,20)" stroke-width="2"/>
+<text x="267" y="162" font-family="Helvetica, Arial, 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif" font-size="50" fill="rgb(42,36,24)" text-anchor="middle">🤖</text>
+<text x="267" y="210" font-family="Helvetica, Arial, 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif" font-size="20" fill="rgb(42,36,24)" text-anchor="middle" font-weight="bold">worker</text>
+<path d="M340 165 L366 165 M358 156 L367 165 L358 174" fill="none" stroke="rgb(42,36,24)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="374" y="100" width="130" height="130" rx="18" fill="rgb(233,222,246)" stroke="rgb(110,70,160)" stroke-width="2"/>
+<text x="439" y="162" font-family="Helvetica, Arial, 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif" font-size="50" fill="rgb(42,36,24)" text-anchor="middle">🔍</text>
+<text x="439" y="210" font-family="Helvetica, Arial, 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif" font-size="20" fill="rgb(42,36,24)" text-anchor="middle" font-weight="bold">review</text>
+<path d="M512 165 L538 165 M530 156 L539 165 L530 174" fill="none" stroke="rgb(42,36,24)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="546" y="100" width="130" height="130" rx="18" fill="rgb(215,240,220)" stroke="rgb(40,120,70)" stroke-width="2"/>
+<text x="611" y="162" font-family="Helvetica, Arial, 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif" font-size="50" fill="rgb(42,36,24)" text-anchor="middle">✅</text>
+<text x="611" y="210" font-family="Helvetica, Arial, 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif" font-size="20" fill="rgb(42,36,24)" text-anchor="middle" font-weight="bold">merge</text>
+<path d="M684 165 L710 165 M702 156 L711 165 L702 174" fill="none" stroke="rgb(42,36,24)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="718" y="100" width="130" height="130" rx="18" fill="rgb(255,224,214)" stroke="rgb(170,70,40)" stroke-width="2"/>
+<text x="783" y="162" font-family="Helvetica, Arial, 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif" font-size="50" fill="rgb(42,36,24)" text-anchor="middle">🚀</text>
+<text x="783" y="210" font-family="Helvetica, Arial, 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif" font-size="20" fill="rgb(42,36,24)" text-anchor="middle" font-weight="bold">release</text>
+<path d="M439 236 L439 284 M430 274 L439 285 L448 274" fill="none" stroke="rgb(160,110,20)" stroke-width="3" stroke-dasharray="8 6" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="452" y="268" font-family="Helvetica, Arial, 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif" font-size="17" fill="rgb(160,110,20)" font-weight="bold">🐝 lessons</text>
+<path d="M300 322 L267 322 L267 238 M258 248 L267 237 L276 248" fill="none" stroke="rgb(160,110,20)" stroke-width="3" stroke-dasharray="8 6" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="255" y="268" font-family="Helvetica, Arial, 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif" font-size="17" fill="rgb(160,110,20)" text-anchor="end" font-weight="bold">reads the rules</text>
+<rect x="300" y="292" width="280" height="60" rx="18" fill="rgb(255,226,140)" stroke="rgb(160,110,20)" stroke-width="2.5"/>
+<text x="440" y="331" font-family="Helvetica, Arial, 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif" font-size="22" fill="rgb(42,36,24)" text-anchor="middle" font-weight="bold">🍯 AGENTS.md</text>
+</svg>
