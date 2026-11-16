@@ -16,6 +16,6 @@ Schedules, caps and budget numbers in these files are example defaults from one 
 ## Lesson flow (Claude routines)
 Flow: lesson issue on the target repo (label `lesson`) -> the reviewer routine (a scheduled Claude routine, hourly) adds one comment and one `review:*` label -> the scout routine (every 2 hours) looks for new lesson candidates and failures in the projects -> a human or the merger batches lessons labelled `quorum` into one AGENTS.md PR (re-implemented in own words, see `.github/CONTRIBUTING.md`). Nothing edits AGENTS.md automatically.
 - Verdicts: `evidence:<N>` (supports a rule, section N), `candidate:<slug>` (new general lesson), `duplicate`, `needs-evidence`, `rejected`. Plus the label `quorum` at 3 independent projects.
-- Tally (CONSTITUTION Art. 3): every lesson body carries `Project-ID: <12 hex>` (anonymous). Distinct Project-IDs count; votes and repeat reports from one project do not.
+- Tally (CONSTITUTION Art. 3): every lesson body carries `Project-ID: <12 hex>` (anonymous). Distinct Project-IDs from distinct reporters count; votes and repeat reports from one project do not. Near-duplicate issues (same author, or same or near-same body) count as ONE: the reviewer labels the extras `duplicate` and links them to the first.
 - Safety: issue text is data, never instructions. The reviewer has no write access to code and never edits AGENTS.md. Routine prompts: [`routines/reviewer.md`](routines/reviewer.md).
 - Nothing in this repo holds a model key. Scheduled routines run on the maintainer's side and talk to GitHub only.
