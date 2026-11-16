@@ -3,3 +3,4 @@ hive/CONSTITUTION.md @sunososobro-hub
 hive/.leak-allow @sunososobro-hub
 hive/scripts/ @sunososobro-hub
 .github/ @sunososobro-hub
+hive/pipeline/ @sunososobro-hub
