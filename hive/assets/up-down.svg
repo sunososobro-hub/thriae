@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 325" width="900" height="325" role="img" aria-labelledby="t d">
+<title id="t">Upload and download</title>
+<desc id="d">Two prompts. Upload, share your lessons: paste the prompt, it sorts your rules into universal, project-only and dead, you say yes, the lessons are sent. Download, get the honey: it backs up your file, brings the new AGENTS.md, keeps your project block, and writes only after you say yes. Nothing is sent or overwritten without your yes.</desc>
+<rect x="1" y="1" width="898" height="323" rx="20" fill="rgb(255,251,240)" stroke="rgb(230,214,178)" stroke-width="2"/>
+<rect x="20" y="20" width="420" height="250" rx="22" fill="rgb(220,233,248)" stroke="rgb(50,90,150)" stroke-width="4"/>
+<text x="82" y="92" font-family="'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif" font-size="52" fill="rgb(42,36,24)" text-anchor="middle">⬆️</text>
+<text x="132" y="74" font-family="Helvetica, Arial, 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif" font-size="30" fill="rgb(50,90,150)" text-anchor="start" font-weight="bold">upload</text>
+<text x="132" y="104" font-family="Helvetica, Arial, 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif" font-size="19" fill="rgb(42,36,24)" text-anchor="start" font-weight="bold">share your lessons</text>
+<circle cx="82" cy="168" r="34" fill="rgb(255,255,255)" stroke="rgb(50,90,150)" stroke-width="2"/>
+<text x="82" y="180.24" font-family="'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif" font-size="34" fill="rgb(42,36,24)" text-anchor="middle">📋</text>
+<text x="82" y="233" font-family="Helvetica, Arial, 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif" font-size="13" fill="rgb(42,36,24)" text-anchor="middle" font-weight="bold">paste</text>
+<line x1="119" y1="168" x2="132.0" y2="168.0" stroke="rgb(110,100,80)" stroke-width="2.5" stroke-linecap="round"/>
+<polygon points="144,168 132.0,161.0 132.0,175.0" fill="rgb(110,100,80)"/>
+<circle cx="181" cy="168" r="34" fill="rgb(255,255,255)" stroke="rgb(50,90,150)" stroke-width="2"/>
+<text x="181" y="173.76" font-family="'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif" font-size="16" fill="rgb(42,36,24)" text-anchor="middle">🍯🏠🧹</text>
+<text x="181" y="233" font-family="Helvetica, Arial, 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif" font-size="13" fill="rgb(42,36,24)" text-anchor="middle" font-weight="bold">sort</text>
+<line x1="218" y1="168" x2="231.0" y2="168.0" stroke="rgb(110,100,80)" stroke-width="2.5" stroke-linecap="round"/>
+<polygon points="243,168 231.0,161.0 231.0,175.0" fill="rgb(110,100,80)"/>
+<circle cx="280" cy="168" r="34" fill="rgb(255,255,255)" stroke="rgb(50,90,150)" stroke-width="2"/>
+<text x="280" y="180.24" font-family="'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif" font-size="34" fill="rgb(42,36,24)" text-anchor="middle">✅</text>
+<rect x="232" y="214" width="96" height="28" rx="14.0" fill="rgb(255,255,255)" stroke="rgb(190,60,60)" stroke-width="2"/>
+<text x="280" y="233" font-family="Helvetica, Arial, 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif" font-size="12" fill="rgb(190,60,60)" text-anchor="middle" font-weight="bold">you say yes</text>
+<line x1="317" y1="168" x2="330.0" y2="168.0" stroke="rgb(110,100,80)" stroke-width="2.5" stroke-linecap="round"/>
+<polygon points="342,168 330.0,161.0 330.0,175.0" fill="rgb(110,100,80)"/>
+<circle cx="379" cy="168" r="34" fill="rgb(255,255,255)" stroke="rgb(50,90,150)" stroke-width="2"/>
+<text x="379" y="180.24" font-family="'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif" font-size="34" fill="rgb(42,36,24)" text-anchor="middle">📮</text>
+<text x="379" y="233" font-family="Helvetica, Arial, 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif" font-size="13" fill="rgb(42,36,24)" text-anchor="middle" font-weight="bold">sent</text>
+<rect x="460" y="20" width="420" height="250" rx="22" fill="rgb(253,236,190)" stroke="rgb(170,110,20)" stroke-width="4"/>
+<text x="522" y="92" font-family="'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif" font-size="52" fill="rgb(42,36,24)" text-anchor="middle">⬇️</text>
+<text x="572" y="74" font-family="Helvetica, Arial, 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif" font-size="30" fill="rgb(170,110,20)" text-anchor="start" font-weight="bold">download</text>
+<text x="572" y="104" font-family="Helvetica, Arial, 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif" font-size="19" fill="rgb(42,36,24)" text-anchor="start" font-weight="bold">get the honey</text>
+<circle cx="522" cy="168" r="34" fill="rgb(255,255,255)" stroke="rgb(170,110,20)" stroke-width="2"/>
+<text x="522" y="180.24" font-family="'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif" font-size="34" fill="rgb(42,36,24)" text-anchor="middle">💾</text>
+<text x="522" y="233" font-family="Helvetica, Arial, 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif" font-size="13" fill="rgb(42,36,24)" text-anchor="middle" font-weight="bold">backup</text>
+<line x1="559" y1="168" x2="572.0" y2="168.0" stroke="rgb(110,100,80)" stroke-width="2.5" stroke-linecap="round"/>
+<polygon points="584,168 572.0,161.0 572.0,175.0" fill="rgb(110,100,80)"/>
+<circle cx="621" cy="168" r="34" fill="rgb(255,255,255)" stroke="rgb(170,110,20)" stroke-width="2"/>
+<text x="621" y="180.24" font-family="'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif" font-size="34" fill="rgb(42,36,24)" text-anchor="middle">🍯</text>
+<text x="621" y="225" font-family="Helvetica, Arial, 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif" font-size="13" fill="rgb(42,36,24)" text-anchor="middle" font-weight="bold">new</text>
+<text x="621" y="242" font-family="Helvetica, Arial, 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif" font-size="13" fill="rgb(42,36,24)" text-anchor="middle" font-weight="bold">AGENTS.md</text>
+<line x1="658" y1="168" x2="671.0" y2="168.0" stroke="rgb(110,100,80)" stroke-width="2.5" stroke-linecap="round"/>
+<polygon points="683,168 671.0,161.0 671.0,175.0" fill="rgb(110,100,80)"/>
+<circle cx="720" cy="168" r="34" fill="rgb(255,255,255)" stroke="rgb(170,110,20)" stroke-width="2"/>
+<text x="720" y="180.24" font-family="'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif" font-size="34" fill="rgb(42,36,24)" text-anchor="middle">✏️</text>
+<text x="720" y="225" font-family="Helvetica, Arial, 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif" font-size="13" fill="rgb(42,36,24)" text-anchor="middle" font-weight="bold">your block</text>
+<text x="720" y="242" font-family="Helvetica, Arial, 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif" font-size="13" fill="rgb(42,36,24)" text-anchor="middle" font-weight="bold">kept</text>
+<line x1="757" y1="168" x2="770.0" y2="168.0" stroke="rgb(110,100,80)" stroke-width="2.5" stroke-linecap="round"/>
+<polygon points="782,168 770.0,161.0 770.0,175.0" fill="rgb(110,100,80)"/>
+<circle cx="819" cy="168" r="34" fill="rgb(255,255,255)" stroke="rgb(170,110,20)" stroke-width="2"/>
+<text x="819" y="180.24" font-family="'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif" font-size="34" fill="rgb(42,36,24)" text-anchor="middle">✅</text>
+<rect x="771" y="214" width="96" height="28" rx="14.0" fill="rgb(255,255,255)" stroke="rgb(190,60,60)" stroke-width="2"/>
+<text x="819" y="233" font-family="Helvetica, Arial, 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif" font-size="12" fill="rgb(190,60,60)" text-anchor="middle" font-weight="bold">you say yes</text>
+<text x="450" y="302" font-family="Helvetica, Arial, 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif" font-size="16" fill="rgb(110,100,80)" text-anchor="middle" font-weight="bold">nothing sent or overwritten without your yes</text>
+</svg>

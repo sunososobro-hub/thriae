@@ -1,8 +1,10 @@
 # Contributing: bringing lessons back
 
-<p align="center"><a href="../hive/prompts/distill.md"><img src="../hive/assets/paste-prompt.svg" alt="Distill prompt: 1 paste the prompt into your AI agent, 2 it sorts your rules into universal, project-only and dead, 3 it sends the universal ones as lessons after you say yes, 4 overwrite your rules file with AGENTS.md? you decide" width="900"></a></p>
+<p align="center"><a href="../hive/prompts/upload.md"><b>⬆️ Copy the upload prompt</b></a>: paste it into your AI agent, say your pain in any words; it drafts the lesson and sends only after your yes.</p>
 
-<p align="center"><a href="../hive/prompts/distill.md">📋 Copy the prompt</a></p>
+<p align="center"><img src="../hive/assets/up-down.svg" alt="Two prompts. Upload, share your lessons: paste, sort your rules into universal, project-only and dead, you say yes, sent. Download, get the honey: backup, new AGENTS.md, your project block kept, you say yes. Nothing is sent or overwritten without your yes" width="900"></p>
+
+<p align="center"><a href="../hive/prompts/upload.md">⬆️ Copy the upload prompt</a> · <a href="../hive/prompts/download.md">⬇️ Copy the download prompt</a></p>
 
 <p align="center"><img src="../hive/assets/contribute-flow.svg" alt="How to contribute: 1 file a lesson, 2 quarantine check, 3 rewritten, never pasted, 4 three projects confirm, 5 one in, one out under a 250-line cap, 6 credit. A good lesson: a real failure with numbers, a one or two line rule, no names, paths or secrets" width="900"></p>
 
@@ -12,7 +14,7 @@ AGENTS.md is the product. It stays short. It starts from seed rules taken from o
 Anyone can propose a lesson. No one needs permission to propose, and no outside text is ever executed or merged directly.
 
 ## The flow
-1. **File a lesson.** Easiest: paste `hive/prompts/distill.md` into your AI agent; it drafts the form and sends only after your yes. Or open an issue with the "Lesson" form (`.github/ISSUE_TEMPLATE/lesson.yml`). Fill in:
+1. **File a lesson.** Easiest: paste `hive/prompts/upload.md` into your AI agent; it drafts the form and sends only after your yes. Or open an issue with the "Lesson" form (`.github/ISSUE_TEMPLATE/lesson.yml`). Fill in:
    what happened, which rule changed, measured before and after, and a link to the evidence (a public log, PR, CI run or write-up).
    Pain only is OK: without numbers or a link the lesson waits as needs-more-evidence; it counts toward the 3-project threshold only once evidence arrives.
 2. **Quarantine review.** A reviewer with no write permission and no secrets reads the issue as data and fills a fixed form as a comment:
