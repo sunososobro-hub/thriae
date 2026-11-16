@@ -19,7 +19,7 @@ Everything I see (questions, summaries, lists) is in my language; detect it from
 Ask: "Share what you learned first? Run upload.md (recommended). (yes / skip)". On yes, stop here and tell me to paste upload.md.
 
 ## 1. Fetch the honey
-- Find the newest tag `core-vX.Y.Z` in <THRIAE_CORE_REPO> and fetch AGENTS.md and CLAUDE.md at that tag. No tag: use the default branch and say so.
+- Find the newest tag `core-vX.Y.Z` in <THRIAE_CORE_REPO> and fetch AGENTS.md and CLAUDE.md at that tag, plus every file in `hive/pipeline/roles/` (copy them to the same path in my project; AGENTS.md points at them). No tag: use the default branch and say so.
 - Its first line must be `<!-- thriae core-vX.Y.Z ... -->` for the version you fetched; add or fix it if not.
 - If my AGENTS.md already has a version line, this is an upgrade: compare my version with the new one.
 

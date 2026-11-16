@@ -19,6 +19,9 @@ Only `{{REPO}}` and `{{DEV_BRANCH}}` are substituted when pasting; everything el
 ## When a template changes
 A new `core-v` tag that edits `hive/pipeline/routines/*.md` does NOT update running routines. The sync PR (`hive/pipeline/scripts/sync_core.sh`) lists changed templates in its body; the keeper (or the reviewer with keeper approval) re-pastes them into the cloud routines and updates the description. A routine whose recorded version lags the project's `core_version` by a minor or more is a defect.
 
+## Role rule files
+AGENTS.md keeps only the universal rules. Each routine also reads the matching file in `hive/pipeline/roles/` (the former AGENTS.md sections): worker and hard-worker: `claim-and-pick.md`, `triage.md`, `ops.md`; merger: `merge.md`; reviewer: `merge.md`, `release.md`; supervisor: `triage.md`, `ops.md`, `release.md`. Add "Then read hive/pipeline/roles/<file>" to the pasted preamble.
+
 ## Templates
 Schedules are example defaults from one deployment.
 
