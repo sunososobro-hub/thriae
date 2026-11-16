@@ -8,7 +8,8 @@ Workflow stages (see .github/workflows/review-lesson.yml):
   --call --out FILE                   ask the model (no tools), validate, write verdict JSON
   --select FILE [--only N]            list the target's open lesson issues that need a review (max 5)
   --review-batch FILE --out FILE      ask the model for each selected issue, write verdict list
-  --post FILE                         validate again, post ONE comment + one review:* label per issue
+  --post FILE                         validate again, tally projects, post ONE comment + one review:* label per issue
+  --tally [--issues-file F]           print distinct projects (n/3) per rule / candidate slug over all lesson issues
 Target repo = GITHUB_REPOSITORY (the workflow sets it from THRIAE_TARGET_REPO).
 Standard library only. Nothing here executes text from an issue.
 """
@@ -32,19 +33,24 @@ MAX_TITLE = 300
 MAX_PER_RUN = 5
 EDIT_SLACK = timedelta(seconds=120)  # our own label/comment bumps issue.updated_at a little
 TRUSTED_ASSOC = {"OWNER", "MEMBER", "COLLABORATOR"}
+QUORUM = 3  # distinct projects needed before a rule may enter AGENTS.md (CONSTITUTION Art. 3)
 SIMPLE = {
-    "accepted": "review:accepted",
     "duplicate": "review:duplicate",
     "needs-evidence": "review:needs-evidence",
     "rejected": "review:rejected",
 }
-MERGE_RE = re.compile(r"^merge-into:(\d{1,2})$")
+EVIDENCE_RE = re.compile(r"evidence:([A-Za-z0-9][A-Za-z0-9_.-]{0,39})")
+CANDIDATE_RE = re.compile(r"candidate:(?=.{1,40}$)([a-z0-9]+(?:-[a-z0-9]+)*)")
+PROJECT_RE = re.compile(r"^[ \t]*Project-ID:[ \t]*([0-9a-f]{12})[ \t]*$", re.I | re.M)
+VERDICT_IN_COMMENT = re.compile(r"Lesson review: `([^`\n]{1,80})`")
+# review:accepted / review:merge exist on old issues: tolerated, never created or set again.
 LABELS = {
-    "review:accepted": "0e8a16",
-    "review:merge": "1d76db",
+    "review:evidence": "0e8a16",
+    "review:candidate": "1d76db",
     "review:duplicate": "cfd3d7",
     "review:needs-evidence": "fbca04",
     "review:rejected": "b60205",
+    "quorum": "5319e7",
 }
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(os.path.dirname(HERE))
@@ -64,7 +70,7 @@ def validate(obj):
     verdict, reason = obj["verdict"], obj["reason"]
     if not isinstance(verdict, str) or not isinstance(reason, str):
         raise ReviewError("verdict and reason must be strings")
-    if verdict not in SIMPLE and not MERGE_RE.match(verdict):
+    if not valid_verdict(verdict):
         raise ReviewError("verdict not allowed")
     reason = reason.strip()
     if not reason:
@@ -79,7 +85,87 @@ def validate(obj):
 
 
 def label_for(verdict):
-    return "review:merge" if verdict.startswith("merge-into:") else SIMPLE[verdict]
+    if verdict.startswith("evidence:"):
+        return "review:evidence"
+    if verdict.startswith("candidate:"):
+        return "review:candidate"
+    return SIMPLE[verdict]
+
+
+def valid_verdict(v):
+    return v in SIMPLE or bool(EVIDENCE_RE.fullmatch(v)) or bool(CANDIDATE_RE.fullmatch(v))
+
+
+def project_id(body):
+    """The anonymous Project-ID line of a lesson body, or None."""
+    m = PROJECT_RE.search(str(body or ""))
+    return m.group(1).lower() if m else None
+
+
+def issue_verdict(comments):
+    """Verdict parsed from the reviewer's own comment, or None (old / unreviewed issues)."""
+    for c in comments or []:
+        if is_reviewer_comment(c):
+            m = VERDICT_IN_COMMENT.search(c.get("body") or "")
+            if m and valid_verdict(m.group(1)):
+                return m.group(1)
+    return None
+
+
+def make_records(issues, comments_by_number):
+    """Lesson issues (open or closed) -> [{number, verdict, project}]. Pure."""
+    out = []
+    for i in issues:
+        if "pull_request" in i:
+            continue
+        names = {lb.get("name") for lb in i.get("labels") or []}
+        if "lesson" not in names and not str(i.get("title") or "").startswith("[lesson]"):
+            continue
+        out.append({"number": i["number"], "verdict": issue_verdict(comments_by_number.get(i["number"])),
+                    "project": project_id(i.get("body"))})
+    return out
+
+
+def tally(records):
+    """Per evidence:<rule> / candidate:<slug>: distinct projects, issue numbers, quorum. Pure.
+
+    Same Project-ID twice = one project. No Project-ID = its own unknown project.
+    `lonely_unknown` is True when the group is a single issue without a Project-ID.
+    """
+    groups = {}
+    for r in sorted(records, key=lambda r: r["number"]):
+        v = r.get("verdict")
+        if not v or not (v.startswith("evidence:") or v.startswith("candidate:")):
+            continue
+        g = groups.setdefault(v, {"projects": set(), "issues": [], "noid": []})
+        g["projects"].add(r.get("project") or "unknown-%d" % r["number"])
+        g["issues"].append(r["number"])
+        if not r.get("project"):
+            g["noid"].append(r["number"])
+    out = {}
+    for k, g in sorted(groups.items()):
+        out[k] = {"projects": len(g["projects"]), "needed": QUORUM, "issues": g["issues"],
+                  "quorum": len(g["projects"]) >= QUORUM,
+                  "lonely_unknown": len(g["issues"]) == 1 and bool(g["noid"])}
+    return out
+
+
+def existing_slugs(records):
+    """{slug: [issue numbers]} of candidate verdicts already given (for slug reuse)."""
+    out = {}
+    for r in records:
+        v = r.get("verdict") or ""
+        if v.startswith("candidate:"):
+            out.setdefault(v[len("candidate:"):], []).append(r["number"])
+    return out
+
+
+def format_tally(t):
+    if not t:
+        return "no evidence:/candidate: verdicts yet"
+    return "\n".join("%s  %d/%d projects  issues %s%s" % (
+        k, g["projects"], g["needed"], ",".join("%d" % n for n in g["issues"]),
+        "  QUORUM" if g["quorum"] else "") for k, g in t.items())
 
 
 def parse_model_output(text):
@@ -135,14 +221,23 @@ def select_issues(issues, comments_by_number, limit=MAX_PER_RUN):
     return todo[:limit]
 
 
-def render_comment(verdict, reason, when=None):
+def evidence_line(group):
+    if not group:
+        return "evidence: 0/%d projects (this verdict does not count toward a rule)" % QUORUM
+    line = "evidence: %d/%d projects" % (group["projects"], QUORUM)
+    if group["quorum"]:
+        line += " — 3/3 — ready for an AGENTS.md PR"
+    return line
+
+
+def render_comment(verdict, reason, when=None, group=None):
     safe = re.sub(r"@(?=\w)", "@​", reason)
     quoted = "\n".join("> " + ln for ln in safe.splitlines() if ln.strip())
     return (
-        "%s\n**Lesson review: `%s`**\n\n%s\n\n"
-        "_Automated first pass. Nothing is merged automatically: a maintainer batches "
-        "accepted lessons into an AGENTS.md PR (see `.github/CONTRIBUTING.md`)._"
-        % (MARKER, verdict, quoted)
+        "%s\n**Lesson review: `%s`**\n\n%s\n\n**%s**\n\n"
+        "_Automated first pass. Nothing is merged automatically: a rule enters AGENTS.md only with "
+        "independent evidence from 3 distinct projects (see `.github/CONTRIBUTING.md`, step 4)._"
+        % (MARKER, verdict, quoted, evidence_line(group))
     ) + (("\n_Reviewed %s._" % when) if when else "")
 
 
@@ -155,15 +250,18 @@ def section_numbers(agents):
     return {int(m.group(1)) for m in re.finditer(r"^## (\d+)\.", agents, re.M)}
 
 
-def build_payload(issue, agents):
+def build_payload(issue, agents, slugs=None):
     with open(os.path.join(ROOT, "hive", "prompts", "review.md"), encoding="utf-8") as f:
         system = f.read()
     data = {
         "title": str(issue.get("title") or "")[:MAX_TITLE],
         "body": str(issue.get("body") or "")[:MAX_BODY],
     }
-    user = "<agents_md>\n%s\n</agents_md>\n\n<lesson_issue>\n%s\n</lesson_issue>\n" % (
-        agents, json.dumps(data, ensure_ascii=False, indent=1))
+    known = "\n".join("%s: issues %s" % (k, ", ".join("%d" % n for n in ns))
+                      for k, ns in sorted((slugs or {}).items())) or "(none yet)"
+    user = ("<agents_md>\n%s\n</agents_md>\n\n<existing_candidate_slugs>\n%s\n</existing_candidate_slugs>\n\n"
+            "<lesson_issue>\n%s\n</lesson_issue>\n") % (
+        agents, known, json.dumps(data, ensure_ascii=False, indent=1))
     return system, user
 
 
@@ -231,6 +329,14 @@ def fetch_all(path, pages=5):
     return out
 
 
+def collect_records():
+    """All lesson issues of the target, open and closed, with the reviewer's parsed verdicts."""
+    issues = [i for i in fetch_all("issues?state=all&sort=created&direction=asc&labels=lesson", pages=10)
+              if "pull_request" not in i]
+    comments = {i["number"]: fetch_all("issues/%d/comments" % i["number"]) for i in issues}
+    return make_records(issues, comments)
+
+
 def select_from_target(only=None):
     if only:
         d = gh("GET", "issues/%d" % only)
@@ -243,6 +349,12 @@ def select_from_target(only=None):
     return select_issues(issues, comments)
 
 
+def check_section(verdict, agents):
+    m = EVIDENCE_RE.fullmatch(verdict)
+    if m and m.group(1).isdigit() and int(m.group(1)) not in section_numbers(agents):
+        raise ReviewError("evidence section does not exist")
+
+
 def review_batch(path, out):
     with open(path, encoding="utf-8") as f:
         issues = json.load(f)[:MAX_PER_RUN]
@@ -250,11 +362,9 @@ def review_batch(path, out):
     results = []
     for issue in issues:
         try:
-            system, user = build_payload(issue, agents)
+            system, user = build_payload(issue, agents, issue.get("slugs"))
             verdict, reason = validate(parse_model_output(call_model(system, user)))
-            m = MERGE_RE.match(verdict)
-            if m and int(m.group(1)) not in section_numbers(agents):
-                raise ReviewError("merge-into section does not exist")
+            check_section(verdict, agents)
             results.append({"number": int(issue["number"]), "verdict": verdict, "reason": reason})
             print("#%s: %s" % (issue["number"], verdict))
         except (ReviewError, subprocess.SubprocessError, urllib.error.URLError) as e:
@@ -269,14 +379,40 @@ def post_all(path):
         items = json.load(f)
     if not isinstance(items, list):
         sys.exit("verdict file must be a list")
+    final = []
     for it in items[:MAX_PER_RUN]:
         if not isinstance(it, dict) or not isinstance(it.get("number"), int) or it["number"] < 1:
             print("skipping bad entry")
             continue
-        post({k: it.get(k) for k in ("verdict", "reason")}, it["number"])
+        try:
+            v, r = validate({k: it.get(k) for k in ("verdict", "reason")})
+        except ReviewError:
+            print("skipping invalid verdict for #%d" % it["number"])
+            continue
+        final.append([it["number"], v, r])
+    if not final:
+        return
+    by_num = {r["number"]: r for r in collect_records()}
+    for f in final:
+        by_num.setdefault(f[0], {"number": f[0], "verdict": None, "project": None})["verdict"] = f[1]
+    # A lone issue without Project-ID is not evidence yet.
+    for f in final:
+        g = tally(list(by_num.values())).get(f[1])
+        if g and g["lonely_unknown"]:
+            f[1] = "needs-evidence"
+            f[2] = "No Project-ID line, so no project can be counted. Add the Project-ID line from the upload prompt."
+            by_num[f[0]]["verdict"] = f[1]
+    t = tally(list(by_num.values()))
+    for number, v, r in final:
+        post({"verdict": v, "reason": r}, number, t.get(v))
+    for k, g in t.items():
+        if g["quorum"]:
+            for n in g["issues"]:
+                gh("POST", "issues/%d/labels" % n, {"labels": ["quorum"]})
+                print("quorum on issue %d (%s)" % (n, k))
 
 
-def post(obj, number):
+def post(obj, number, group=None):
     verdict, reason = validate(obj)
     label = label_for(verdict)
     for name, color in LABELS.items():
@@ -286,17 +422,20 @@ def post(obj, number):
             if e.code != 422:  # already exists
                 raise
     for lb in gh("GET", "issues/%d/labels?per_page=100" % number):
-        if lb["name"].startswith("review:") and lb["name"] != label:
+        stale = lb["name"].startswith("review:") and lb["name"] != label
+        if lb["name"] == "quorum" and not (group and group["quorum"]):
+            stale = True
+        if stale:
             gh("DELETE", "issues/%d/labels/%s" % (number, urllib.parse.quote(lb["name"], safe="")))
     gh("POST", "issues/%d/labels" % number, {"labels": [label]})
-    text = render_comment(verdict, reason, datetime.utcnow().strftime("%Y-%m-%d %H:%MZ"))
+    text = render_comment(verdict, reason, datetime.utcnow().strftime("%Y-%m-%d %H:%MZ"), group)
     for c in gh("GET", "issues/%d/comments?per_page=100" % number):
         if is_reviewer_comment(c):
             gh("PATCH", "issues/comments/%d" % c["id"], {"body": text})
             break
     else:
         gh("POST", "issues/%d/comments" % number, {"body": text})
-    print("posted verdict %s on #%d" % (verdict, number))
+    print("posted verdict %s on issue %d" % (verdict, number))
 
 
 def main():
@@ -312,13 +451,26 @@ def main():
     p.add_argument("--select")
     p.add_argument("--only", type=int)
     p.add_argument("--review-batch")
+    p.add_argument("--tally", action="store_true")
+    p.add_argument("--issues-file", help="--tally: JSON {issues: [...], comments: {number: [...]}} instead of the API")
     a = p.parse_args()
     if a.post:
         return post_all(a.post)
+    if a.tally:
+        if a.issues_file:
+            with open(a.issues_file, encoding="utf-8") as f:
+                d = json.load(f)
+            records = make_records(d["issues"], {int(k): v for k, v in d.get("comments", {}).items()})
+        else:
+            records = collect_records()
+        print(format_tally(tally(records)))
+        return
     if a.select:
         todo = select_from_target(a.only)
+        slugs = existing_slugs(collect_records()) if todo else {}
         with open(a.select, "w", encoding="utf-8") as f:
-            json.dump([{"number": i["number"], "title": i.get("title"), "body": i.get("body")} for i in todo], f)
+            json.dump([{"number": i["number"], "title": i.get("title"), "body": i.get("body"),
+                        "slugs": slugs} for i in todo], f)
         print("%d lesson issue(s) to review" % len(todo))
         return
     if a.review_batch:
@@ -332,9 +484,7 @@ def main():
         return
     try:
         verdict, reason = validate(parse_model_output(call_model(system, user)))
-        m = MERGE_RE.match(verdict)
-        if m and int(m.group(1)) not in section_numbers(agents):
-            raise ReviewError("merge-into section does not exist")
+        check_section(verdict, agents)
     except (ReviewError, subprocess.SubprocessError, urllib.error.URLError) as e:
         sys.exit("review failed, nothing will be posted: %s" % type(e).__name__)
     with open(a.out, "w", encoding="utf-8") as f:

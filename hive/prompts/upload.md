@@ -55,6 +55,7 @@ Read `.github/ISSUE_TEMPLATE/lesson.yml` in <THRIAE_CORE_REPO> and use its field
 - Measured before and after: only numbers really in my history, same method on both sides.
 - Link to evidence: a public log, CI run, PR or write-up, only if one exists.
 - Credit address (optional): my GitHub noreply address, only if I give it.
+- Project-ID (always, last line of every body): `Project-ID: <12 hex>` = first 12 hex chars of the sha256 of the project's git remote URL (`git remote get-url origin`) or, with no remote, its absolute repo path, e.g. `printf %s "$X" | sha256sum | cut -c1-12`. Anonymous: never write the URL or path itself. One lesson = the project it came from. Thriae counts distinct Project-IDs: a rule needs 3 projects; two reports from one project count once.
 No numbers or no link: leave them empty and add "Pain only, no evidence yet." The reviewer marks it needs-more-evidence; that is expected.
 
 ## 4. Redact and check
@@ -68,7 +69,7 @@ All in my language. First the summary table per source/project with columns 🍯
   `gh issue create --repo <THRIAE_CORE_REPO> --title "[lesson] <summary>" --body-file FILE`
   (no labels: Thriae labels "[lesson]" issues itself; don't mention labels to me). No gh, or it fails: print a prefilled link,
   `https://github.com/<THRIAE_CORE_REPO>/issues/new?template=lesson.yml&title=...` with each field id
-  (what-happened, rule-changed, measured, evidence, credit) as a URL-encoded parameter, or print the text to paste.
+  (what-happened, rule-changed, measured, evidence, credit) as a URL-encoded parameter, or print the text to paste. Either way tell me to add the Project-ID line at the end of the body.
 - edit: change what I ask, then ask again. no: send nothing.
 Last, list the 🏠 and local 🧹 items (in my language) so I can handle them myself.
 ````
