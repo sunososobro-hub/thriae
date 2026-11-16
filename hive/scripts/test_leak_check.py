@@ -24,6 +24,18 @@ def cats(text, blob=False, terms=(TERM,)):
 
 
 class LeakCheckTest(unittest.TestCase):
+    def test_url_numeric_id_not_token(self):
+        self.assertEqual(cats("see https://x.com/someuser/status/2048103471019434248 for the post"), set())
+        self.assertEqual(cats("https://x.com/someuser/status/2048103471019434248/photo/1"), set())
+
+    def test_url_secrets_still_flagged(self):
+        sec = "".join(["a8F3kD92", "LmQx7Zp1", "Wv5Rt0Yb", "4NcE6HgJ"])
+        for u in ("https://example.org/p?token=" + sec,
+                  "https://example.org/p/status/2048103471019434248?key=" + sec,
+                  "https://example.org/p?access_token=" + sec,
+                  "https://example.org/hook/" + sec):
+            self.assertIn("token", cats(u), u)
+
     def test_clean_text(self):
         self.assertEqual(cats("nothing to see here"), set())
 

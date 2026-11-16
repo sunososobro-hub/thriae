@@ -62,6 +62,13 @@ ISSUE_REF = re.compile(r"#\d+")
 B64 = re.compile(r"[A-Za-z0-9+/_-]{8,}={0,2}")
 ENT = re.compile(r"[A-Za-z0-9_+/=-]{32,}")
 NON_ALNUM = re.compile(r"[\W_]+")
+URL_PATH = re.compile(r"https?://[^\s?#]+", re.I)
+URL_ID = re.compile(r"/\d+(?=/|$)")
+
+
+def drop_url_ids(s):
+    """Blank digit-only path segments of http(s) URLs (post IDs); query strings stay."""
+    return URL_PATH.sub(lambda m: URL_ID.sub("/", m.group(0)), s)
 
 
 def clean(s):
@@ -144,7 +151,7 @@ class Scanner:
             if refs and ISSUE_REF.search(LINK_REF.sub(" ", f)):
                 cats.add("issue-ref")
         if entro and depth == 0:
-            for m in ENT.finditer(c):
+            for m in ENT.finditer(drop_url_ids(c)):
                 s = m.group(0)
                 if any(x.isdigit() for x in s) and any(x.isalpha() for x in s) and entropy(s) >= 4.0:
                     cats.add("token")
