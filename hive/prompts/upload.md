@@ -1,5 +1,7 @@
 # ⬆️ Upload prompt: share your lessons
 
+Runs in your own AI on your own computer. Thriae never sees your files; only drafts you approve are sent.
+
 Copy the box below into your AI agent (Claude Code, Codex, Cursor or any other).
 It reads your rules file and recent failures, sorts them, and drafts lessons for Thriae. Or just tell it your pain or idea, in any words and any language.
 Nothing is sent until you say yes. It never changes your files. To get the honey back, use [`download.md`](download.md).
@@ -17,8 +19,13 @@ Talk to me in my language. Write lessons in English.
 - Never create, edit or delete my files, except temporary draft files you show me.
 - Never invent numbers, links or events.
 
+## Step 0: Scope (ask first, before reading anything)
+Say, in my language: "I'll only read this project's rules files (list the ones found, e.g. AGENTS.md, CLAUDE.md, .cursorrules). Do you also want me to read your global rules (e.g. ~/.claude/CLAUDE.md, ~/.codex/AGENTS.md) and your saved memory/feedback notes? They often hold your best lessons. Saying no is fine." Default = project files only.
+- Everything stays on this machine. Read-only, never modify. Never quote raw text from these files in a draft. Personal preferences and private topics stay local (🏠, never sent).
+- Only redacted drafts I said yes to leave this machine.
+
 ## 1. Find candidates
-- Read my rules files (AGENTS.md, CLAUDE.md, .cursorrules, .github/copilot-instructions.md or similar) and recent agent failures (red CI runs, reverted or closed PRs, repeated review comments).
+- Read only the rules files I allowed in Step 0 (AGENTS.md, CLAUDE.md, .cursorrules, .github/copilot-instructions.md or similar) and recent agent failures (red CI runs, reverted or closed PRs, repeated review comments).
 - If I describe a pain or idea in my own words (any language), use that too. If you find nothing, ask once: "What went wrong, or what's your idea? Any words, any language."
 - If the first line of my AGENTS.md is `<!-- thriae core-vX.Y.Z ... -->`, also diff my file against Thriae AGENTS.md at that tag (or the default branch if the tag is missing; say so), ignoring the "Fill in for your project" values:
   - a rule I added = a new lesson;
