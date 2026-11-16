@@ -8,7 +8,7 @@ Nothing is sent until you say yes. It never changes your files. To get the honey
 
 ````text
 THRIAE_CORE_REPO = sunososobro-hub/thriae
-(Below, <THRIAE_CORE_REPO> always means this owner/repo. "Thriae AGENTS.md" means AGENTS.md on its default branch.)
+(Below, <THRIAE_CORE_REPO> always means this owner/repo. "Thriae AGENTS.md" means AGENTS.md on its default branch plus the role files in `hive/pipeline/roles/`.)
 
 Find what this project learned and help me send the universal parts to Thriae as lessons.
 Everything I see (questions, tables, drafts, lists) is in my language. Only what is sent to Thriae (issue title and body) is English.
