@@ -55,7 +55,14 @@ jobs:
         env:
           BEFORE: ${{ github.event.before }}
           AFTER: ${{ github.sha }}
-        run: python hive/scripts/leak_check.py --range "$BEFORE..$AFTER" $LEAK_ARGS
+          DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+        run: |
+          # New branch (before is all zeros) or a before sha that is no longer
+          # reachable: scan only commits not already on the default branch.
+          if [ -z "${BEFORE//0/}" ] || ! git cat-file -e "$BEFORE^{commit}" 2>/dev/null; then
+            BEFORE="origin/$DEFAULT_BRANCH"
+          fi
+          python hive/scripts/leak_check.py --range "$BEFORE..$AFTER" $LEAK_ARGS
       - name: Scan pull request commits
         if: github.event_name == 'pull_request'
         env:
