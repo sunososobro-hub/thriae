@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """Self-checks for leak_check.py. Run: python -m unittest discover -s hive/scripts"""
 import os
 import sys
@@ -63,6 +64,19 @@ class LeakCheckTest(unittest.TestCase):
         finally:
             del lc.print
         self.assertEqual(lines, ["LEAK private-term in tree doc.md"])
+
+    def test_tool_noreply_addresses_pass(self):
+        self.assertEqual(cats("noreply" + AT + "github.com"), set())
+        self.assertEqual(cats("noreply" + AT + "anthropic.com"), set())
+        self.assertIn("email", cats("someone" + AT + "github.com"))
+        self.assertIn("email", cats("x.noreply" + AT + "github.com"))
+        self.assertIn("email", cats("noreply" + AT + "github.com.evil.org"))
+
+    def test_file_keeper_can_be_ignored(self):
+        self.assertEqual(lc.pick_keeper(None, None, "file-bee"), "file-bee")
+        self.assertEqual(lc.pick_keeper(None, None, "file-bee", ignore_file=True), lc.DEFAULT_KEEPER)
+        self.assertEqual(lc.pick_keeper("var-bee", None, "file-bee", ignore_file=True), "var-bee")
+        self.assertEqual(lc.pick_keeper("", "", "file-bee", ignore_file=True), lc.DEFAULT_KEEPER)
 
 
 if __name__ == "__main__":

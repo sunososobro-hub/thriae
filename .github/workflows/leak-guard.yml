@@ -1,8 +1,11 @@
 name: leak-guard
 
 # Runs on pull_request (never pull_request_target): fork PRs get no secrets
-# and no write token. Without LEAK_BLOCKLIST (fork PRs) only the generic
-# checks run and the job passes with a notice. Logs show category and file
+# and no write token. Dependabot PRs get no Actions secrets either, so they are
+# handled like fork PRs. Without LEAK_BLOCKLIST (fork or Dependabot PRs) only
+# the generic checks run and the job passes with a notice. The keeper handle
+# comes from the repo variable THRIAE_KEEPER_HANDLE; the `keeper:` line in
+# hive/.leak-allow is ignored here, because a PR could edit it. Logs show category and file
 # only. Issues and comments are not scanned here: agents run
 # `python hive/scripts/leak_check.py --text FILE` on anything they post.
 on:
@@ -18,6 +21,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       LEAK_BLOCKLIST: ${{ secrets.LEAK_BLOCKLIST }}
+      THRIAE_KEEPER_HANDLE: ${{ vars.THRIAE_KEEPER_HANDLE }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -32,12 +36,14 @@ jobs:
           EVENT: ${{ github.event_name }}
           HEAD_REPO: ${{ github.event.pull_request.head.repo.full_name }}
           THIS_REPO: ${{ github.repository }}
+          ACTOR: ${{ github.actor }}
         run: |
+          base="--no-file-keeper"
           if [ -n "$LEAK_BLOCKLIST" ]; then
-            echo "LEAK_ARGS=" >> "$GITHUB_ENV"
-          elif [ "$EVENT" = "pull_request" ] && [ "$HEAD_REPO" != "$THIS_REPO" ]; then
-            echo "::notice::LEAK_BLOCKLIST is not available to fork PRs; running the generic checks only"
-            echo "LEAK_ARGS=--allow-missing-blocklist" >> "$GITHUB_ENV"
+            echo "LEAK_ARGS=$base" >> "$GITHUB_ENV"
+          elif { [ "$EVENT" = "pull_request" ] && [ "$HEAD_REPO" != "$THIS_REPO" ]; } || [ "$ACTOR" = "dependabot[bot]" ]; then
+            echo "::notice::LEAK_BLOCKLIST is not available to fork or Dependabot PRs; running the generic checks only"
+            echo "LEAK_ARGS=$base --allow-missing-blocklist" >> "$GITHUB_ENV"
           else
             echo "::error::LEAK_BLOCKLIST secret is missing"
             exit 1

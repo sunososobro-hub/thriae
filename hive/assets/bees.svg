@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 180" width="900" height="180" role="img" aria-labelledby="t d">
+<title id="t">Contributor roles</title>
+<desc id="d">Eight roles, each with its own emoji: scout, forager, honey-maker, guard, cleaner, nurse, builder, AI.</desc>
+<rect x="1" y="1" width="898" height="178" rx="20" fill="rgb(255,251,240)" stroke="rgb(230,214,178)" stroke-width="2"/>
+<circle cx="62" cy="78" r="42" fill="rgb(252,224,222)" stroke="rgb(190,60,60)" stroke-width="2.5"/>
+<text x="62" y="93" font-family="'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif" font-size="40" fill="rgb(42,36,24)" text-anchor="middle">🔍</text>
+<text x="62" y="150" font-family="Helvetica, Arial, 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif" font-size="16" fill="rgb(42,36,24)" text-anchor="middle" font-weight="bold">scout</text>
+<circle cx="173" cy="78" r="42" fill="rgb(214,238,214)" stroke="rgb(60,140,70)" stroke-width="2.5"/>
+<text x="173" y="93" font-family="'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif" font-size="40" fill="rgb(42,36,24)" text-anchor="middle">🌼</text>
+<text x="173" y="150" font-family="Helvetica, Arial, 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif" font-size="16" fill="rgb(42,36,24)" text-anchor="middle" font-weight="bold">forager</text>
+<circle cx="284" cy="78" r="42" fill="rgb(253,236,190)" stroke="rgb(170,110,20)" stroke-width="2.5"/>
+<text x="284" y="93" font-family="'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif" font-size="40" fill="rgb(42,36,24)" text-anchor="middle">🍯</text>
+<text x="284" y="150" font-family="Helvetica, Arial, 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif" font-size="16" fill="rgb(42,36,24)" text-anchor="middle" font-weight="bold">honey-maker</text>
+<circle cx="395" cy="78" r="42" fill="rgb(220,233,248)" stroke="rgb(50,90,150)" stroke-width="2.5"/>
+<text x="395" y="93" font-family="'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif" font-size="40" fill="rgb(42,36,24)" text-anchor="middle">💂</text>
+<text x="395" y="150" font-family="Helvetica, Arial, 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif" font-size="16" fill="rgb(42,36,24)" text-anchor="middle" font-weight="bold">guard</text>
+<circle cx="506" cy="78" r="42" fill="rgb(232,222,248)" stroke="rgb(120,80,180)" stroke-width="2.5"/>
+<text x="506" y="93" font-family="'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif" font-size="40" fill="rgb(42,36,24)" text-anchor="middle">🧹</text>
+<text x="506" y="150" font-family="Helvetica, Arial, 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif" font-size="16" fill="rgb(42,36,24)" text-anchor="middle" font-weight="bold">cleaner</text>
+<circle cx="617" cy="78" r="42" fill="rgb(252,224,222)" stroke="rgb(190,60,60)" stroke-width="2.5"/>
+<text x="617" y="93" font-family="'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif" font-size="40" fill="rgb(42,36,24)" text-anchor="middle">🍼</text>
+<text x="617" y="150" font-family="Helvetica, Arial, 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif" font-size="16" fill="rgb(42,36,24)" text-anchor="middle" font-weight="bold">nurse</text>
+<circle cx="728" cy="78" r="42" fill="rgb(214,238,214)" stroke="rgb(60,140,70)" stroke-width="2.5"/>
+<text x="728" y="93" font-family="'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif" font-size="40" fill="rgb(42,36,24)" text-anchor="middle">🏗️</text>
+<text x="728" y="150" font-family="Helvetica, Arial, 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif" font-size="16" fill="rgb(42,36,24)" text-anchor="middle" font-weight="bold">builder</text>
+<circle cx="839" cy="78" r="42" fill="rgb(220,233,248)" stroke="rgb(50,90,150)" stroke-width="2.5"/>
+<text x="839" y="93" font-family="'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif" font-size="40" fill="rgb(42,36,24)" text-anchor="middle">🤖</text>
+<text x="839" y="150" font-family="Helvetica, Arial, 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif" font-size="16" fill="rgb(42,36,24)" text-anchor="middle" font-weight="bold">AI</text>
+</svg>

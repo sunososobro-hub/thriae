@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 470" width="900" height="470" role="img" aria-labelledby="t d">
+<title id="t">How a rule grows</title>
+<desc id="d">A cycle: a failure becomes a lesson with evidence; when 3 projects confirm it, it becomes a rule; when it stops helping, it is removed. You are here: seed rules from 1 pipeline, waiting for 3 projects to confirm.</desc>
+<rect x="1" y="1" width="898" height="468" rx="20" fill="rgb(255,251,240)" stroke="rgb(230,214,178)" stroke-width="2"/>
+<ellipse cx="450" cy="245" rx="290" ry="160" fill="none" stroke="rgb(232,163,23)" stroke-width="4" stroke-dasharray="10 8"/>
+<polygon points="631.6,120.0 613.8,100.0 604.9,122.2" fill="rgb(170,110,20)"/>
+<polygon points="719.7,304.8 742.2,290.2 721.6,278.0" fill="rgb(170,110,20)"/>
+<polygon points="438.0,405.0 462.0,417.0 462.0,393.0" fill="rgb(170,110,20)"/>
+<polygon points="168.1,284.1 169.9,310.9 190.6,298.7" fill="rgb(170,110,20)"/>
+<polygon points="290.7,111.1 263.9,108.9 272.9,131.2" fill="rgb(170,110,20)"/>
+<rect x="340.0" y="49.0" width="220" height="72" rx="16" fill="rgb(252,224,222)" stroke="rgb(190,60,60)" stroke-width="2.5"/>
+<text x="376.0" y="97.0" font-family="'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif" font-size="32" fill="rgb(42,36,24)" text-anchor="middle">🔍</text>
+<text x="474.0" y="92.0" font-family="Helvetica, Arial, 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif" font-size="20" fill="rgb(42,36,24)" text-anchor="middle" font-weight="bold">failure</text>
+<rect x="615.8" y="159.6" width="220" height="72" rx="16" fill="rgb(220,233,248)" stroke="rgb(50,90,150)" stroke-width="2.5"/>
+<text x="651.8063897255945" y="207.5572809000084" font-family="'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif" font-size="32" fill="rgb(42,36,24)" text-anchor="middle">📝</text>
+<text x="749.8063897255945" y="192.5572809000084" font-family="Helvetica, Arial, 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif" font-size="18" fill="rgb(42,36,24)" text-anchor="middle" font-weight="bold">lesson</text>
+<text x="749.8063897255945" y="215.5572809000084" font-family="Helvetica, Arial, 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif" font-size="16" fill="rgb(110,100,80)" text-anchor="middle">+ evidence</text>
+<rect x="510.5" y="338.4" width="220" height="72" rx="16" fill="rgb(214,238,214)" stroke="rgb(60,140,70)" stroke-width="2.5"/>
+<text x="546.4577231648173" y="386.44271909999156" font-family="'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif" font-size="32" fill="rgb(42,36,24)" text-anchor="middle">🌼</text>
+<text x="644.4577231648173" y="371.44271909999156" font-family="Helvetica, Arial, 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif" font-size="18" fill="rgb(42,36,24)" text-anchor="middle" font-weight="bold">3 projects</text>
+<text x="644.4577231648173" y="394.44271909999156" font-family="Helvetica, Arial, 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif" font-size="16" fill="rgb(110,100,80)" text-anchor="middle">confirm</text>
+<rect x="169.5" y="338.4" width="220" height="72" rx="16" fill="rgb(253,236,190)" stroke="rgb(170,110,20)" stroke-width="2.5"/>
+<text x="205.54227683518286" y="386.44271909999156" font-family="'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif" font-size="32" fill="rgb(42,36,24)" text-anchor="middle">🍯</text>
+<text x="303.54227683518286" y="381.44271909999156" font-family="Helvetica, Arial, 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif" font-size="20" fill="rgb(42,36,24)" text-anchor="middle" font-weight="bold">rule</text>
+<rect x="64.2" y="159.6" width="220" height="72" rx="16" fill="rgb(232,222,248)" stroke="rgb(120,80,180)" stroke-width="2.5"/>
+<text x="100.19361027440544" y="207.55728090000844" font-family="'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif" font-size="32" fill="rgb(42,36,24)" text-anchor="middle">🧹</text>
+<text x="198.19361027440544" y="192.55728090000844" font-family="Helvetica, Arial, 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif" font-size="18" fill="rgb(42,36,24)" text-anchor="middle" font-weight="bold">stops helping</text>
+<text x="198.19361027440544" y="215.55728090000844" font-family="Helvetica, Arial, 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif" font-size="16" fill="rgb(110,100,80)" text-anchor="middle">→ removed</text>
+<rect x="330" y="222" width="240" height="52" rx="26.0" fill="rgb(255,255,255)" stroke="rgb(190,60,60)" stroke-width="2"/>
+<text x="358" y="256" font-family="'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif" font-size="24" fill="rgb(42,36,24)" text-anchor="middle">📍</text>
+<text x="468" y="244" font-family="Helvetica, Arial, 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif" font-size="17" fill="rgb(190,60,60)" text-anchor="middle" font-weight="bold">you are here</text>
+<text x="468" y="264" font-family="Helvetica, Arial, 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif" font-size="14" fill="rgb(110,100,80)" text-anchor="middle">seed rules, 1 pipeline</text>
+<line x1="540" y1="276" x2="560.5" y2="338.4" stroke="rgb(190,60,60)" stroke-width="2.5" stroke-dasharray="5 4"/>
+</svg>

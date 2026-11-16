@@ -16,6 +16,17 @@ where they appear whole; they are masked only for the generic email rule.
 The issue-ref rule (a hash followed by digits) applies to file content only, never to commit
 messages or --text, and `Closes/Fixes/Refs #N` is always allowed.
 Issues and comments are not scanned by CI: run --text on anything you post.
+
+Limits (what it cannot catch):
+- Private terms that are not in the blocklist; the blocklist is only as good as you keep it.
+- Paraphrase, translation, abbreviation or a description that identifies a person or project
+  without naming it.
+- Text inside images, binaries or archives (these file types are refused, not read).
+- Encodings other than base64 (hex, rot13, compression, encryption), and terms split across more
+  than two lines or across files.
+- Issues, comments, wiki, releases and anything posted outside git, unless you run --text on it.
+- Fork and Dependabot PRs: no secrets, so only the generic checks run there.
+- History that was already pushed: it reports, it cannot un-publish.
 """
 import argparse
 import base64
@@ -35,7 +46,10 @@ ALLOW_FILE = os.path.join("hive", ".leak-allow")
 # Categories that no allowlist entry can ever waive.
 NEVER_ALLOW = {"email", "token", "private-term", "session", "file-type", "blocklist-missing"}
 
-OK_EMAIL = re.compile(r"[\w.+-]+@users\.noreply\.github\.com|noreply@anthropic\.com", re.I)
+# Addresses that may appear anywhere: GitHub noreply (users and the web-flow
+# committer) and the agent tool's documented noreply identity.
+OK_EMAIL = re.compile(r"[\w.+-]+@users\.noreply\.github\.com"
+                      r"|(?<![\w.+-])noreply@(?:github|anthropic)\.com(?![\w.-])", re.I)
 LINK_REF = re.compile(r"\b(?:close[sd]?|fix(?:e[sd])?|resolve[sd]?|refs?)\s+#\d+", re.I)
 GENERIC = [
     ("email", re.compile(r"[\w.+%-]+@[a-z0-9-]+(?:\.[a-z0-9-]+)+", re.I)),
@@ -198,6 +212,11 @@ def load_allow(path):
     return out, keeper
 
 
+def pick_keeper(arg, env, file_keeper, ignore_file=False):
+    """--keeper, then env, then the allow file's `keeper:` line (unless ignored), then the default."""
+    return arg or env or (None if ignore_file else file_keeper) or DEFAULT_KEEPER
+
+
 def scan_commit(sc, c):
     short = c[:10]
     meta = git("show", "-s", "--format=%an%x00%ae%x00%cn%x00%ce%x00%B", c).split("\0", 4)
@@ -239,6 +258,8 @@ def main():
     ap.add_argument("--allow-file", help=f"default: <repo root>/{ALLOW_FILE}")
     ap.add_argument("--keeper", help="keeper's public handle (default: env THRIAE_KEEPER_HANDLE, "
                     "then `keeper:` in the allow file, then the built-in default)")
+    ap.add_argument("--no-file-keeper", action="store_true",
+                    help="ignore the `keeper:` line in the allow file (CI: a PR could edit it)")
     ap.add_argument("--ci", action="store_true", default=os.environ.get("GITHUB_ACTIONS") == "true",
                     help="print only category and file (default when GITHUB_ACTIONS=true)")
     ap.add_argument("--allow-missing-blocklist", action="store_true",
@@ -260,7 +281,7 @@ def main():
             raw = ""
     terms = [t.strip() for t in raw.splitlines() if t.strip()]
     allow, cfg_keeper = load_allow(a.allow_file or os.path.join(ROOT, ALLOW_FILE))
-    keeper = a.keeper or os.environ.get("THRIAE_KEEPER_HANDLE") or cfg_keeper or DEFAULT_KEEPER
+    keeper = pick_keeper(a.keeper, os.environ.get("THRIAE_KEEPER_HANDLE"), cfg_keeper, a.no_file_keeper)
     sc = Scanner(terms, allow, keeper)
     if not terms:
         if a.allow_missing_blocklist:

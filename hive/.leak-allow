@@ -1,3 +1,8 @@
 # Leak guard config. "keeper: <handle>" sets the public handle that may appear whole.
 # Other lines: "<path> <sha256 of the stripped line>" waives a generic finding on that line.
 keeper: sunososobro-hub
+# keeper role label "scout no. 1" written with a hash sign, not an issue reference
+README.md dc206fecfd4fabb563e5c9c0a6366b1cb8818de132ef168354837282ee2bb0f8
+hive/CONTRIBUTORS.md 65490b49f95a7b53bbd8cb4ec2337290867c32732ff7e6f4ce768fba753d470f
+hive/CONTRIBUTORS.md 6cf2e0fd7a6da72eda665623d18d1a3b35e66e40dea09d5062876de345cdb792
+hive/assets/hive-architecture.svg 6d87b4a3dd6060f3be9e11c3fe712e6bc62a75d6eb0252cddfba9ce017175bd2

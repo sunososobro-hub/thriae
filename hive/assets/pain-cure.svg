@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 380" width="900" height="380" role="img" aria-labelledby="t d">
+<title id="t">Pains and cures</title>
+<desc id="d">Four pains on the left: the same mistake again, a rules file that keeps growing, agents that collide, private data that leaks. Four cures on the right: one file for any tool, every rule has evidence, dead rules are removed, a leak guard is built in.</desc>
+<rect x="1" y="1" width="898" height="378" rx="20" fill="rgb(255,251,240)" stroke="rgb(230,214,178)" stroke-width="2"/>
+<text x="230" y="52" font-family="Helvetica, Arial, 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif" font-size="22" fill="rgb(190,60,60)" text-anchor="middle" font-weight="bold">😣 without</text>
+<text x="670" y="52" font-family="Helvetica, Arial, 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif" font-size="22" fill="rgb(170,110,20)" text-anchor="middle" font-weight="bold">🍯 with Thriae</text>
+<rect x="40" y="78" width="380" height="56" rx="28.0" fill="rgb(252,224,222)" stroke="rgb(190,60,60)" stroke-width="2"/>
+<text x="80" y="117" font-family="'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif" font-size="28" fill="rgb(42,36,24)" text-anchor="middle">😵</text>
+<text x="110" y="113" font-family="Helvetica, Arial, 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif" font-size="19" fill="rgb(42,36,24)" text-anchor="start">same mistake again</text>
+<line x1="430" y1="106" x2="458.0" y2="106.0" stroke="rgb(170,110,20)" stroke-width="3" stroke-linecap="round"/>
+<polygon points="470,106 458.0,99.0 458.0,113.0" fill="rgb(170,110,20)"/>
+<rect x="480" y="78" width="380" height="56" rx="28.0" fill="rgb(253,236,190)" stroke="rgb(170,110,20)" stroke-width="2"/>
+<text x="520" y="117" font-family="'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif" font-size="28" fill="rgb(42,36,24)" text-anchor="middle">🍯</text>
+<text x="550" y="113" font-family="Helvetica, Arial, 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif" font-size="19" fill="rgb(42,36,24)" text-anchor="start" font-weight="bold">one file, any tool</text>
+<rect x="40" y="150" width="380" height="56" rx="28.0" fill="rgb(252,224,222)" stroke="rgb(190,60,60)" stroke-width="2"/>
+<text x="80" y="189" font-family="'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif" font-size="28" fill="rgb(42,36,24)" text-anchor="middle">📜</text>
+<text x="110" y="185" font-family="Helvetica, Arial, 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif" font-size="19" fill="rgb(42,36,24)" text-anchor="start">rules file keeps growing</text>
+<line x1="430" y1="178" x2="458.0" y2="178.0" stroke="rgb(170,110,20)" stroke-width="3" stroke-linecap="round"/>
+<polygon points="470,178 458.0,171.0 458.0,185.0" fill="rgb(170,110,20)"/>
+<rect x="480" y="150" width="380" height="56" rx="28.0" fill="rgb(253,236,190)" stroke="rgb(170,110,20)" stroke-width="2"/>
+<text x="520" y="189" font-family="'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif" font-size="28" fill="rgb(42,36,24)" text-anchor="middle">🔍</text>
+<text x="550" y="185" font-family="Helvetica, Arial, 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif" font-size="19" fill="rgb(42,36,24)" text-anchor="start" font-weight="bold">every rule has evidence</text>
+<rect x="40" y="222" width="380" height="56" rx="28.0" fill="rgb(252,224,222)" stroke="rgb(190,60,60)" stroke-width="2"/>
+<text x="80" y="261" font-family="'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif" font-size="28" fill="rgb(42,36,24)" text-anchor="middle">💥</text>
+<text x="110" y="257" font-family="Helvetica, Arial, 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif" font-size="19" fill="rgb(42,36,24)" text-anchor="start">agents collide</text>
+<line x1="430" y1="250" x2="458.0" y2="250.0" stroke="rgb(170,110,20)" stroke-width="3" stroke-linecap="round"/>
+<polygon points="470,250 458.0,243.0 458.0,257.0" fill="rgb(170,110,20)"/>
+<rect x="480" y="222" width="380" height="56" rx="28.0" fill="rgb(253,236,190)" stroke="rgb(170,110,20)" stroke-width="2"/>
+<text x="520" y="261" font-family="'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif" font-size="28" fill="rgb(42,36,24)" text-anchor="middle">🧹</text>
+<text x="550" y="257" font-family="Helvetica, Arial, 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif" font-size="19" fill="rgb(42,36,24)" text-anchor="start" font-weight="bold">dead rules removed</text>
+<rect x="40" y="294" width="380" height="56" rx="28.0" fill="rgb(252,224,222)" stroke="rgb(190,60,60)" stroke-width="2"/>
+<text x="80" y="333" font-family="'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif" font-size="28" fill="rgb(42,36,24)" text-anchor="middle">🔓</text>
+<text x="110" y="329" font-family="Helvetica, Arial, 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif" font-size="19" fill="rgb(42,36,24)" text-anchor="start">private data leaks</text>
+<line x1="430" y1="322" x2="458.0" y2="322.0" stroke="rgb(170,110,20)" stroke-width="3" stroke-linecap="round"/>
+<polygon points="470,322 458.0,315.0 458.0,329.0" fill="rgb(170,110,20)"/>
+<rect x="480" y="294" width="380" height="56" rx="28.0" fill="rgb(253,236,190)" stroke="rgb(170,110,20)" stroke-width="2"/>
+<text x="520" y="333" font-family="'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif" font-size="28" fill="rgb(42,36,24)" text-anchor="middle">🛡️</text>
+<text x="550" y="329" font-family="Helvetica, Arial, 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif" font-size="19" fill="rgb(42,36,24)" text-anchor="start" font-weight="bold">leak guard built in</text>
+</svg>

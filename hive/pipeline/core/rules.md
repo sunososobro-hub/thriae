@@ -6,7 +6,7 @@ Roles: worker (light model, slots A/B/C), hard-worker (strong model), merger (li
 Numbers (schedules, caps, timeouts, budgets) are example defaults from one deployment; project.yml overrides them.
 
 ## 1. Work tracking
-- Work lives in GitHub issues and labels. One PR per issue. Agents act as `git_identity`; commits and PRs by any other identity are rejected by the merger. Also allowed: your agent tool's documented bot/noreply identity and the PR author's own noreply address. Collaborators = `keeper_account` plus `collaborators` in project.yml.
+- Work lives in GitHub issues and labels. One PR per issue. Agents act as `git_identity`; commits and PRs by any other identity are rejected by the merger. Also allowed (the leak guard's ok-email line): any `@users.noreply.github.com` address, `noreply@github.com` (GitHub web commits), your agent tool's documented noreply identity (e.g. `noreply@anthropic.com`), and the PR author's own noreply address. Collaborators = `keeper_account` plus `collaborators` in project.yml.
 
 ## 2. Claiming
 - Claim = create branch `fix/N` from `<dev_branch>` (REST `POST git/refs`). "Reference already exists" (422) = someone else has it: take the next item.

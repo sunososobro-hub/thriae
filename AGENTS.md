@@ -72,7 +72,7 @@ Numbers below (counts, minutes, percentages) are example defaults from one deplo
 - At most 10 issues in `status:doing` across all agents.
 - Light-model workers take up to 4 items per wake; strong-model workers up to 2.
 - Mergers merge every ready PR in one run. Reviewers handle up to 4 strong-review items per run, oldest first.
-- Optional throttle: one pinned issue whose first line is `level: N` (0 off, 1 only P0/P1, 2 normal, 3 high). Unreadable means 2. Merging green PRs continues at every level.
+- Optional throttle: one pinned issue whose first line is `level: N` (0 off, 1 only P0/P1, 2 normal, 3 high, 4 max: as 3, plus the supervisor works items). Unreadable means 2. Merging green PRs continues at every level.
 
 ## 9. Issue format
 - English. Body lines: `Why:` `Goal:` `Acceptance:` (measurable: a number, behaviour or command output) `Verify:` (the command or steps). Optional `Out of scope:`. Child issues link `Parent: #N`.

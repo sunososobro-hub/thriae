@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 410" width="900" height="410" role="img" aria-labelledby="t d">
+<title id="t">Thriae architecture</title>
+<desc id="d">The constitution (compass) guards the whole flow; the keeper is scout number one and holds the brake. Bees from your projects bring lessons into quarantine review; once 3 projects confirm, the rule goes into the AGENTS.md honey jar, reaches everyone, and users bring lessons back for credit.</desc>
+<rect x="1" y="1" width="898" height="408" rx="20" fill="rgb(255,251,240)" stroke="rgb(230,214,178)" stroke-width="2"/>
+<rect x="30" y="24" width="590" height="64" rx="16" fill="rgb(220,233,248)" stroke="rgb(50,90,150)" stroke-width="2"/>
+<text x="78" y="67" font-family="'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif" font-size="32" fill="rgb(42,36,24)" text-anchor="middle">🧭</text>
+<text x="110" y="52" font-family="Helvetica, Arial, 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif" font-size="22" fill="rgb(50,90,150)" text-anchor="start" font-weight="bold">Constitution</text>
+<text x="110" y="76" font-family="Helvetica, Arial, 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif" font-size="15" fill="rgb(110,100,80)" text-anchor="start">goal + red lines, guards every step</text>
+<rect x="640" y="24" width="230" height="64" rx="16" fill="rgb(252,224,222)" stroke="rgb(190,60,60)" stroke-width="2"/>
+<text x="672" y="67" font-family="'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif" font-size="28" fill="rgb(42,36,24)" text-anchor="middle">🐝</text>
+<text x="706" y="67" font-family="'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif" font-size="28" fill="rgb(42,36,24)" text-anchor="middle">🛑</text>
+<text x="732" y="52" font-family="Helvetica, Arial, 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif" font-size="20" fill="rgb(190,60,60)" text-anchor="start" font-weight="bold">keeper</text>
+<text x="732" y="76" font-family="Helvetica, Arial, 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif" font-size="15" fill="rgb(110,100,80)" text-anchor="start">scout #1 · brake</text>
+<line x1="245" y1="92" x2="245" y2="150" stroke="rgb(50,90,150)" stroke-width="2" stroke-dasharray="4 5"/>
+<line x1="395" y1="92" x2="395" y2="150" stroke="rgb(50,90,150)" stroke-width="2" stroke-dasharray="4 5"/>
+<line x1="590" y1="92" x2="590" y2="150" stroke="rgb(50,90,150)" stroke-width="2" stroke-dasharray="4 5"/>
+<circle cx="80" cy="165" r="26" fill="rgb(214,238,214)" stroke="rgb(60,140,70)" stroke-width="2.5"/>
+<text x="80" y="175" font-family="'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif" font-size="26" fill="rgb(42,36,24)" text-anchor="middle">🐝</text>
+<circle cx="80" cy="225" r="26" fill="rgb(220,233,248)" stroke="rgb(50,90,150)" stroke-width="2.5"/>
+<text x="80" y="235" font-family="'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif" font-size="26" fill="rgb(42,36,24)" text-anchor="middle">🐝</text>
+<circle cx="80" cy="285" r="26" fill="rgb(232,222,248)" stroke="rgb(120,80,180)" stroke-width="2.5"/>
+<text x="80" y="295" font-family="'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif" font-size="26" fill="rgb(42,36,24)" text-anchor="middle">🐝</text>
+<text x="80" y="128" font-family="Helvetica, Arial, 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif" font-size="15" fill="rgb(110,100,80)" text-anchor="middle">your projects</text>
+<path d="M108 165 C150 165 150 225 180 225 M108 225 L180 225 M108 285 C150 285 150 225 180 225" stroke="rgb(110,100,80)" stroke-width="3" fill="none"/>
+<rect x="185" y="180" width="120" height="90" rx="12" fill="rgb(255,255,255)" stroke="rgb(110,100,80)" stroke-width="2.5" stroke-dasharray="7 5"/>
+<text x="245" y="222" font-family="'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif" font-size="32" fill="rgb(42,36,24)" text-anchor="middle">🧪</text>
+<text x="245" y="255" font-family="Helvetica, Arial, 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif" font-size="16" fill="rgb(42,36,24)" text-anchor="middle" font-weight="bold">quarantine</text>
+<line x1="312" y1="225" x2="340.0" y2="225.0" stroke="rgb(110,100,80)" stroke-width="3" stroke-linecap="round"/>
+<polygon points="352,225 340.0,218.0 340.0,232.0" fill="rgb(110,100,80)"/>
+<circle cx="372" cy="225" r="10" fill="rgb(232,163,23)" stroke="rgb(170,110,20)" stroke-width="2"/>
+<circle cx="395" cy="225" r="10" fill="rgb(232,163,23)" stroke="rgb(170,110,20)" stroke-width="2"/>
+<circle cx="418" cy="225" r="10" fill="rgb(232,163,23)" stroke="rgb(170,110,20)" stroke-width="2"/>
+<text x="395" y="262" font-family="Helvetica, Arial, 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif" font-size="16" fill="rgb(42,36,24)" text-anchor="middle" font-weight="bold">3 projects</text>
+<text x="395" y="282" font-family="Helvetica, Arial, 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif" font-size="15" fill="rgb(110,100,80)" text-anchor="middle">confirm</text>
+<line x1="440" y1="225" x2="500.0" y2="225.0" stroke="rgb(110,100,80)" stroke-width="3" stroke-linecap="round"/>
+<polygon points="512,225 500.0,218.0 500.0,232.0" fill="rgb(110,100,80)"/>
+<path d="M548 168 h84 v14 q16 12 16 30 v68 q0 12 -12 12 h-92 q-12 0 -12 -12 v-68 q0 -18 16 -30z" fill="rgb(232,163,23)" stroke="rgb(170,110,20)" stroke-width="2.5"/>
+<rect x="542" y="156" width="96" height="16" rx="4" fill="rgb(253,236,190)" stroke="rgb(170,110,20)" stroke-width="2"/>
+<rect x="548" y="222" width="84" height="30" rx="6" fill="rgb(255,255,255)"/>
+<text x="590" y="243" font-family="Helvetica, Arial, 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif" font-size="16" fill="rgb(42,36,24)" text-anchor="middle" font-weight="bold">AGENTS.md</text>
+<line x1="660" y1="225" x2="700.0" y2="225.0" stroke="rgb(110,100,80)" stroke-width="3" stroke-linecap="round"/>
+<polygon points="712,225 700.0,218.0 700.0,232.0" fill="rgb(110,100,80)"/>
+<text x="770" y="240" font-family="'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif" font-size="48" fill="rgb(42,36,24)" text-anchor="middle">🌍</text>
+<text x="770" y="284" font-family="Helvetica, Arial, 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif" font-size="16" fill="rgb(42,36,24)" text-anchor="middle" font-weight="bold">everyone</text>
+<path d="M770 300 C770 370 80 380 80 318" stroke="rgb(232,163,23)" stroke-width="3" fill="none" stroke-dasharray="6 7"/>
+<polygon points="80.0,306.0 70.0,326.0 90.0,326.0" fill="rgb(170,110,20)"/>
+<rect x="260" y="352" width="380" height="40" rx="20.0" fill="rgb(253,236,190)" stroke="rgb(170,110,20)" stroke-width="2"/>
+<text x="450" y="378" font-family="Helvetica, Arial, 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif" font-size="16" fill="rgb(42,36,24)" text-anchor="middle" font-weight="bold">use it → bring lessons back · ⭐ credit</text>
+</svg>

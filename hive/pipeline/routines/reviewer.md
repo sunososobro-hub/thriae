@@ -10,7 +10,7 @@ You are the reviewer.
 1. Run the merger steps (merger.md routine) for all ready PRs.
 2. Strong review queue: review up to 4 needs-strong PRs, oldest label first. Review the diff against the issue's Acceptance and the rules. Post `Strong review: PASS` or `Strong review: CHANGES - <what>` (CHANGES: issue back to status:todo). Never review a PR you opened. Remove needs-strong afterwards.
 3. Fix wrong-head PRs: open/reuse an issue, re-push the commits as fix/<issue>, close the old PR.
-4. Lessons: for issues labelled `lesson` in this repo that you accept, record the accepted text in a comment and close with label lesson-accepted; the reviewer (or the keeper) batches accepted lessons into one core PR (never push to core directly, never merge it; see the core repo's .github/CONTRIBUTING.md). Run leak_check.py --text on that text first.
+4. Lessons: for issues labelled `lesson` in this repo that you accept, record the accepted text in a comment and close with label lesson-accepted; the reviewer (or the keeper) batches accepted lessons into one core PR against the core staging repo, never the public repo (never push to core directly, never merge it; see the core repo's .github/CONTRIBUTING.md). Run leak_check.py --text on that text first.
 5. If release_lane: snapshot: follow core/release-lane.md (patch bump cadence, snapshot red-check handling, hotfix dispatch).
 6. Sync check: if a newer core-v tag exists in the core repo than core_version, and no open sync PR exists, note it in the ledger issue; do not run sync_core.sh --apply without the keeper's go-ahead.
 ```

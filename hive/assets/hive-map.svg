@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 592 334" width="592" height="334" role="img" aria-labelledby="t d">
 <title id="t">Thriae hive map</title>
-<desc id="d">The repo as a honeycomb. Top row, the door: README, AGENTS.md (the honey), LICENSE, .github. Below, the hive: the compass constitution, red leak-guard cells, purple contributors, green pipeline cells.</desc>
+<desc id="d">The repo as a honeycomb. Top row, the door: README, AGENTS.md (the honey), LICENSE, .github, CLAUDE.md (loads AGENTS.md for Claude Code). Below, the hive: the compass constitution, red leak-guard cells, purple contributors, green pipeline cells.</desc>
 <rect x="0" y="0" width="592" height="334" rx="16" fill="rgb(255,253,247)"/>
 <g font-family="Helvetica, Arial, sans-serif" text-anchor="middle">
 <polygon points="178.0,24.0 219.6,48.0 219.6,96.0 178.0,120.0 136.4,96.0 136.4,48.0" fill="rgb(250,246,235)" stroke="rgb(140,115,70)" stroke-width="2.5"/>
@@ -14,6 +14,9 @@
 <polygon points="427.4,24.0 469.0,48.0 469.0,96.0 427.4,120.0 385.8,96.0 385.8,48.0" fill="rgb(250,246,235)" stroke="rgb(140,115,70)" stroke-width="2.5"/>
 <text x="427.4" y="70.0" font-size="11.5" fill="rgb(40,40,40)">.github</text>
 <text x="427.4" y="85.0" font-size="10" fill="rgb(90,90,90)">CONTRIBUTING</text>
+<polygon points="510.6,24.0 552.2,48.0 552.2,96.0 510.6,120.0 469.0,96.0 469.0,48.0" fill="rgb(252,226,160)" stroke="rgb(170,110,20)" stroke-width="2.5"/>
+<text x="510.6" y="70.0" font-size="11" fill="rgb(40,40,40)">CLAUDE.md</text>
+<text x="510.6" y="85.0" font-size="9.5" fill="rgb(90,90,90)">loads AGENTS</text>
 <polygon points="136.4,96.0 178.0,120.0 178.0,168.0 136.4,192.0 94.9,168.0 94.9,120.0" fill="rgb(246,206,206)" stroke="rgb(190,60,60)" stroke-width="2.5"/>
 <text x="136.4" y="142.0" font-size="11.5" fill="rgb(40,40,40)">leak_check</text>
 <text x="136.4" y="157.0" font-size="10" fill="rgb(90,90,90)">guard</text>
