@@ -29,7 +29,7 @@ class LeakCheckTest(unittest.TestCase):
         self.assertEqual(cats("https://x.com/someuser/status/2048103471019434248/photo/1"), set())
 
     def test_url_secrets_still_flagged(self):
-        sec = "a8F3kD92LmQx7Zp1Wv5Rt0Yb4NcE6HgJ"
+        sec = "".join(["a8F3kD92", "LmQx7Zp1", "Wv5Rt0Yb", "4NcE6HgJ"])
         for u in ("https://example.org/p?token=" + sec,
                   "https://example.org/p/status/2048103471019434248?key=" + sec,
                   "https://example.org/p?access_token=" + sec,
