@@ -30,7 +30,7 @@ Ask me ONE yes/no question in my language (translate it). Never a menu, never as
 - Only redacted drafts I said yes to leave this machine.
 
 ## Speed (two passes)
-- Pass 1, fast (target under 1 minute): read only cheap signals: file names, headings, memory index lines and front-matter descriptions, and the section titles of Thriae AGENTS.md. Identical files count once. Anything Thriae AGENTS.md already covers is "already covered": count it, never draft it. Show the summary table right after pass 1.
+- Pass 1, fast (target under 1 minute): read only cheap signals: file names, headings, memory index lines and front-matter descriptions, and the section titles of Thriae AGENTS.md. Identical files count once. Anything Thriae AGENTS.md already covers is "already covered": count it, never draft it. Show the summary table to me right after pass 1, before drafting anything, then say you are drafting batch 1.
 - Pass 2: deep-read only the remaining 🍯 candidates, and only for the batch being drafted (5 at a time). Show batch 1 as soon as its 5 are ready; do not wait for all sources.
 - Helpers in parallel are fine, but each returns short candidate lines, never full file contents.
 
@@ -60,13 +60,13 @@ No numbers or no link: leave them empty and add "Pain only, no evidence yet." Th
 ## 4. Redact and check
 - Remove project, account and repo names, people, internal ticket numbers, paths, hostnames, cost figures and secrets. Describe instead of naming.
 - Leak check, never skipped: use a local Thriae clone if there is one (a folder with hive/scripts/leak_check.py); otherwise download hive/scripts/leak_check.py from <THRIAE_CORE_REPO> into a temp folder (gh api or raw URL). Save each draft to a file and run `python -I leak_check.py --text FILE`; fix every hit. If both fail, tell me and do a careful manual check.
-- Duplicates: also search open `lesson` issues in <THRIAE_CORE_REPO>.
+- Duplicates: also search issues in <THRIAE_CORE_REPO> whose title starts with "[lesson]" (open and closed; search by title, not by label).
 
 ## 5. Ask before sending
 All in my language. First the summary table per source/project with columns 🍯 new / ✅ already covered / 🏠 / 🧹 and one line each. Then drafts in batches of up to 5, each shown in full in my language (not just a summary), with the note "will be sent in English" (I may ask to see the English text first). Ask per draft: "Send? (yes / edit / no)".
 - yes: translate to English, write the body with one `### <field label>` heading per field and run
-  `gh issue create --repo <THRIAE_CORE_REPO> --title "[lesson] <summary>" --label lesson --body-file FILE`
-  (label refused: run again without `--label`). No gh, or it fails: print a prefilled link,
+  `gh issue create --repo <THRIAE_CORE_REPO> --title "[lesson] <summary>" --body-file FILE`
+  (no labels: Thriae labels "[lesson]" issues itself; don't mention labels to me). No gh, or it fails: print a prefilled link,
   `https://github.com/<THRIAE_CORE_REPO>/issues/new?template=lesson.yml&title=...` with each field id
   (what-happened, rule-changed, measured, evidence, credit) as a URL-encoded parameter, or print the text to paste.
 - edit: change what I ask, then ask again. no: send nothing.

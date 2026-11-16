@@ -5,6 +5,7 @@ Layout:
 - `project.template.yml` copy to `.agent/project.yml` and fill in.
 - `routines/` prompt templates for scheduled agents (worker, hard-worker, merger, reviewer, supervisor).
 - `scripts/bootstrap.sh` creates labels, control issues and a minimal CI workflow (default dry run).
+- Label `lesson`: `.github/workflows/lesson-label.yml` adds it to any issue whose title starts with "[lesson]" (create the label once; the sender never sets labels).
 - `scripts/sync_core.sh` vendors a tagged core into a project as a PR (default dry run; needs THRIAE_CORE_REPO).
 
 Start with `AGENTS.md` at the repo root; adopt this directory only when you want scheduled agents.

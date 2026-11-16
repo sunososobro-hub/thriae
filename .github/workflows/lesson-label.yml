@@ -1,0 +1,26 @@
+name: lesson-label
+
+# Labels issues whose title starts with "[lesson]". The title is read from the
+# event as data (env var only); no checkout, no code from the issue.
+on:
+  issues:
+    types: [opened, edited]
+
+permissions:
+  issues: write
+
+jobs:
+  label:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Add lesson label
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          REPO: ${{ github.repository }}
+        run: |
+          case "$ISSUE_TITLE" in
+            "[lesson]"*) gh issue edit "$ISSUE_NUMBER" --repo "$REPO" --add-label lesson ;;
+            *) echo "not a lesson issue" ;;
+          esac
