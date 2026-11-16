@@ -8,7 +8,7 @@ One AGENTS.md, distilled from real agent failures.
 
 <p align="center"><img src="hive/assets/quickstart.svg" alt="Quickstart: 1 copy AGENTS.md, 2 fill your project block, 3 done. Claude Code also needs CLAUDE.md. When: a new project, or an agent repeats a mistake. Works with Claude Code, Codex and Cursor" width="900"></p>
 
-<p align="center"><img src="hive/assets/how-it-grows.svg" alt="How a rule grows: failure, lesson plus evidence, 3 projects confirm, rule, and when it stops helping it is removed. You are here: seed rules from 1 pipeline" width="900"></p>
+<p align="center"><img src="hive/assets/how-it-grows.svg" alt="How a rule grows: failure, lesson plus evidence, 3 projects confirm, rule, and when it stops helping it is removed. Now: 1 of 3 projects; seed rules wait for 2 more projects" width="900"></p>
 
 <p align="center"><img src="hive/assets/hive-architecture.svg" alt="Architecture: the compass constitution guards the flow; the keeper is scout number one and holds the brake. Bees from your projects bring lessons into quarantine; when 3 projects confirm, the rule goes into the AGENTS.md honey jar, reaches everyone, and lessons come back with credit" width="900"></p>
 
@@ -21,6 +21,8 @@ One AGENTS.md, distilled from real agent failures.
 <p align="center">In Greek myth the Thriae were three bee-nymphs who spoke the truth after eating honey.</p>
 
 <p align="center"><img src="hive/assets/hive-map.svg" alt="Repo layout as a honeycomb: the door row holds README, AGENTS.md (the honey), LICENSE, .github and CLAUDE.md; below it the hive holds the compass constitution, red leak-guard cells, purple contributors and green pipeline cells" width="600"></p>
+
+<p align="center"><a href=".github/CONTRIBUTING.md"><img src="hive/assets/contribute-flow.svg" alt="How to contribute: 1 file a lesson, 2 quarantine check, 3 rewritten, never pasted, 4 three projects confirm, 5 one in, one out under a 250-line cap, 6 credit. A good lesson: a real failure with numbers, a one or two line rule, no names, paths or secrets" width="900"></a></p>
 
 <p align="center">
   <a href="../../issues/new?template=lesson.yml">🐝 Contribute a lesson</a> ·

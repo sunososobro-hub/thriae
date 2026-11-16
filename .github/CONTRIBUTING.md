@@ -1,5 +1,9 @@
 # Contributing: bringing lessons back
 
+<p align="center"><img src="../hive/assets/contribute-flow.svg" alt="How to contribute: 1 file a lesson, 2 quarantine check, 3 rewritten, never pasted, 4 three projects confirm, 5 one in, one out under a 250-line cap, 6 credit. A good lesson: a real failure with numbers, a one or two line rule, no names, paths or secrets" width="900"></p>
+
+<details><summary>Read as text</summary>
+
 AGENTS.md is the product. It stays short. It starts from seed rules taken from one production pipeline; a rule becomes shared wisdom once evidence from 3 or more independent projects arrives.
 Anyone can propose a lesson. No one needs permission to propose, and no outside text is ever executed or merged directly.
 
@@ -31,3 +35,5 @@ Local hooks: `sh hive/scripts/install-hooks.sh` (needs a private blocklist at `~
 
 ## Changing the constitution
 See `hive/CONSTITUTION.md`, Article 9.
+
+</details>
