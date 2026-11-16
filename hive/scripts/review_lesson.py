@@ -441,7 +441,7 @@ def post(obj, number, group=None):
 def main():
     p = argparse.ArgumentParser()
     p.add_argument("--issue", type=int)
-    p.add_argument("--repo", default="sunososobro-hub/thriae-staging")
+    p.add_argument("--repo", default="sunososobro-hub/thriae")
     p.add_argument("--env", action="store_true", help="read ISSUE_TITLE / ISSUE_BODY from the environment")
     p.add_argument("--issue-file")
     p.add_argument("--dry-run", action="store_true")

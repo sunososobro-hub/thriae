@@ -5,7 +5,7 @@ It installs Thriae's AGENTS.md, or upgrades it later, and keeps your own rules i
 A backup is made first, and no file is overwritten until you say yes. Share what you learned first with [`upload.md`](upload.md).
 
 ````text
-THRIAE_CORE_REPO = sunososobro-hub/thriae-staging
+THRIAE_CORE_REPO = sunososobro-hub/thriae
 (Below, <THRIAE_CORE_REPO> always means this owner/repo.)
 
 Install or upgrade Thriae's AGENTS.md in this project without losing my own rules.

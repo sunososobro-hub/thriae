@@ -7,7 +7,7 @@ It reads your rules file and recent failures, sorts them, and drafts lessons for
 Nothing is sent until you say yes. It never changes your files. To get the honey back, use [`download.md`](download.md).
 
 ````text
-THRIAE_CORE_REPO = sunososobro-hub/thriae-staging
+THRIAE_CORE_REPO = sunososobro-hub/thriae
 (Below, <THRIAE_CORE_REPO> always means this owner/repo. "Thriae AGENTS.md" means AGENTS.md on its default branch.)
 
 Find what this project learned and help me send the universal parts to Thriae as lessons.
