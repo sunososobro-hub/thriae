@@ -1,0 +1,76 @@
+# .agent/project.yml - per-project configuration for the Thriae pipeline core.
+# Copy to <project repo>/.agent/project.yml. This file is a protected path (Strong PASS).
+# core/rules.md refers to these keys as <key>. Required keys are marked (required).
+
+repo: owner/name                  # (required) GitHub slug
+public: false                     # true enables core/public-repo.md
+owner_account: <owner>    # (required) account whose "Strong review: PASS" counts, and issue-comment owner
+collaborators: []                 # extra accounts treated as collaborators (public repos)
+core_version: core-v0.1.1         # (required) vendored core tag; bumped only by pipeline/scripts/sync_core.sh PRs
+
+dev_branch: dev                   # fast lane, where PRs merge
+main_branch: main                 # quality lane
+release_lane: none                # none | snapshot  (snapshot enables core/release-lane.md)
+
+verify:                           # commands a worker must run before opening a PR
+  test: "pytest -q"               # (required) also used by bootstrap.sh to generate ci.yml
+  lint: ""                        # optional
+ci:
+  test_job: test                  # (required) name of the CI job that gates merges to dev
+  workflow: ci.yml
+  runner: ubuntu-latest           # used by bootstrap.sh when generating ci.yml
+  setup: ""                       # optional shell lines run before verify.test in generated ci.yml
+
+areas:                            # (required) one area:* label per issue; area lock works on these
+  - core
+  - ci
+  - docs
+mode_labels: [shared]             # mode:* values; e.g. [listen, speak, two-way, shared]
+
+protected_paths:                  # need Strong PASS. core/rules.md always adds (release_lane: snapshot adds the release paths below) .agent/core/** and .agent/project.yml
+  - ".github/workflows/ci.yml"
+  # when release_lane: snapshot, also list (adjust names):
+  # - ".github/workflows/release*.yml"
+  # - ".github/workflows/auto-release*.yml"
+  # - ".github/workflows/hotfix.yml"
+  # - ".github/workflows/<each release.required_checks workflow>"
+  # - "<release.version_file>"
+  # - "scripts/release_*.py"
+  - ".agent/core/**"
+  - ".agent/project.yml"
+
+throttle_issue: 0                 # issue number; body line 1 "level: N", optional line 2 "focus: a, b". Printed by bootstrap.sh
+ledger_issue: 0                   # issue number of the pinned "[health] pipeline check log". Printed by bootstrap.sh
+usage_line_prefix: "usage"        # PR body last line is "<prefix>: ... minutes=N" 
+
+budget_targets:                   # percent of usage minutes per type over 48 h; should sum to ~100
+  bug: 25
+  enhancement: 45
+  eval: 10
+  documentation: 5
+  maint: 5
+  qa: 15                          # informational rows (not picked)
+  idea: 5
+infra_cap_pct: 10
+max_doing: 10
+orphan_timeout_min:
+  light: 20
+  strong: 45
+
+model_strong_domains:               # only these go to the strong model; everything else the light model
+  - concurrency / threading
+  # - <your hardest domain>
+  # - <another domain>
+
+git_identity:
+  name: <owner>
+  email: <id>+<owner>@users.noreply.github.com
+
+# Only read when release_lane: snapshot
+release:
+  version_file: "pyproject.toml"
+  required_checks: [ci]
+  deferrable_checks: []
+  defer_wait_min: 30
+  min_hours_between: 3
+hw_nightly: false

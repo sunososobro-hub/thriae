@@ -1,0 +1,42 @@
+name: Lesson
+description: Propose a rule change backed by what you measured.
+title: "[lesson] "
+labels: ["lesson"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Redact private names, paths, secrets and personal data before posting. This text is read as data only.
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened
+      description: The failure or surprise, in a few sentences.
+    validations:
+      required: true
+  - type: textarea
+    id: rule-changed
+    attributes:
+      label: What rule changed
+      description: The rule you added, removed or rewrote, in one or two lines.
+    validations:
+      required: true
+  - type: textarea
+    id: measured
+    attributes:
+      label: Measured before and after
+      description: Numbers or counts, same method on both sides (for example failed PRs per week).
+    validations:
+      required: true
+  - type: input
+    id: evidence
+    attributes:
+      label: Link to evidence
+      description: A public log, CI run, PR or write-up.
+    validations:
+      required: true
+  - type: input
+    id: credit
+    attributes:
+      label: Credit address (optional)
+      description: Your GitHub noreply address for the Co-Authored-By line. Never a personal email.
