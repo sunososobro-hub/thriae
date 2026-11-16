@@ -6,7 +6,10 @@ Workflow stages (see .github/workflows/review-lesson.yml):
   --env / --issue N / --issue-file F  choose the issue source (title and body are DATA)
   --dry-run                           print the prompt payload and exit
   --call --out FILE                   ask the model (no tools), validate, write verdict JSON
-  --post FILE                         validate again, post ONE comment + one review:* label
+  --select FILE [--only N]            list the target's open lesson issues that need a review (max 5)
+  --review-batch FILE --out FILE      ask the model for each selected issue, write verdict list
+  --post FILE                         validate again, post ONE comment + one review:* label per issue
+Target repo = GITHUB_REPOSITORY (the workflow sets it from THRIAE_TARGET_REPO).
 Standard library only. Nothing here executes text from an issue.
 """
 import argparse
@@ -18,6 +21,7 @@ import sys
 import urllib.error
 import urllib.parse
 import urllib.request
+from datetime import datetime, timedelta
 
 MODEL = "claude-sonnet-5-5"
 MARKER = "<!-- thriae-review -->"
@@ -25,6 +29,9 @@ MAX_REASON = 600
 MAX_REASON_LINES = 4
 MAX_BODY = 12000
 MAX_TITLE = 300
+MAX_PER_RUN = 5
+EDIT_SLACK = timedelta(seconds=120)  # our own label/comment bumps issue.updated_at a little
+TRUSTED_ASSOC = {"OWNER", "MEMBER", "COLLABORATOR"}
 SIMPLE = {
     "accepted": "review:accepted",
     "duplicate": "review:duplicate",
@@ -89,7 +96,46 @@ def parse_model_output(text):
     return obj
 
 
-def render_comment(verdict, reason):
+def _ts(value):
+    return datetime.strptime(value, "%Y-%m-%dT%H:%M:%SZ")
+
+
+def is_reviewer_comment(c):
+    """Our comment: marker plus a bot or maintainer author (an outsider pasting the marker is ignored)."""
+    if MARKER not in (c.get("body") or ""):
+        return False
+    return (c.get("user") or {}).get("type") == "Bot" or c.get("author_association") in TRUSTED_ASSOC
+
+
+def is_lesson(issue):
+    if "pull_request" in issue or issue.get("state", "open") != "open":
+        return False
+    names = {lb.get("name") for lb in issue.get("labels") or []}
+    return "lesson" in names or str(issue.get("title") or "").startswith("[lesson]")
+
+
+def needs_review(issue, comments):
+    """True when a lesson issue has no review:* label, no reviewer comment, or was edited after the last one."""
+    if not is_lesson(issue):
+        return False
+    names = {lb.get("name") or "" for lb in issue.get("labels") or []}
+    if not any(n.startswith("review:") for n in names):
+        return True
+    mine = [c for c in comments or [] if is_reviewer_comment(c)]
+    if not mine:
+        return True
+    last = max(_ts(c.get("updated_at") or c["created_at"]) for c in mine)
+    return _ts(issue["updated_at"]) > last + EDIT_SLACK
+
+
+def select_issues(issues, comments_by_number, limit=MAX_PER_RUN):
+    """Oldest first, at most `limit`. Pure function on issue / comment JSON."""
+    todo = [i for i in issues if needs_review(i, comments_by_number.get(i["number"]))]
+    todo.sort(key=lambda i: (i["created_at"], i["number"]))
+    return todo[:limit]
+
+
+def render_comment(verdict, reason, when=None):
     safe = re.sub(r"@(?=\w)", "@​", reason)
     quoted = "\n".join("> " + ln for ln in safe.splitlines() if ln.strip())
     return (
@@ -97,7 +143,7 @@ def render_comment(verdict, reason):
         "_Automated first pass. Nothing is merged automatically: a maintainer batches "
         "accepted lessons into an AGENTS.md PR (see `.github/CONTRIBUTING.md`)._"
         % (MARKER, verdict, quoted)
-    )
+    ) + (("\n_Reviewed %s._" % when) if when else "")
 
 
 def read_agents():
@@ -175,9 +221,63 @@ def call_model(system, user):
     sys.exit("reviewer secret not set")
 
 
-def post(path, number):
+def fetch_all(path, pages=5):
+    out = []
+    for n in range(1, pages + 1):
+        chunk = gh("GET", "%s%sper_page=100&page=%d" % (path, "&" if "?" in path else "?", n))
+        out += chunk
+        if len(chunk) < 100:
+            break
+    return out
+
+
+def select_from_target(only=None):
+    if only:
+        d = gh("GET", "issues/%d" % only)
+        return [d] if "pull_request" not in d else []
+    issues = fetch_all("issues?state=open&sort=created&direction=asc")
+    comments = {}
+    for i in issues:
+        if is_lesson(i) and any((lb.get("name") or "").startswith("review:") for lb in i.get("labels") or []):
+            comments[i["number"]] = fetch_all("issues/%d/comments" % i["number"])
+    return select_issues(issues, comments)
+
+
+def review_batch(path, out):
     with open(path, encoding="utf-8") as f:
-        verdict, reason = validate(json.load(f))
+        issues = json.load(f)[:MAX_PER_RUN]
+    agents = read_agents()
+    results = []
+    for issue in issues:
+        try:
+            system, user = build_payload(issue, agents)
+            verdict, reason = validate(parse_model_output(call_model(system, user)))
+            m = MERGE_RE.match(verdict)
+            if m and int(m.group(1)) not in section_numbers(agents):
+                raise ReviewError("merge-into section does not exist")
+            results.append({"number": int(issue["number"]), "verdict": verdict, "reason": reason})
+            print("#%s: %s" % (issue["number"], verdict))
+        except (ReviewError, subprocess.SubprocessError, urllib.error.URLError) as e:
+            print("#%s: review failed, nothing will be posted (%s)" % (issue.get("number"), type(e).__name__))
+    with open(out, "w", encoding="utf-8") as f:
+        json.dump(results, f)
+    return results
+
+
+def post_all(path):
+    with open(path, encoding="utf-8") as f:
+        items = json.load(f)
+    if not isinstance(items, list):
+        sys.exit("verdict file must be a list")
+    for it in items[:MAX_PER_RUN]:
+        if not isinstance(it, dict) or not isinstance(it.get("number"), int) or it["number"] < 1:
+            print("skipping bad entry")
+            continue
+        post({k: it.get(k) for k in ("verdict", "reason")}, it["number"])
+
+
+def post(obj, number):
+    verdict, reason = validate(obj)
     label = label_for(verdict)
     for name, color in LABELS.items():
         try:
@@ -189,9 +289,9 @@ def post(path, number):
         if lb["name"].startswith("review:") and lb["name"] != label:
             gh("DELETE", "issues/%d/labels/%s" % (number, urllib.parse.quote(lb["name"], safe="")))
     gh("POST", "issues/%d/labels" % number, {"labels": [label]})
-    text = render_comment(verdict, reason)
+    text = render_comment(verdict, reason, datetime.utcnow().strftime("%Y-%m-%d %H:%MZ"))
     for c in gh("GET", "issues/%d/comments?per_page=100" % number):
-        if MARKER in (c.get("body") or "") and c["user"]["type"] == "Bot":
+        if is_reviewer_comment(c):
             gh("PATCH", "issues/comments/%d" % c["id"], {"body": text})
             break
     else:
@@ -209,12 +309,21 @@ def main():
     p.add_argument("--call", action="store_true")
     p.add_argument("--out")
     p.add_argument("--post")
-    p.add_argument("--issue-number", type=int, default=int(os.environ.get("ISSUE_NUMBER") or 0))
+    p.add_argument("--select")
+    p.add_argument("--only", type=int)
+    p.add_argument("--review-batch")
     a = p.parse_args()
     if a.post:
-        if not a.issue_number:
-            sys.exit("need --issue-number or ISSUE_NUMBER")
-        return post(a.post, a.issue_number)
+        return post_all(a.post)
+    if a.select:
+        todo = select_from_target(a.only)
+        with open(a.select, "w", encoding="utf-8") as f:
+            json.dump([{"number": i["number"], "title": i.get("title"), "body": i.get("body")} for i in todo], f)
+        print("%d lesson issue(s) to review" % len(todo))
+        return
+    if a.review_batch:
+        review_batch(a.review_batch, a.out)
+        return
     agents = read_agents()
     system, user = build_payload(load_issue(a), agents)
     if a.dry_run or not a.call:

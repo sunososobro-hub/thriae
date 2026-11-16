@@ -1,42 +1,93 @@
 name: review-lesson
 
-# Quarantine reviewer. Issue title and body are untrusted data: they only travel
-# through env vars and files, never through a shell line or a workflow expression
-# (the job `if` below only tests them, it does not run them).
-# Two jobs, split on purpose:
-#   review: has the model secret, NO write token (contents/issues read only), model has no tools.
-#           Output: one validated JSON file (artifact).
-#   post:   has issues:write, NO model secret. Validates the JSON again and posts
-#           ONE comment + one review:* label with a plain script.
+# KEEPER-ONLY: this workflow lives in the private keeper repo and must not be published
+# (the model secret stays private). It reviews lesson issues on a target repo on a schedule.
+# Target = repo variable THRIAE_TARGET_REPO, default: the repo this workflow runs in.
+# Issue title and body are untrusted data: they only travel through files, never through a
+# shell line or a workflow expression.
+# Three jobs, split on purpose:
+#   select: target token (read), NO model secret. Lists open lesson issues without a review:*
+#           label, or edited after the reviewer's last comment (max 5, oldest first).
+#   review: model secret, NO target token, contents read only, model has no tools.
+#           Output: validated verdict JSON (artifact).
+#   post:   target token (issues write), NO model secret. Re-validates, posts ONE comment
+#           + one review:* label per issue with a plain script.
 # Never edits AGENTS.md. Never checks out code from an issue. Runs from the default branch.
-# Without a model secret it posts nothing and exits with a notice.
+# Target token: GITHUB_TOKEN when target == this repo, else secret THRIAE_TARGET_TOKEN
+# (fine-grained PAT, Issues read/write on the target only).
 on:
-  issues:
-    types: [opened, edited]
+  schedule:
+    - cron: "17 * * * *"
   workflow_dispatch:
     inputs:
       issue:
-        description: "Issue number to review (existing lesson issues)"
-        required: true
+        description: "Optional: review only this issue number (even if already reviewed)"
+        required: false
         type: string
 
 permissions: {}
 
 concurrency:
-  group: review-lesson-${{ github.event.issue.number || inputs.issue }}
-  cancel-in-progress: true
+  group: review-lesson
+  cancel-in-progress: false
 
 jobs:
-  review:
-    if: >-
-      github.event_name == 'workflow_dispatch' ||
-      startsWith(github.event.issue.title, '[lesson]') ||
-      contains(github.event.issue.labels.*.name, 'lesson')
+  select:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 5
     permissions:
       contents: read
       issues: read
+    env:
+      GITHUB_REPOSITORY: ${{ vars.THRIAE_TARGET_REPO || github.repository }}
+      GITHUB_TOKEN: ${{ (vars.THRIAE_TARGET_REPO && vars.THRIAE_TARGET_REPO != github.repository) && secrets.THRIAE_TARGET_TOKEN || github.token }}
+      ONLY: ${{ inputs.issue }}
+    outputs:
+      count: ${{ steps.sel.outputs.count }}
+    steps:
+      - name: Check target token
+        id: tok
+        run: |
+          if [ -z "$GITHUB_TOKEN" ]; then
+            echo "::notice::target token not set (add THRIAE_TARGET_TOKEN); nothing posted"
+            echo "ok=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "ok=true" >> "$GITHUB_OUTPUT"
+          fi
+      - uses: actions/checkout@v4
+        if: steps.tok.outputs.ok == 'true'
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        if: steps.tok.outputs.ok == 'true'
+        with:
+          python-version: "3.12"
+      - name: Select issues that need a review (data only)
+        id: sel
+        env:
+          TOKEN_OK: ${{ steps.tok.outputs.ok }}
+        run: |
+          if [ "$TOKEN_OK" != "true" ]; then echo "count=0" >> "$GITHUB_OUTPUT"; exit 0; fi
+          case "$ONLY" in *[!0-9]*) echo "bad issue number"; exit 1 ;; esac
+          if [ -n "$ONLY" ]; then python -I hive/scripts/review_lesson.py --select issues.json --only "$ONLY"
+          else python -I hive/scripts/review_lesson.py --select issues.json; fi
+          n=$(python -I -c "import json;print(len(json.load(open('issues.json'))))")
+          echo "count=$n" >> "$GITHUB_OUTPUT"
+          if [ "$n" = "0" ]; then echo "nothing to review"; fi
+      - uses: actions/upload-artifact@v4
+        if: steps.sel.outputs.count != '0'
+        with:
+          name: issues
+          path: issues.json
+          if-no-files-found: error
+
+  review:
+    needs: select
+    if: needs.select.outputs.count != '0'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
     outputs:
       ok: ${{ steps.check.outputs.ok }}
     steps:
@@ -61,33 +112,10 @@ jobs:
         if: steps.check.outputs.ok == 'true'
         with:
           python-version: "3.12"
-      - name: Read the issue (data only)
+      - uses: actions/download-artifact@v4
         if: steps.check.outputs.ok == 'true'
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-          GITHUB_REPOSITORY: ${{ github.repository }}
-          EVENT: ${{ github.event_name }}
-          ISSUE_NUMBER: ${{ github.event.issue.number || inputs.issue }}
-          ISSUE_TITLE: ${{ github.event.issue.title }}
-          ISSUE_BODY: ${{ github.event.issue.body }}
-        run: |
-          case "$ISSUE_NUMBER" in ''|*[!0-9]*) echo "bad issue number"; exit 1 ;; esac
-          if [ "$EVENT" = "workflow_dispatch" ]; then
-            python -I - "$ISSUE_NUMBER" <<'PY'
-          import json, os, sys, urllib.request
-          req = urllib.request.Request(
-              "https://api.github.com/repos/%s/issues/%s" % (os.environ["GITHUB_REPOSITORY"], sys.argv[1]),
-              headers={"Authorization": "Bearer " + os.environ["GITHUB_TOKEN"],
-                       "Accept": "application/vnd.github+json", "User-Agent": "thriae-review"})
-          d = json.load(urllib.request.urlopen(req, timeout=60))
-          json.dump({"title": d.get("title"), "body": d.get("body")}, open("issue.json", "w"))
-          PY
-          else
-            python -I - <<'PY'
-          import json, os
-          json.dump({"title": os.environ["ISSUE_TITLE"], "body": os.environ["ISSUE_BODY"]}, open("issue.json", "w"))
-          PY
-          fi
+        with:
+          name: issues
       - uses: actions/setup-node@v4
         if: steps.check.outputs.ok == 'true' && steps.check.outputs.api == 'false'
         with:
@@ -103,12 +131,12 @@ jobs:
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
-        run: python -I hive/scripts/review_lesson.py --issue-file issue.json --call --out verdict.json
+        run: python -I hive/scripts/review_lesson.py --review-batch issues.json --out verdicts.json
       - uses: actions/upload-artifact@v4
         if: steps.check.outputs.ok == 'true'
         with:
           name: verdict
-          path: verdict.json
+          path: verdicts.json
           if-no-files-found: error
 
   post:
@@ -118,19 +146,28 @@ jobs:
     timeout-minutes: 5
     permissions:
       issues: write
+    env:
+      GITHUB_REPOSITORY: ${{ vars.THRIAE_TARGET_REPO || github.repository }}
+      GITHUB_TOKEN: ${{ (vars.THRIAE_TARGET_REPO && vars.THRIAE_TARGET_REPO != github.repository) && secrets.THRIAE_TARGET_TOKEN || github.token }}
     steps:
+      - name: Check target token
+        id: tok
+        run: |
+          if [ -z "$GITHUB_TOKEN" ]; then
+            echo "::notice::target token not set (add THRIAE_TARGET_TOKEN); nothing posted"
+            echo "ok=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "ok=true" >> "$GITHUB_OUTPUT"
+          fi
       # Script and prompt come from the default branch, never from the issue.
       - uses: actions/checkout@v4
+        if: steps.tok.outputs.ok == 'true'
         with:
           persist-credentials: false
       - uses: actions/download-artifact@v4
+        if: steps.tok.outputs.ok == 'true'
         with:
           name: verdict
-      - name: Post comment and label
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-          GITHUB_REPOSITORY: ${{ github.repository }}
-          ISSUE_NUMBER: ${{ github.event.issue.number || inputs.issue }}
-        run: |
-          case "$ISSUE_NUMBER" in ''|*[!0-9]*) echo "bad issue number"; exit 1 ;; esac
-          python -I hive/scripts/review_lesson.py --post verdict.json
+      - name: Post comments and labels
+        if: steps.tok.outputs.ok == 'true'
+        run: python -I hive/scripts/review_lesson.py --post verdicts.json
