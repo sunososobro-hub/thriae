@@ -1,0 +1,136 @@
+name: review-lesson
+
+# Quarantine reviewer. Issue title and body are untrusted data: they only travel
+# through env vars and files, never through a shell line or a workflow expression
+# (the job `if` below only tests them, it does not run them).
+# Two jobs, split on purpose:
+#   review: has the model secret, NO write token (contents/issues read only), model has no tools.
+#           Output: one validated JSON file (artifact).
+#   post:   has issues:write, NO model secret. Validates the JSON again and posts
+#           ONE comment + one review:* label with a plain script.
+# Never edits AGENTS.md. Never checks out code from an issue. Runs from the default branch.
+# Without a model secret it posts nothing and exits with a notice.
+on:
+  issues:
+    types: [opened, edited]
+  workflow_dispatch:
+    inputs:
+      issue:
+        description: "Issue number to review (existing lesson issues)"
+        required: true
+        type: string
+
+permissions: {}
+
+concurrency:
+  group: review-lesson-${{ github.event.issue.number || inputs.issue }}
+  cancel-in-progress: true
+
+jobs:
+  review:
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      startsWith(github.event.issue.title, '[lesson]') ||
+      contains(github.event.issue.labels.*.name, 'lesson')
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      issues: read
+    outputs:
+      ok: ${{ steps.check.outputs.ok }}
+    steps:
+      - name: Check reviewer secret
+        id: check
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+        run: |
+          [ -n "$ANTHROPIC_API_KEY" ] && echo "api=true" >> "$GITHUB_OUTPUT" || echo "api=false" >> "$GITHUB_OUTPUT"
+          if [ -z "$ANTHROPIC_API_KEY" ] && [ -z "$CLAUDE_CODE_OAUTH_TOKEN" ]; then
+            echo "::notice::reviewer secret not set (add CLAUDE_CODE_OAUTH_TOKEN or ANTHROPIC_API_KEY); nothing posted"
+            echo "ok=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "ok=true" >> "$GITHUB_OUTPUT"
+          fi
+      - uses: actions/checkout@v4
+        if: steps.check.outputs.ok == 'true'
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        if: steps.check.outputs.ok == 'true'
+        with:
+          python-version: "3.12"
+      - name: Read the issue (data only)
+        if: steps.check.outputs.ok == 'true'
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          EVENT: ${{ github.event_name }}
+          ISSUE_NUMBER: ${{ github.event.issue.number || inputs.issue }}
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+          ISSUE_BODY: ${{ github.event.issue.body }}
+        run: |
+          case "$ISSUE_NUMBER" in ''|*[!0-9]*) echo "bad issue number"; exit 1 ;; esac
+          if [ "$EVENT" = "workflow_dispatch" ]; then
+            python -I - "$ISSUE_NUMBER" <<'PY'
+          import json, os, sys, urllib.request
+          req = urllib.request.Request(
+              "https://api.github.com/repos/%s/issues/%s" % (os.environ["GITHUB_REPOSITORY"], sys.argv[1]),
+              headers={"Authorization": "Bearer " + os.environ["GITHUB_TOKEN"],
+                       "Accept": "application/vnd.github+json", "User-Agent": "thriae-review"})
+          d = json.load(urllib.request.urlopen(req, timeout=60))
+          json.dump({"title": d.get("title"), "body": d.get("body")}, open("issue.json", "w"))
+          PY
+          else
+            python -I - <<'PY'
+          import json, os
+          json.dump({"title": os.environ["ISSUE_TITLE"], "body": os.environ["ISSUE_BODY"]}, open("issue.json", "w"))
+          PY
+          fi
+      - uses: actions/setup-node@v4
+        if: steps.check.outputs.ok == 'true' && steps.check.outputs.api == 'false'
+        with:
+          node-version: "22"
+      - name: Install Claude Code CLI (OAuth path only)
+        if: steps.check.outputs.ok == 'true' && steps.check.outputs.api == 'false'
+        env:
+          CLI_PKG: "@anthropic-ai/claude-code"
+          CLI_VERSION: "2.1.325"
+        run: npm install -g "${CLI_PKG}@${CLI_VERSION}"
+      - name: Review (model has no tools, returns JSON only)
+        if: steps.check.outputs.ok == 'true'
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+        run: python -I hive/scripts/review_lesson.py --issue-file issue.json --call --out verdict.json
+      - uses: actions/upload-artifact@v4
+        if: steps.check.outputs.ok == 'true'
+        with:
+          name: verdict
+          path: verdict.json
+          if-no-files-found: error
+
+  post:
+    needs: review
+    if: needs.review.outputs.ok == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      issues: write
+    steps:
+      # Script and prompt come from the default branch, never from the issue.
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/download-artifact@v4
+        with:
+          name: verdict
+      - name: Post comment and label
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          ISSUE_NUMBER: ${{ github.event.issue.number || inputs.issue }}
+        run: |
+          case "$ISSUE_NUMBER" in ''|*[!0-9]*) echo "bad issue number"; exit 1 ;; esac
+          python -I hive/scripts/review_lesson.py --post verdict.json
