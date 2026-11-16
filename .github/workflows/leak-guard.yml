@@ -1,0 +1,47 @@
+name: leak-guard
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  leak-guard:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Scan tree
+        env:
+          LEAK_BLOCKLIST: ${{ secrets.LEAK_BLOCKLIST }}
+        run: python scripts/leak_check.py --tree
+      - name: Scan pushed commits
+        if: github.event_name == 'push'
+        env:
+          LEAK_BLOCKLIST: ${{ secrets.LEAK_BLOCKLIST }}
+          BEFORE: ${{ github.event.before }}
+          AFTER: ${{ github.sha }}
+        run: python scripts/leak_check.py --range "$BEFORE..$AFTER"
+      - name: Scan pull request commits
+        if: github.event_name == 'pull_request'
+        env:
+          LEAK_BLOCKLIST: ${{ secrets.LEAK_BLOCKLIST }}
+          BASE: ${{ github.event.pull_request.base.sha }}
+          HEAD: ${{ github.event.pull_request.head.sha }}
+        run: python scripts/leak_check.py --range "$BASE..$HEAD"
+      - name: Scan pull request title and body
+        if: github.event_name == 'pull_request'
+        env:
+          LEAK_BLOCKLIST: ${{ secrets.LEAK_BLOCKLIST }}
+          PR_TITLE: ${{ github.event.pull_request.title }}
+          PR_BODY: ${{ github.event.pull_request.body }}
+        run: |
+          f="$RUNNER_TEMP/pr_text.txt"
+          printf '%s\n%s\n' "$PR_TITLE" "$PR_BODY" > "$f"
+          python scripts/leak_check.py --text "$f"

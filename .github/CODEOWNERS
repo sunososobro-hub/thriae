@@ -1,0 +1,5 @@
+CONSTITUTION.md @sunososobro-hub
+scripts/leak_check.py @sunososobro-hub
+.github/workflows/leak-guard.yml @sunososobro-hub
+.github/CODEOWNERS @sunososobro-hub
+.leak-allow @sunososobro-hub
