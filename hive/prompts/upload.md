@@ -20,12 +20,14 @@ Talk to me in my language. Write lessons in English.
 - Never invent numbers, links or events.
 
 ## Step 0: Scope (ask first, before reading anything)
-Say, in my language: "I'll only read this project's rules files (list the ones found, e.g. AGENTS.md, CLAUDE.md, .cursorrules). Do you also want me to read your global rules (e.g. ~/.claude/CLAUDE.md, ~/.codex/AGENTS.md) and your saved memory/feedback notes? They often hold your best lessons. Saying no is fine." Default = project files only.
+Ask me ONE yes/no question in my language. Never a menu, never ask me for paths: "I'll look through everything an AI follows on this computer: rules files in your projects, your global rules, and your saved memory/feedback notes. Read-only; nothing leaves without your yes; private things stay here. OK? (yes = everything, recommended / no = only this folder)". Default = yes.
+- yes: find things yourself. Rules files (AGENTS.md, CLAUDE.md, .cursorrules, .github/copilot-instructions.md) in the current folder, its git repos and common project folders under my home dir (depth <= 4, <= 60 s, skip node_modules, .git, caches, build output); global rules (~/.claude/CLAUDE.md, ~/.codex/AGENTS.md and similar); agent memory notes (e.g. ~/.claude/projects/*/memory/). no: only this folder's rules files.
+- Before reading any content, list what you found as a count per source.
 - Everything stays on this machine. Read-only, never modify. Never quote raw text from these files in a draft. Personal preferences and private topics stay local (🏠, never sent).
 - Only redacted drafts I said yes to leave this machine.
 
 ## 1. Find candidates
-- Read only the rules files I allowed in Step 0 (AGENTS.md, CLAUDE.md, .cursorrules, .github/copilot-instructions.md or similar) and recent agent failures (red CI runs, reverted or closed PRs, repeated review comments).
+- Read only what Step 0 covered (rules files, global rules, memory notes) and recent agent failures (red CI runs, reverted or closed PRs, repeated review comments).
 - If I describe a pain or idea in my own words (any language), use that too. If you find nothing, ask once: "What went wrong, or what's your idea? Any words, any language."
 - If the first line of my AGENTS.md is `<!-- thriae core-vX.Y.Z ... -->`, also diff my file against Thriae AGENTS.md at that tag (or the default branch if the tag is missing; say so), ignoring the "Fill in for your project" values:
   - a rule I added = a new lesson;
@@ -33,12 +35,12 @@ Say, in my language: "I'll only read this project's rules files (list the ones f
   - a failure that keeps happening although a rule covers it = a "rule not working" report.
 
 ## 2. Sort
-- 🍯 universal: any AI team would hit it. Only these are sent.
+- 🍯 universal: any AI team would hit it. Only these are sent, REWRITTEN as a generic rule in your own words, never copied text.
 - 🏠 project-only: true here, not elsewhere. Keep it local.
 - 🧹 dead: no longer helps. Send only if it is a Thriae rule; otherwise suggest removing it locally.
 
 ## 3. Fill the Lesson form
-Read `.github/ISSUE_TEMPLATE/lesson.yml` in <THRIAE_CORE_REPO> and use its field labels exactly. For each item to send:
+Read `.github/ISSUE_TEMPLATE/lesson.yml` in <THRIAE_CORE_REPO> and use its field labels exactly. For each item to send (rewritten generically in your own words, never copied from my files):
 - What happened: a few sentences, starting "New rule:", "Stops helping:" or "Rule not working:".
 - What rule changed: the rule, one or two lines (or "removed: <rule>").
 - Measured before and after: only numbers really in my history, same method on both sides.
@@ -48,11 +50,11 @@ No numbers or no link: leave them empty and add "Pain only, no evidence yet." Th
 
 ## 4. Redact and check
 - Remove project, account and repo names, people, internal ticket numbers, paths, hostnames, cost figures and secrets. Describe instead of naming.
-- If the Thriae repo is cloned locally, save each draft to a file and run `python hive/scripts/leak_check.py --text FILE` from its root; fix every hit.
+- Search for a local Thriae clone (a folder with hive/scripts/leak_check.py). Found: use it automatically, saving each draft to a file and running `python hive/scripts/leak_check.py --text FILE` from its root; fix every hit. Not found: skip and say so.
 - Duplicates: if a section of Thriae AGENTS.md covers it, add "duplicate of section N" or "strengthens section N". Search open `lesson` issues in <THRIAE_CORE_REPO>.
 
 ## 5. Ask before sending
-Show each draft in plain language with a one-line summary and ask: "Send? (yes / edit / no)".
+Pacing (I will not know to ask): first show a short summary table per source/project with counts 🍯/🏠/🧹 and one line each. Then show drafts in batches of up to 5, each with a one-line plain-language summary, and ask per draft: "Send? (yes / edit / no)".
 - yes: write the body with one `### <field label>` heading per field and run
   `gh issue create --repo <THRIAE_CORE_REPO> --title "[lesson] <summary>" --label lesson --body-file FILE`
   (label refused: run again without `--label`). No gh, or it fails: print a prefilled link,
