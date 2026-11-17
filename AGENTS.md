@@ -1,4 +1,4 @@
-<!-- thriae core-v0.4.1 (keep this line: upload.md and download.md compare against this version) -->
+<!-- thriae core-v0.5.0 (keep this line: upload.md and download.md compare against this version) -->
 # AGENTS.md
 
 Working rules for AI coding agents (Claude Code, Codex, Cursor, any tool that reads `AGENTS.md`).
