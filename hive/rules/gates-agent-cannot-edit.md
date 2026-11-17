@@ -13,7 +13,7 @@ A green check counts as evidence only if the gated agent could not change what t
 ## Mechanisms
 - Put test directories and CI workflow files in `<protected-paths>`, so changes to them need a strong review.
 - A CI step compares the test count (or the list of test ids) on base and head and fails or flags a drop; the count goes in the PR body.
-- A gate never reads a value the gated agent maintains (a task list, a test list). Rebuild the count from an independent source, such as the session record or the base branch.
+- A gate never reads a value the gated agent maintains (a task list, a test list). Rebuild the count from an independent source the agent cannot rewrite: the session record for tasks (the base branch misses tasks created after branching), the base branch for the test list.
 - Removing items from a measured set is blocked up front or needs an audit record; if the record cannot be written, the gate fails closed.
 - Phrase rules so a failing test is reported, not hidden: deleting or weakening a test is worse than leaving it red.
 - Pair outcome-only goals ("make the tests pass") with a concrete reference example and small increments, not one unattended overnight run.

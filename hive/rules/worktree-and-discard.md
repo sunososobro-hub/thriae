@@ -20,7 +20,7 @@ Each agent session and each parallel worker works in its own git worktree and br
 - The exit gate checks only files the session itself changed.
 - Before starting, list open branches and open PRs so the same feature is not started twice.
 - Before any destructive command, and after context compaction, check live state (`git status`, `git diff`) first.
-- Before fanning out sub-agents, commit or stash the tree; each parallel writer gets its own worktree or a disjoint file set.
+- Before fanning out sub-agents, commit or stash the tree; each parallel writer gets its own worktree. Disjoint file sets in one checkout are not enough: the index is shared, so one commit can sweep in another writer's staged files.
 - Parallel sessions never push to one shared branch: one branch each, merged one at a time; before a push, stop if the remote moved since the fetch; branch protection rejects force pushes to shared branches.
 - Treat parallelism as a review item: for every path that skips isolation, ask what happens if it fires twice.
 - Keep runtime state (locks, cursors, scratch tables) out of version control.
