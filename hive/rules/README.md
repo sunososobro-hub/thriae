@@ -11,3 +11,5 @@ Full URLs are used in `AGENTS.md` because relative paths broke in role files (is
 | [credentials-and-irreversible.md](credentials-and-irreversible.md) | Scope credentials to the task; human confirmation for irreversible calls; backups out of reach. |
 | [gates-agent-cannot-edit.md](gates-agent-cannot-edit.md) | Agents delete tests, edit CI or empty task lists to pass a gate; protect what the gate measures. |
 | [monitor-health.md](monitor-health.md) | Monitors go silent too: zero rows, missed runs and stale data must read as FAIL, with a health check and an alert path outside the watched code. |
+| [notes-are-snapshots.md](notes-are-snapshots.md) | Handoff and memory notes go stale silently; agents repeated finished work or acted on old facts. Store pointers, check live state. |
+| [gate-from-real-sample.md](gate-from-real-sample.md) | Gates and parsers written against an imagined input never fire; build them from a real sample and replay real history. |
