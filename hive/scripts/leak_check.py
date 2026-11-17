@@ -63,7 +63,7 @@ B64 = re.compile(r"[A-Za-z0-9+/_-]{8,}={0,2}")
 ENT = re.compile(r"[A-Za-z0-9_+/=-]{32,}")
 NON_ALNUM = re.compile(r"[\W_]+")
 URL_ID = re.compile(r"/\d+(?=/|$)")
-URL_PATH = re.compile(r"https?://[^\s?#]+", re.I)
+URL_PATH = re.compile(r"https?://[^\s?#\"'<>)\]]+", re.I)
 
 
 SLUG_SEG = re.compile(r"/[A-Za-z0-9]{1,15}(?:-[A-Za-z0-9]{1,15}){2,}(?=/|$)")
