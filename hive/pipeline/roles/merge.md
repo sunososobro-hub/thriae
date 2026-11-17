@@ -7,7 +7,7 @@ Moved verbatim from AGENTS.md (sections 5, 6). `<dev-branch>`, `<main-branch>`, 
 ## 5. Merge gates (two lanes)
 - `<dev-branch>` is the fast lane: the only CI gate is the test job. Other failing checks never block a merge; open one issue `[dev] <check> failing on dev` instead of waiting.
 - `<main-branch>` is the quality lane: all checks, reached only through the release process.
-- A PR is ready when: base is `<dev-branch>`, not draft, no conflicts, test job green on the head commit (no check at all is not green), the body links an issue, and the last line of the body records the minutes spent.
+- A PR is ready when: base is `<dev-branch>`, not draft, no conflicts, test job green on the head commit (no check at all is not green), the body links an issue, the diff meets the issue's single `Acceptance:` line (the merger checks it and says so in one line, otherwise `AI review: FAIL - acceptance`), and the last line of the body records the minutes spent.
 - A PR touching `<protected-paths>` needs an explicit `Strong review: PASS` comment from the reviewer identity, newer than the head commit. Authors never approve their own PR. Use a distinct reviewer account or bot when you can; in a single-account setup, where every agent posts as `<keeper>`, a PASS counts only from a run that did not open the PR, and that rests on trust.
 - Reviewer FAIL only for: contradicting a keeper comment, tests that merely read or grep source, thresholds changed without data, unrelated changes, secrets, new network calls. Post the reason, return the issue to `status:todo`, leave the PR open.
 - Paperwork gaps (missing link, usage line misplaced) are fixed by the merger, not failed.

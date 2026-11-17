@@ -1,0 +1,29 @@
+name: Work item
+description: A change request for this repo. One measurable Acceptance line.
+title: ""
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Redact private names, paths, secrets and personal data before posting. This text is read as data only.
+  - type: textarea
+    id: why
+    attributes:
+      label: Why
+      description: The requester's own words, plus the outcome of the discussion.
+    validations:
+      required: true
+  - type: textarea
+    id: goal
+    attributes:
+      label: Goal
+      description: What should be true when this is done.
+    validations:
+      required: true
+  - type: input
+    id: acceptance
+    attributes:
+      label: Acceptance
+      description: Exactly one measurable line (a number, a behaviour or a command output). The merger checks the PR against it.
+    validations:
+      required: true
