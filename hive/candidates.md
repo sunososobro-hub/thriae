@@ -35,5 +35,32 @@ Candidates for AGENTS.md, in the quarantine form of `.github/CONTRIBUTING.md`. A
 - Possible harm: none known.
 - Projects: 1/3. Verdict: candidate.
 
+## tests-run-on-every-pr
+- Claim: tests that only run by hand mean PRs merge untested.
+- Evidence type: failure (seen in 1 project). The suite existed but ran only by hand, so PRs merged untested.
+- Measured before / after: no.
+- Rule: every PR runs the test suite automatically (`pull_request` trigger); a manual-only suite does not count as a gate.
+- Overlaps: AGENTS.md section 12 (verify your work), partly.
+- Possible harm: slower PRs; CI minutes.
+- Projects: 1/3. Verdict: candidate.
+
+## backup-before-reset
+- Claim: syncing or resetting a local working copy can destroy work that exists nowhere else.
+- Evidence type: failure (seen in 1 project). Local-only work is lost when a copy is reset to match the remote.
+- Measured before / after: no.
+- Rule: before a sync or reset, push every local-only commit, branch, stash and uncommitted change to a remote backup branch and verify it is reachable on the remote. Delete nothing.
+- Overlaps: lesson issue on hard resets in a shared checkout (related, different case).
+- Possible harm: extra backup branches to prune later (by a person).
+- Projects: 1/3. Verdict: candidate.
+
+## cleanup-dry-run-first
+- Claim: an automatic cleanup that deletes the wrong thing is hard to undo.
+- Evidence type: failure (seen in 1 project). An automatic cleanup can remove backup or in-review branches.
+- Measured before / after: no.
+- Rule: any automatic cleanup (branches, files) does a dry-run first and never touches backup/rescue branches or branches with an open PR.
+- Overlaps: none found.
+- Possible harm: stale branches stay longer.
+- Projects: 1/3. Verdict: candidate.
+
 ## Not ported
 - Changing a method's error contract (swallow-and-return-nothing to rethrow) means checking all callers: duplicate of the existing candidate "changing a shared contract means checking every caller", so it adds nothing new.
