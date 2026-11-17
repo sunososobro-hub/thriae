@@ -4,6 +4,7 @@ Layout:
 - `core/` rules (`rules.md`) and optional profiles (`release-lane.md`, `public-repo.md`). Vendored into a project at `.agent/core/`.
 - `project.template.yml` copy to `.agent/project.yml` and fill in.
 - `routines/` prompt templates for scheduled agents (worker, hard-worker, merger, reviewer, supervisor).
+- `scripts/onboard.sh <owner/repo> [--dry-run]` one command to connect a repo: enables Issues, runs bootstrap (`--no-ci`), generates `.agent/project.yml` with detected default branch and test command and the issue numbers filled in, vendors core/roles/AGENTS.md, adds `thriae-sync.yml` (and a minimal ci only if the repo has no test workflow), opens ONE PR to the default branch and tries to enable "Allow GitHub Actions to create and approve pull requests" (prints the manual step if the API refuses). Re-run safe. Not covered: the cloud routines and merging the PR (protected paths need a Strong PASS).
 - `scripts/bootstrap.sh` creates labels, control issues and a minimal CI workflow (default dry run).
 - Label `lesson`: `.github/workflows/lesson-label.yml` adds it to any issue whose title starts with "[lesson]" (create the label once; the sender never sets labels).
 - `scripts/sync_core.sh` vendors a tagged core into a project as a PR (default dry run; needs THRIAE_CORE_REPO).
