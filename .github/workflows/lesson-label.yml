@@ -21,6 +21,13 @@ jobs:
           REPO: ${{ github.repository }}
         run: |
           case "$ISSUE_TITLE" in
-            "[lesson]"*) gh issue edit "$ISSUE_NUMBER" --repo "$REPO" --add-label lesson ;;
+            "[lesson]"*)
+              # lesson-gate runs in parallel; give it time, then skip rejected issues.
+              sleep 20
+              if gh issue view "$ISSUE_NUMBER" --repo "$REPO" --json labels --jq '.labels[].name'                   | grep -qx "rejected:leak"; then
+                echo "rejected by lesson-gate, not labeling"
+              else
+                gh issue edit "$ISSUE_NUMBER" --repo "$REPO" --add-label lesson
+              fi ;;
             *) echo "not a lesson issue" ;;
           esac
