@@ -1,0 +1,271 @@
+#!/usr/bin/env bash
+# onboard.sh - one command to connect a product repo to the Thriae pipeline.
+#
+# Usage: hive/pipeline/scripts/onboard.sh <owner/repo> [--dry-run]
+# Default is --apply; --dry-run prints every step and the generated files, changes nothing on GitHub.
+#
+# Steps (all idempotent, re-run safe):
+#   1. enable Issues on the repo if they are off
+#   2. detect default branch, visibility, test command (npm/flutter/cargo/go/pytest/unittest/make)
+#   3. run bootstrap.sh --apply --no-ci (labels, "[pipeline] throttle" and "[pipeline] ledger" issues)
+#   4. in a temp clone, add what is missing: .agent/project.yml (with the issue numbers filled in),
+#      .agent/core/, hive/pipeline/roles/, AGENTS.md (shared part + project block) + CLAUDE.md (@AGENTS.md),
+#      .github/workflows/thriae-sync.yml, and a minimal ci workflow only if the repo has no test workflow
+#   5. open ONE pull request (head feat/<ledger issue>) to the default branch. Never merged here.
+#   6. set "Allow GitHub Actions to create and approve pull requests" via API (prints the manual path on failure)
+# Not done here: the cloud routines (hive/pipeline/routines/), and merging the PR (protected paths need a Strong PASS).
+# Needs: gh (authenticated, repo+workflow scope), git, awk, sed, base64.
+set -euo pipefail
+
+TARGET=""; MODE=apply
+while [ $# -gt 0 ]; do
+  case "$1" in
+    --dry-run) MODE=dry; shift ;;
+    --apply) MODE=apply; shift ;;
+    -h|--help) sed -n '2,17p' "$0"; exit 0 ;;
+    -*) echo "unknown arg: $1" >&2; exit 2 ;;
+    *) [ -z "$TARGET" ] && TARGET="$1" || { echo "one repo only" >&2; exit 2; }; shift ;;
+  esac
+done
+[[ "$TARGET" =~ ^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$ ]] || { echo "need <owner/repo>" >&2; exit 2; }
+
+HERE=$(cd "$(dirname "$0")" && pwd)
+THRIAE=$(cd "$HERE/../../.." && pwd)
+CORE_REPO="${THRIAE_CORE_REPO:-sunososobro-hub/thriae}"
+say() { echo "[onboard] $*"; }
+WORK=$(mktemp -d); trap 'rm -rf "$WORK"' EXIT
+
+say "target=$TARGET mode=$MODE"
+gh auth status >/dev/null 2>&1 || { echo "gh is not authenticated" >&2; exit 1; }
+
+# ---- 1. repo facts, issues ----
+INFO=$(gh repo view "$TARGET" --json defaultBranchRef,hasIssuesEnabled,visibility,isArchived,name \
+  --jq '[.defaultBranchRef.name,(.hasIssuesEnabled|tostring),.visibility,(.isArchived|tostring),.name]|join(" ")')
+read -r DEFAULT HAS_ISSUES VIS ARCHIVED NAME <<<"$INFO"
+[ "$ARCHIVED" = false ] || { echo "repo is archived" >&2; exit 1; }
+PUBLIC=false; [ "$VIS" = PUBLIC ] && PUBLIC=true
+say "default branch=$DEFAULT visibility=$VIS issues=$HAS_ISSUES"
+if [ "$HAS_ISSUES" != true ]; then
+  if [ "$MODE" = apply ]; then gh repo edit "$TARGET" --enable-issues && say "issues enabled"
+  else say "[dry-run] would enable issues"; fi
+fi
+
+# ---- 2. clone and detect ----
+git clone -q --depth 1 "https://github.com/$TARGET.git" "$WORK/t"
+cd "$WORK/t"
+KEEPER=$(gh api user --jq .login)
+KID=$(gh api "users/$KEEPER" --jq .id)
+
+detect_test() {
+  if [ -f package.json ] && grep -q '"test"[[:space:]]*:' package.json; then echo "npm test"
+  elif [ -f pubspec.yaml ]; then echo "flutter test"
+  elif [ -f Cargo.toml ]; then echo "cargo test"
+  elif [ -f go.mod ]; then echo "go test ./..."
+  elif [ -f Makefile ] && grep -q '^test:' Makefile; then echo "make test"
+  elif [ -n "$(ls tests/*.py test/*.py 2>/dev/null)" ] || [ -f pytest.ini ] || [ -f pyproject.toml ]; then
+    if grep -rqE '^\s*(import pytest|from pytest)' tests test 2>/dev/null || [ -f pytest.ini ]; then echo "pytest -q"
+    elif [ -d tests ]; then echo "python -m unittest discover -s tests"
+    elif [ -d test ]; then echo "python -m unittest discover -s test"
+    else echo ""; fi
+  else echo ""; fi
+}
+TEST_CMD=$(detect_test)
+case "$TEST_CMD" in "npm test") setup="npm ci";; "pytest -q") setup="pip install pytest";; *) setup="";; esac
+HAVE_TEST=1
+if [ -z "$TEST_CMD" ]; then HAVE_TEST=0; TEST_CMD="echo 'TODO: set verify.test' && exit 1"; say "WARNING: no test command detected; set verify.test in .agent/project.yml"; fi
+say "test command: $TEST_CMD"
+
+# existing test workflow?
+WORKFLOW="ci.yml"; TEST_JOB="test"; HAVE_CI=0
+for f in .github/workflows/*.yml .github/workflows/*.yaml; do
+  [ -f "$f" ] || continue
+  if grep -qE 'pull_request' "$f" && grep -qiE '(pytest|unittest|npm (run )?test|flutter test|cargo test|go test|make test)' "$f"; then
+    WORKFLOW=$(basename "$f"); HAVE_CI=1
+    TEST_JOB=$(awk '/^jobs:/{j=1;next} j && /^  [A-Za-z0-9_-]+:/{gsub(/[ :]/,""); print; exit}' "$f")
+    say "existing test workflow: $WORKFLOW job=$TEST_JOB (ci.yml will not be added)"; break
+  fi
+done
+
+# ---- 3. project.yml (only if absent) ----
+YML=.agent/project.yml
+PYML_NEW=0
+if [ -f "$YML" ]; then
+  say "$YML already exists: kept as is (only unset issue numbers get filled in)"
+else
+  PYML_NEW=1; mkdir -p .agent
+  cat > "$YML" <<EOF
+# .agent/project.yml - Thriae pipeline config (schema: hive/pipeline/project.template.yml in $CORE_REPO).
+# Generated by onboard.sh. Protected path (Strong review PASS). Tune areas, budgets and protected_paths.
+
+repo: $TARGET
+public: $PUBLIC
+keeper_account: $KEEPER
+reviewer_account: ""              # single-account setup: the run that opened a PR never reviews it
+collaborators: []
+core_version: thriae-main         # vendored by thriae-sync.yml from $CORE_REPO's default branch
+
+dev_branch: $DEFAULT              # one lane: PRs merge into the default branch
+main_branch: $DEFAULT
+release_lane: none
+
+verify:
+  test: "$TEST_CMD"
+  lint: ""
+ci:
+  test_job: $TEST_JOB
+  workflow: $WORKFLOW
+  runner: ubuntu-latest
+  setup: "$setup"
+
+areas:
+  - core
+  - tests
+  - ci
+  - docs
+dimension_labels: []
+
+protected_paths:
+  - ".github/workflows/**"
+  - "AGENTS.md"
+  - "CLAUDE.md"
+  - ".agent/core/**"
+  - ".agent/project.yml"
+
+throttle_issue: 0                 # filled in by onboard.sh
+ledger_issue: 0
+usage_line_prefix: "$NAME-usage"
+
+budget_targets:
+  bug: 30
+  enhancement: 30
+  eval: 5
+  documentation: 10
+  maint: 10
+  qa: 10
+  idea: 5
+infra_cap_pct: 10
+max_doing: 3
+orphan_timeout_min:
+  light: 20
+  strong: 45
+
+model_strong_domains:
+  - security-sensitive code
+
+git_identity:
+  name: $KEEPER
+  email: $KID+$KEEPER@users.noreply.github.com
+EOF
+fi
+
+# ---- 4. bootstrap (labels + issues) ----
+BOOT="$HERE/bootstrap.sh"
+if [ "$MODE" = dry ]; then
+  say "bootstrap (dry run):"
+  bash "$BOOT" --project "$YML" --dry-run --no-ci | sed 's/^/    /'
+  THR=0; LED=0
+else
+  BOUT=$(bash "$BOOT" --project "$YML" --apply --no-ci)
+  echo "$BOUT" | sed 's/^/    /'
+  THR=$(echo "$BOUT" | sed -n 's/^\[pipeline\] throttle -> #\([0-9]*\).*/\1/p' | head -1)
+  LED=$(echo "$BOUT" | sed -n 's/^\[pipeline\] ledger -> #\([0-9]*\).*/\1/p' | head -1)
+  [ -n "$THR" ] && [ -n "$LED" ] || { echo "could not read issue numbers from bootstrap" >&2; exit 1; }
+  say "throttle=#$THR ledger=#$LED"
+fi
+
+fill() { # key value: set only when the current value is 0/empty
+  local cur; cur=$(awk -v k="$1:" 'index($0,k)==1{sub(/^[^:]*:[ ]*/,""); sub(/[ ]*#.*/,""); print; exit}' "$YML")
+  if [ "$cur" = "0" ] || [ -z "$cur" ]; then
+    sed -i.bak "s/^$1:[ ]*[0-9]*/$1: $2/" "$YML" && rm -f "$YML.bak"
+  fi
+}
+[ "$MODE" = dry ] || { fill throttle_issue "$THR"; fill ledger_issue "$LED"; }
+
+# ---- 5. wiring files ----
+BR="feat/${LED:-N}"
+if [ "$MODE" = apply ]; then
+  OPEN=$(gh pr list -R "$TARGET" --head "$BR" --state open --json number,url --jq '.[0].url // empty')
+  if [ -n "$OPEN" ]; then say "onboarding PR already open: $OPEN"; PR_URL="$OPEN"; SKIP_PR=1; else SKIP_PR=0; fi
+else SKIP_PR=0; fi
+
+if [ "${SKIP_PR:-0}" = 0 ]; then
+  CORE_SRC="$THRIAE"
+  git checkout -q -b "$BR" 2>/dev/null || git checkout -q "$BR"
+  # AGENTS.md: seed markers when absent, then reuse sync_agents.sh (also copies roles and .agent/core)
+  if [ ! -f AGENTS.md ]; then
+    cat > AGENTS.md <<EOF
+<!-- thriae:start -->
+<!-- thriae:end -->
+# Project block ($NAME)
+
+Rules specific to this project go here; the part above is synced from $CORE_REPO and never edited by hand.
+- Tests: \`$TEST_CMD\`
+- Never push to $DEFAULT directly and never force-push; work in \`fix/N\` or \`feat/N\` branches.
+- Never commit secrets or tokens.
+EOF
+  fi
+  if grep -q '^<!-- thriae:start' AGENTS.md && grep -q '^<!-- thriae:end -->' AGENTS.md; then
+    bash "$HERE/sync_agents.sh" --core "$CORE_SRC" --source "$CORE_REPO@$(git -C "$CORE_SRC" rev-parse HEAD)" | sed 's/^/    /'
+  else
+    say "WARNING: existing AGENTS.md has no thriae markers: left untouched. Add <!-- thriae:start --> / <!-- thriae:end --> around the shared part, or merge by hand (hive/prompts/download.md)."
+    mkdir -p .agent/core hive/pipeline/roles
+    cp -R "$CORE_SRC/hive/pipeline/core/." .agent/core/; cp "$CORE_SRC"/hive/pipeline/roles/*.md hive/pipeline/roles/
+  fi
+  if [ -f CLAUDE.md ]; then grep -q '^@AGENTS.md' CLAUDE.md || printf '\n@AGENTS.md\n' >> CLAUDE.md
+  else printf '@AGENTS.md\n' > CLAUDE.md; fi
+  mkdir -p .github/workflows
+  if [ ! -f .github/workflows/thriae-sync.yml ]; then
+    sed -e "s|^  BASE: master .*|  BASE: $DEFAULT|" -e "s|^  THRIAE_CORE_REPO: [^ ]*|  THRIAE_CORE_REPO: $CORE_REPO|" \
+      "$THRIAE/hive/pipeline/thriae-sync.yml" > .github/workflows/thriae-sync.yml
+  fi
+  if [ "$HAVE_CI" = 0 ] && [ "$HAVE_TEST" = 1 ]; then
+    { echo "name: ci"; echo "on:"; echo "  pull_request:"; echo "    branches: [$DEFAULT]"; echo "jobs:"; echo "  $TEST_JOB:"
+      echo "    runs-on: ubuntu-latest"; echo "    steps:"; echo "      - uses: actions/checkout@v4"
+      case "$TEST_CMD" in python*|pytest*) echo "      - uses: actions/setup-python@v5"; echo "        with: {python-version: '3.x'}";; esac
+      [ -n "$setup" ] && echo "      - run: $setup"
+      echo "      - run: $TEST_CMD"; } > ".github/workflows/$WORKFLOW"
+  fi
+
+  git add -A
+  echo "---- files in the onboarding PR ----"; git status --short
+  if git diff --cached --quiet; then
+    say "nothing to change: already onboarded"
+    CHANGED=0
+  else CHANGED=1; fi
+
+  if [ "$MODE" = dry ]; then
+    echo "---- generated .agent/project.yml ----"; cat "$YML"
+    say "[dry-run] would push $BR and open ONE PR to $DEFAULT; would PUT actions/permissions/workflow can_approve_pull_request_reviews=true"
+    exit 0
+  fi
+  if [ "$CHANGED" = 1 ]; then
+    git -c user.name="$KEEPER" -c user.email="$KID+$KEEPER@users.noreply.github.com" commit -q -m "chore: connect to the Thriae pipeline (onboard.sh)"
+    git push -q origin "$BR"
+    PREFIX="$NAME-usage"
+    PR_URL=$(gh pr create -R "$TARGET" --base "$DEFAULT" --head "$BR" --title "chore: connect to the Thriae pipeline" --body "Refs #$LED
+
+Generated by \`hive/pipeline/scripts/onboard.sh\` ($CORE_REPO).
+- \`.agent/project.yml\` (throttle #$THR, ledger #$LED; review areas, budgets, protected paths), \`.agent/core/\`, \`hive/pipeline/roles/\`
+- \`AGENTS.md\` (shared part + project block) and \`CLAUDE.md\` (\`@AGENTS.md\`)
+- \`.github/workflows/thriae-sync.yml\` (weekly shared-rules sync PR, never auto-merged)
+$( [ "$HAVE_CI" = 0 ] && [ "$HAVE_TEST" = 1 ] && echo "- \`.github/workflows/$WORKFLOW\` (minimal test job: \`$TEST_CMD\`)" )
+Labels and the throttle/ledger issues were created by bootstrap.sh. Protected paths: needs \`Strong review: PASS\`. Not merged automatically.
+
+$PREFIX: onboard minutes=0")
+    say "PR: $PR_URL"
+  else
+    PR_URL="(none, already onboarded)"
+  fi
+fi
+
+# ---- 6. Actions may create PRs ----
+if [ "$MODE" = apply ]; then
+  CUR=$(gh api "repos/$TARGET/actions/permissions/workflow" --jq .default_workflow_permissions 2>/dev/null || echo read)
+  if gh api -X PUT "repos/$TARGET/actions/permissions/workflow" -f default_workflow_permissions="$CUR" -F can_approve_pull_request_reviews=true >/dev/null 2>&1; then
+    say "Actions may create and approve PRs: set"
+  else
+    say "MANUAL: could not set it via API. Open https://github.com/$TARGET/settings/actions and tick 'Allow GitHub Actions to create and approve pull requests' (needed by thriae-sync)."
+  fi
+  echo
+  say "DONE. PR: ${PR_URL:-none}. Still manual: review+merge that PR (needs Strong review: PASS), create the cloud routines from hive/pipeline/routines/ with REPO=$TARGET DEV_BRANCH=$DEFAULT."
+fi
