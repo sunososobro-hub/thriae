@@ -1,4 +1,4 @@
-<!-- thriae core-v0.3.1 (keep this line: upload.md and download.md compare against this version) -->
+<!-- thriae core-v0.4.0 (keep this line: upload.md and download.md compare against this version) -->
 # AGENTS.md
 
 Working rules for AI coding agents (Claude Code, Codex, Cursor, any tool that reads `AGENTS.md`).
@@ -16,7 +16,7 @@ Numbers in these files are example defaults; tune them.
 - Never commit secrets, personal data, private paths, or emails other than a noreply address.
 - Never push to `<main-branch>`; never touch a repo other than the one assigned.
 - Smallest change that meets the acceptance. No drive-by edits.
-- Each agent session works in its own worktree; discard commands (`reset --hard`, `checkout --`, `clean`, `restore`) on a shared checkout are blocked by a hook, not prose. Detail: https://github.com/sunososobro-hub/thriae/blob/main/hive/rules/worktree-and-discard.md
+- Each agent session and parallel worker gets its own worktree and branch; a path that skips isolation is serialised, runtime state (locks, cursors) stays out of git, each self-spawning trigger has its own recursion guard; discard commands (`reset --hard`, `checkout --`, `clean`, `restore`) on a shared checkout are blocked by a hook, not prose. Detail: https://github.com/sunososobro-hub/thriae/blob/main/hive/rules/worktree-and-discard.md
 - A rule that matters is enforced by a wall (branch protection, CI gate, hook, no production credentials in reach), never only by a reminder. Detail: https://github.com/sunososobro-hub/thriae/blob/main/hive/rules/walls-not-reminders.md
 - Narrowest credentials per task; irreversible or production calls need a human confirmation the agent cannot perform; backups out of its reach. Detail: https://github.com/sunososobro-hub/thriae/blob/main/hive/rules/credentials-and-irreversible.md
 - Stuck on a technical question: label the issue `needs-strong-model` and take other work. Only direction or subjective questions (whether to do it, naming, licensing, public wording) or CONSTITUTION, `.github/`, LICENSE, permissions go to `needs-keeper`, asked in one line.
@@ -29,7 +29,7 @@ Numbers in these files are example defaults; tune them.
 ## 12. Verifying your work
 - Run `<test-command>` before opening a PR. Tests exercise behaviour, never read source text.
 - A claim in a PR body ("fixed", "faster") needs a command or number a reviewer can reproduce.
-- Never weaken a threshold, constant or test to pass CI without measured data.
+- Never weaken a threshold, constant or test to pass CI without measured data. A gate the agent can edit proves nothing: a diff that deletes or shrinks tests or edits CI config needs strong review, with the test count before and after in the PR body. Detail: https://github.com/sunososobro-hub/thriae/blob/main/hive/rules/gates-agent-cannot-edit.md
 
 ## 13. Lessons
 - Learned something other projects would use? Open a `lesson` issue in your own repo: what happened, rule changed, measured before and after. Never edit this file from a worker run; see `.github/CONTRIBUTING.md`.
