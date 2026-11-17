@@ -1,4 +1,4 @@
-<!-- thriae core-v0.5.0 (keep this line: upload.md and download.md compare against this version) -->
+<!-- thriae core-v0.6.0 (keep this line: upload.md and download.md compare against this version) -->
 # AGENTS.md
 
 Working rules for AI coding agents (Claude Code, Codex, Cursor, any tool that reads `AGENTS.md`).
@@ -28,7 +28,7 @@ Numbers in these files are example defaults; tune them.
 
 ## 12. Verifying your work
 - Run `<test-command>` before opening a PR. Tests exercise behaviour, never read source text.
-- A claim in a PR body ("fixed", "faster") needs a command or number a reviewer can reproduce.
+- A claim in a PR body ("fixed", "faster") needs a command or number a reviewer can reproduce; a shipped feature or scheduled job needs an automatic answer to "would we know if it broke?": a monitor that watches for unexpected absence (a missed run or no update within the source's expected cadence is FAIL, about 48 h by default; zero rows is FAIL unless the source can be empty), alerts from outside the code it watches, and has its own health check. Detail: https://github.com/sunososobro-hub/thriae/blob/main/hive/rules/monitor-health.md
 - Never weaken a threshold, constant or test to pass CI without measured data. A gate the agent can edit proves nothing: a diff that deletes or shrinks tests or edits CI config needs strong review, with the test count before and after in the PR body. Detail: https://github.com/sunososobro-hub/thriae/blob/main/hive/rules/gates-agent-cannot-edit.md
 
 ## 13. Lessons
