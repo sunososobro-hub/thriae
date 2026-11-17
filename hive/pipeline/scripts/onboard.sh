@@ -31,7 +31,8 @@ done
 
 HERE=$(cd "$(dirname "$0")" && pwd)
 THRIAE=$(cd "$HERE/../../.." && pwd)
-CORE_REPO="${THRIAE_CORE_REPO:-sunososobro-hub/thriae}"
+DEFAULT_CORE=sunososobro-hub/thriae
+CORE_REPO="${THRIAE_CORE_REPO:-$DEFAULT_CORE}"
 say() { echo "[onboard] $*"; }
 WORK=$(mktemp -d); trap 'rm -rf "$WORK"' EXIT
 
@@ -190,6 +191,9 @@ else SKIP_PR=0; fi
 
 if [ "${SKIP_PR:-0}" = 0 ]; then
   CORE_SRC="$THRIAE"
+  if [ -n "$(git -C "$CORE_SRC" status --porcelain 2>/dev/null)" ]; then say "WARNING: local thriae checkout has uncommitted changes; they get copied into the target."; fi
+  _db=$(git -C "$CORE_SRC" symbolic-ref -q --short refs/remotes/origin/HEAD 2>/dev/null || echo origin/main)
+  if ! git -C "$CORE_SRC" merge-base --is-ancestor HEAD "$_db" 2>/dev/null; then say "WARNING: local thriae HEAD is not on $_db; the synced rules may not be published."; fi
   git checkout -q -b "$BR" 2>/dev/null || git checkout -q "$BR"
   # AGENTS.md: seed markers when absent, then reuse sync_agents.sh (also copies roles and .agent/core)
   if [ ! -f AGENTS.md ]; then
@@ -211,8 +215,8 @@ EOF
     mkdir -p .agent/core hive/pipeline/roles
     cp -R "$CORE_SRC/hive/pipeline/core/." .agent/core/; cp "$CORE_SRC"/hive/pipeline/roles/*.md hive/pipeline/roles/
   fi
-  if [ -f CLAUDE.md ]; then grep -q '^@AGENTS.md' CLAUDE.md || printf '\n@AGENTS.md\n' >> CLAUDE.md
-  else printf '@AGENTS.md\n' > CLAUDE.md; fi
+  if [ -f CLAUDE.md ]; then grep -q '^@AGENTS.md' CLAUDE.md || printf '\n%s\n' '@AGENTS.md' >> CLAUDE.md
+  else printf '%s\n' '@AGENTS.md' > CLAUDE.md; fi
   mkdir -p .github/workflows
   if [ ! -f .github/workflows/thriae-sync.yml ]; then
     sed -e "s|^  BASE: master .*|  BASE: $DEFAULT|" -e "s|^  THRIAE_CORE_REPO: [^ ]*|  THRIAE_CORE_REPO: $CORE_REPO|" \
@@ -221,12 +225,17 @@ EOF
   if [ "$HAVE_CI" = 0 ] && [ "$HAVE_TEST" = 1 ]; then
     { echo "name: ci"; echo "on:"; echo "  pull_request:"; echo "    branches: [$DEFAULT]"; echo "jobs:"; echo "  $TEST_JOB:"
       echo "    runs-on: ubuntu-latest"; echo "    steps:"; echo "      - uses: actions/checkout@v4"
-      case "$TEST_CMD" in python*|pytest*) echo "      - uses: actions/setup-python@v5"; echo "        with: {python-version: '3.x'}";; esac
+      case "$TEST_CMD" in python*|pytest*) echo "      - uses: actions/setup-python@v5"; echo "        with: {python-version: '3.12'}";; esac
       [ -n "$setup" ] && echo "      - run: $setup"
       echo "      - run: $TEST_CMD"; } > ".github/workflows/$WORKFLOW"
   fi
 
   git add -A
+  # re-run safety: if the only change is the sync marker line (source=<sha>), treat as already onboarded
+  if [ "$(git diff --cached --name-only)" = "AGENTS.md" ] && \
+     [ -z "$(git diff --cached -U0 AGENTS.md | grep -E '^[+-]' | grep -vE '^(\+\+\+|---)' | grep -v 'thriae:start source=' || true)" ]; then
+    git reset -q
+  fi
   echo "---- files in the onboarding PR ----"; git status --short
   if git diff --cached --quiet; then
     say "nothing to change: already onboarded"
@@ -241,6 +250,7 @@ EOF
   if [ "$CHANGED" = 1 ]; then
     git -c user.name="$KEEPER" -c user.email="$KID+$KEEPER@users.noreply.github.com" commit -q -m "chore: connect to the Thriae pipeline (onboard.sh)"
     git push -q origin "$BR"
+    say "NOTE: the onboarding PR's ci must be green before merging (protected paths also need Strong review: PASS)."
     PREFIX="$NAME-usage"
     PR_URL=$(gh pr create -R "$TARGET" --base "$DEFAULT" --head "$BR" --title "chore: connect to the Thriae pipeline" --body "Refs #$LED
 
@@ -260,8 +270,8 @@ fi
 
 # ---- 6. Actions may create PRs ----
 if [ "$MODE" = apply ]; then
-  CUR=$(gh api "repos/$TARGET/actions/permissions/workflow" --jq .default_workflow_permissions 2>/dev/null || echo read)
-  if gh api -X PUT "repos/$TARGET/actions/permissions/workflow" -f default_workflow_permissions="$CUR" -F can_approve_pull_request_reviews=true >/dev/null 2>&1; then
+  # only PUT when the current setting is readable, so default_workflow_permissions is never downgraded
+  if CUR=$(gh api "repos/$TARGET/actions/permissions/workflow" --jq .default_workflow_permissions 2>/dev/null) && [ -n "$CUR" ] &&      gh api -X PUT "repos/$TARGET/actions/permissions/workflow" -f default_workflow_permissions="$CUR" -F can_approve_pull_request_reviews=true >/dev/null 2>&1; then
     say "Actions may create and approve PRs: set"
   else
     say "MANUAL: could not set it via API. Open https://github.com/$TARGET/settings/actions and tick 'Allow GitHub Actions to create and approve pull requests' (needed by thriae-sync)."
