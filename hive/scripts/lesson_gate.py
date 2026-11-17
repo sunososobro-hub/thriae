@@ -24,8 +24,8 @@ information we do not publish. The issue is closed and locked; the text is not q
 Categories found: {cats}
 
 We do not edit or redact submissions. Please remove the item yourself and
-submit again. Placeholders such as <YOUR_API_KEY>, user@example.com or
-C:\\Users\\<you> are fine.
+submit again. Placeholders such as <YOUR_API_KEY>, <your-email> or
+C:\\Users\\<you> are fine; any real-looking email address is rejected.
 
 If this was a real key, token or password, treat it as leaked: revoke it and
 issue a new one now.

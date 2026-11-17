@@ -12,7 +12,7 @@ import lesson_gate as lg  # noqa: E402
 
 AT = "@"
 FAKE_EMAIL = "someone" + AT + "corp-example.net"
-FAKE_TOKEN = "".join(["gh", "p_", "a8F3kD92LmQx7Zp1Wv5Rt0Yb4NcE6HgJ2sXq"])
+FAKE_TOKEN = "".join(["gh", "p_", "a8F3kD92", "LmQx7Zp1", "Wv5Rt0Yb", "4NcE6HgJ", "2sXq"])
 
 
 class LessonGateTest(unittest.TestCase):
