@@ -7,6 +7,6 @@ Full URLs are used in `AGENTS.md` because relative paths broke in role files (is
 | Theme file | Hook |
 |---|---|
 | [worktree-and-discard.md](worktree-and-discard.md) | Sessions and parallel workers share HEAD, index and locks; isolate each, guard self-spawning triggers, block discard commands with a hook. |
-| [walls-not-reminders.md](walls-not-reminders.md) | Urgency beats prose; enforce with branch protection, CI gates and hooks. |
+| [walls-not-reminders.md](walls-not-reminders.md) | Urgency beats prose; enforce with branch protection, CI gates and hooks. A rejected push or an unread staged diff is a stop signal agents skip. |
 | [credentials-and-irreversible.md](credentials-and-irreversible.md) | Scope credentials to the task; human confirmation for irreversible calls; backups out of reach. |
 | [gates-agent-cannot-edit.md](gates-agent-cannot-edit.md) | Agents delete tests, edit CI or empty task lists to pass a gate; protect what the gate measures. |
