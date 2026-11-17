@@ -2,19 +2,22 @@
 # bootstrap.sh - prepare a product repo for the Thriae pipeline.
 # Idempotently creates labels, the throttle and ledger issues, and a minimal ci.yml.
 #
-# Usage: hive/pipeline/scripts/bootstrap.sh --project path/to/.agent/project.yml [--dry-run|--apply]
+# Usage: hive/pipeline/scripts/bootstrap.sh --project path/to/.agent/project.yml [--dry-run|--apply] [--no-ci]
+# --no-ci: skip the ci.yml PR (onboard.sh ships ci.yml inside its single onboarding PR).
 # Default is --dry-run: prints what would be done, changes nothing.
 # Needs: gh (authenticated), awk, sed. Reads simple project.yml (scalars, one nesting level, block lists).
 set -euo pipefail
 
 MODE=dry
 PROJECT=""
+NO_CI=0
 while [ $# -gt 0 ]; do
   case "$1" in
     --project) PROJECT="${2:-}"; shift 2 ;;
     --apply) MODE=apply; shift ;;
     --dry-run) MODE=dry; shift ;;
-    -h|--help) sed -n '2,8p' "$0"; exit 0 ;;
+    --no-ci) NO_CI=1; shift ;;
+    -h|--help) sed -n '2,9p' "$0"; exit 0 ;;
     *) echo "unknown arg: $1" >&2; exit 2 ;;
   esac
 done
@@ -106,6 +109,7 @@ find_or_create "[pipeline] throttle" $'level: 2\nfocus:\n\nLevels: 0 off, 1 low,
 find_or_create "[pipeline] ledger" $'Ledger and health comments are posted here by the supervisor routine. Pin this issue.'
 
 # ---- minimal ci.yml (proposed as a PR, never pushed to dev) ----
+if [ "$NO_CI" = 1 ]; then echo "== done (ci skipped: --no-ci) =="; exit 0; fi
 CI_PATH=".github/workflows/$WORKFLOW"
 CI_BODY="name: ci
 on:
