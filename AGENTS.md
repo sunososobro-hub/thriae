@@ -1,4 +1,4 @@
-<!-- thriae core-v0.6.0 (keep this line: upload.md and download.md compare against this version) -->
+<!-- thriae core-v0.7.0 (keep this line: upload.md and download.md compare against this version) -->
 # AGENTS.md
 
 Working rules for AI coding agents (Claude Code, Codex, Cursor, any tool that reads `AGENTS.md`).
@@ -22,12 +22,12 @@ Numbers in these files are example defaults; tune them.
 - Stuck on a technical question: label the issue `needs-strong-model` and take other work. Only direction or subjective questions (whether to do it, naming, licensing, public wording) or CONSTITUTION, `.github/`, LICENSE, permissions go to `needs-keeper`, asked in one line.
 
 ## 1. Work tracking
-- Work lives in issues. One PR per issue; body has `Closes #N` or `Refs #N`. Branches `fix/N`, `feat/N`, retries `fix/N-r2`.
+- Work lives in issues. One PR per issue; body has `Closes #N` or `Refs #N`. Branches `fix/N`, `feat/N`, retries `fix/N-r2`. A handoff, memory or checkpoint note is a snapshot: store pointers to live state, not the state, and check the live issue, PR or CI before acting on any pending item. Detail: https://github.com/sunososobro-hub/thriae/blob/main/hive/rules/notes-are-snapshots.md
 - Keep PRs small; for a large issue finish a correct slice, say what remains, use `Refs`.
 - Commit author must be the configured agent identity.
 
 ## 12. Verifying your work
-- Run `<test-command>` before opening a PR. Tests exercise behaviour, never read source text.
+- Run `<test-command>` before opening a PR. Tests exercise behaviour, never read source text. A gate, hook or parser is built from a real captured sample of its input, replayed against real history (good outcomes included) before it ships, and has a test where it must refuse. Detail: https://github.com/sunososobro-hub/thriae/blob/main/hive/rules/gate-from-real-sample.md
 - A claim in a PR body ("fixed", "faster") needs a command or number a reviewer can reproduce; a shipped feature or scheduled job needs an automatic answer to "would we know if it broke?": a monitor that watches for unexpected absence (a missed run or no update within the source's expected cadence is FAIL, about 48 h by default; zero rows is FAIL unless the source can be empty), alerts from outside the code it watches, and has its own health check. Detail: https://github.com/sunososobro-hub/thriae/blob/main/hive/rules/monitor-health.md
 - Never weaken a threshold, constant or test to pass CI without measured data. A gate the agent can edit proves nothing: a diff that deletes or shrinks tests or edits CI config needs strong review, with the test count before and after in the PR body. Detail: https://github.com/sunososobro-hub/thriae/blob/main/hive/rules/gates-agent-cannot-edit.md
 
