@@ -1,4 +1,4 @@
-<!-- thriae core-v0.4.0 (keep this line: upload.md and download.md compare against this version) -->
+<!-- thriae core-v0.4.1 (keep this line: upload.md and download.md compare against this version) -->
 # AGENTS.md
 
 Working rules for AI coding agents (Claude Code, Codex, Cursor, any tool that reads `AGENTS.md`).
@@ -17,7 +17,7 @@ Numbers in these files are example defaults; tune them.
 - Never push to `<main-branch>`; never touch a repo other than the one assigned.
 - Smallest change that meets the acceptance. No drive-by edits.
 - Each agent session and parallel worker gets its own worktree and branch; a path that skips isolation is serialised, runtime state (locks, cursors) stays out of git, each self-spawning trigger has its own recursion guard; discard commands (`reset --hard`, `checkout --`, `clean`, `restore`) on a shared checkout are blocked by a hook, not prose. Detail: https://github.com/sunososobro-hub/thriae/blob/main/hive/rules/worktree-and-discard.md
-- A rule that matters is enforced by a wall (branch protection, CI gate, hook, no production credentials in reach), never only by a reminder. Detail: https://github.com/sunososobro-hub/thriae/blob/main/hive/rules/walls-not-reminders.md
+- A rule that matters is enforced by a wall (branch protection, CI gate, hook, no production credentials in reach), never only by a reminder; a rejected push means stop and fetch, never retry with more force, and the staged diff stat is read before every commit. Detail: https://github.com/sunososobro-hub/thriae/blob/main/hive/rules/walls-not-reminders.md
 - Narrowest credentials per task; irreversible or production calls need a human confirmation the agent cannot perform; backups out of its reach. Detail: https://github.com/sunososobro-hub/thriae/blob/main/hive/rules/credentials-and-irreversible.md
 - Stuck on a technical question: label the issue `needs-strong-model` and take other work. Only direction or subjective questions (whether to do it, naming, licensing, public wording) or CONSTITUTION, `.github/`, LICENSE, permissions go to `needs-keeper`, asked in one line.
 
