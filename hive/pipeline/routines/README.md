@@ -20,7 +20,7 @@ Only `{{REPO}}` and `{{DEV_BRANCH}}` are substituted when pasting; everything el
 A new `core-v` tag that edits `hive/pipeline/routines/*.md` does NOT update running routines. The sync PR (`hive/pipeline/scripts/sync_core.sh`) lists changed templates in its body; the keeper (or the reviewer with keeper approval) re-pastes them into the cloud routines and updates the description. A routine whose recorded version lags the project's `core_version` by a minor or more is a defect.
 
 ## Role rule files
-AGENTS.md keeps only the universal rules. Each routine also reads the matching file in `hive/pipeline/roles/` (the former AGENTS.md sections): worker and hard-worker: `claim-and-pick.md`, `triage.md`, `ops.md`; merger: `merge.md`; reviewer: `merge.md`, `release.md`; supervisor: `triage.md`, `ops.md`, `release.md`. Add "Then read hive/pipeline/roles/<file>" to the pasted preamble.
+AGENTS.md keeps only the universal rules. Each routine also reads the matching file in `hive/pipeline/roles/` (the former AGENTS.md sections): worker and hard-worker: `claim-and-pick.md`, `triage.md`, `ops.md`; merger: `merge.md`; reviewer: `merge.md`, `release.md`; supervisor: `triage.md`, `ops.md`, `release.md`; sweeper: `merge.md`, `triage.md`. Add "Then read hive/pipeline/roles/<file>" to the pasted preamble.
 
 ## Templates
 Schedules are example defaults from one deployment.
@@ -31,4 +31,5 @@ Schedules are example defaults from one deployment.
 | hard-worker.md | hard-worker | strong | hourly :48 |
 | merger.md | merger (one or two instances) | light | every 30 min |
 | reviewer.md | reviewer: strong review queue, bump, conflicts | strong | 2 shifts/day |
+| sweeper.md | sweeper: re-picks stuck items (quorum lessons without a promotion PR, green PRs not merged, unanswered `needs-strong-model`) | strong | hourly |
 | supervisor.md | supervisor: sweep, ledger, supply, health, lessons | strong | hourly |

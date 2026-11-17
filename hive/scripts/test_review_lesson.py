@@ -113,3 +113,20 @@ class CommentTest(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class RetallyLabelTest(unittest.TestCase):
+    def test_retally_write_sets_quorum_without_a_post(self):
+        recs = records(issue(1, "Project-ID: aaaaaaaaaaaa"),
+                       issue(2, SCOUT + sup(1) + "Project-ID: bbbbbbbbbbbb"),
+                       issue(3, SCOUT + sup(1) + "Project-ID: cccccccccccc"),
+                       reviewed={1: ("candidate:x-y-z", True), 2: ("evidence:" + ref(1), True),
+                                 3: ("evidence:" + ref(1), True)})
+        hive = rl.Hive.__new__(rl.Hive)
+        hive.records, hive.comments, hive.labels = recs, {}, []
+        for n in recs:
+            hive.comments[n] = {"body": rl.MARK + "\n**evidence: 0/3 projects**"}
+        hive.set_label = lambda n, name, want: hive.labels.append((n, name, want))
+        hive.write_comment = lambda n, body: None
+        hive.retally(write=True)
+        self.assertIn((1, rl.QUORUM_LABEL, True), hive.labels)
