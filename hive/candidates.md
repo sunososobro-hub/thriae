@@ -64,3 +64,11 @@ Candidates for AGENTS.md, in the quarantine form of `.github/CONTRIBUTING.md`. A
 
 ## Not ported
 - Changing a method's error contract (swallow-and-return-nothing to rethrow) means checking all callers: duplicate of the existing candidate "changing a shared contract means checking every caller", so it adds nothing new.
+
+## quota-caps
+- Claim: a factory that merges and releases on its own spends paid quota (CI minutes, build minutes, store review slots) faster than anyone notices.
+- Evidence type: rule only. Risk: a loop that triggers a paid build on every merge used up a month's free build minutes in days.
+- Rule: every automatic release has a cap per platform and period and runs only when something new merged since the last one; above a set share of the monthly CI quota, merges are batched and the keeper is told.
+- Overlaps: role ops.md section 8 (throughput caps), partly.
+- Possible harm: fixes reach testers a day or a week later.
+- Projects: 1/3. Verdict: candidate.

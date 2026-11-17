@@ -77,4 +77,10 @@ release:
   deferrable_checks: []           # e.g. a workflow that needs a self-hosted hardware runner
   defer_wait_min: 30
   min_hours_between: 3
+# Optional quota caps (candidate, see hive/candidates.md "quota-caps"). Omit to disable.
+caps:
+  ci_minutes_quota: 0             # monthly CI minutes included in the plan; 0 = no guard
+  ci_minutes_batch_pct: 70        # above this share: batch merges (a few merge windows a day) and report on ledger_issue
+  release_per_day: {}             # e.g. {android-internal: 1}; release only when something new merged since the last one
+  release_per_week: {}            # e.g. {ios: 1}
 device_nightly: false             # optional; see core/release-lane.md "hardware-dependent code"
