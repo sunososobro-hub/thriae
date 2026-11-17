@@ -1,4 +1,4 @@
-<!-- thriae core-v0.3.0 (keep this line: upload.md and download.md compare against this version) -->
+<!-- thriae core-v0.3.1 (keep this line: upload.md and download.md compare against this version) -->
 # AGENTS.md
 
 Working rules for AI coding agents (Claude Code, Codex, Cursor, any tool that reads `AGENTS.md`).
@@ -16,9 +16,9 @@ Numbers in these files are example defaults; tune them.
 - Never commit secrets, personal data, private paths, or emails other than a noreply address.
 - Never push to `<main-branch>`; never touch a repo other than the one assigned.
 - Smallest change that meets the acceptance. No drive-by edits.
-- Each agent session works in its own worktree and never leaves it. Discard commands (`reset --hard`, `checkout --`, `clean`, `restore`, `stash drop`) on a shared checkout are blocked by a hook, not by prose.
-- A rule that matters is enforced by a wall (branch protection, a CI gate, a hook, no production credentials in reach), never only by a reminder. Urgency makes agents skip reminders; every incident leaves a mechanical guardrail.
-- Give each agent the narrowest credentials for its task. Irreversible or production calls need a human confirmation the agent cannot perform itself; keep backups outside the agent's reach.
+- Each agent session works in its own worktree; discard commands (`reset --hard`, `checkout --`, `clean`, `restore`) on a shared checkout are blocked by a hook, not prose. Detail: https://github.com/sunososobro-hub/thriae/blob/main/hive/rules/worktree-and-discard.md
+- A rule that matters is enforced by a wall (branch protection, CI gate, hook, no production credentials in reach), never only by a reminder. Detail: https://github.com/sunososobro-hub/thriae/blob/main/hive/rules/walls-not-reminders.md
+- Narrowest credentials per task; irreversible or production calls need a human confirmation the agent cannot perform; backups out of its reach. Detail: https://github.com/sunososobro-hub/thriae/blob/main/hive/rules/credentials-and-irreversible.md
 - Blocked on a human-only question: label the issue `needs-keeper`, ask in one line, take other work.
 
 ## 1. Work tracking
