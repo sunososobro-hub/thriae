@@ -1,6 +1,6 @@
 # Monitor health
 
-AGENTS.md line: section 12. Merged lessons: issue 14 (same-owner, counted with issues 93 and 96).
+AGENTS.md line: section 12 (merged into the reproducible-claims line, one in, one out). Merged lessons: issue 14 (same-owner, counted with issues 93 and 96).
 
 ## Rule
 Every feature, release or scheduled job answers one question before it ships: how would we know, automatically, if it broke? The answer is a monitor, and the monitor is itself checked once built: it has real data, covers every platform, and something reads it.
@@ -14,7 +14,7 @@ A monitor watches for unexpected absence, not only for errors. A job that did no
 ## Mechanisms
 - Freshness and volume checks per data source: last-update age against the source's cadence and row count, with an unexpected zero or an age past the window reported as FAIL.
 - Heartbeat per scheduled job: a wrapper logs the exit code, sends the success ping only after a zero exit, and reports a nonzero exit to the alert path itself; a missing ping in the expected window pages a human. The alert does not depend on the job reaching its own last line, and a failed run never sends the success ping.
-- A deliberate skip uses its own exit code, so a skip is not read as a crash and a crash is not read as a skip.
+- A deliberate skip uses its own exit code. The wrapper treats it as neither success nor failure: it sends no alert and records the skip where the schedule check reads it (a skip ping or log entry), so the missed-run check does not page for it. Any other nonzero exit is a failure.
 - Coverage check: every platform or source the feature ships on appears in the monitor; a missing one is a FAIL, not an empty row.
 - Activity cross-check for gates and integrations: if the host reports activity (calls, events) and the gate recorded none, or an event cannot be parsed, fail loudly, even when the gate is fail-open towards the agent.
 - Fixtures for a third-party payload are refreshed from a real capture of the current host version; a suite built only on old fixtures does not show the integration still works.
