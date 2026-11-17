@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Self-checks for lesson_gate.py (fake data only)."""
+import json
 import os
 import subprocess
 import sys
@@ -34,17 +35,20 @@ class LessonGateTest(unittest.TestCase):
         code, _ = lg.scan("[lesson] x", "we saw it at Zebrafoo Corp", blocklist_env="zebrafoo\n")
         self.assertEqual(code, lg.REJECT)
 
-    def _run(self, env_extra):
+    def _run(self, title, body):
         with tempfile.TemporaryDirectory() as d:
             msg = os.path.join(d, "m.txt")
-            env = dict(os.environ, **env_extra)
+            ev = os.path.join(d, "event.json")
+            with open(ev, "w", encoding="utf-8") as fh:
+                json.dump({"issue": {"title": title, "body": body}}, fh)
+            env = dict(os.environ, GITHUB_EVENT_PATH=ev)
             p = subprocess.run([sys.executable, os.path.join(HERE, "lesson_gate.py"), "--message", msg],
                                capture_output=True, text=True, env=env)
             text = open(msg, encoding="utf-8").read() if os.path.exists(msg) else None
             return p, text
 
     def test_cli_reject_writes_fixed_message_without_quoting(self):
-        p, text = self._run({"ISSUE_TITLE": "t", "ISSUE_BODY": f"mail {FAKE_EMAIL}"})
+        p, text = self._run("t", f"mail {FAKE_EMAIL}")
         self.assertEqual(p.returncode, lg.REJECT)
         self.assertIsNotNone(text)
         self.assertNotIn("corp-example", text)
@@ -52,7 +56,29 @@ class LessonGateTest(unittest.TestCase):
         self.assertIn("Thanks for sharing", text)
 
     def test_cli_clean_writes_no_message(self):
-        p, text = self._run({"ISSUE_TITLE": "t", "ISSUE_BODY": "plain lesson text"})
+        p, text = self._run("t", "plain lesson text")
+        self.assertEqual(p.returncode, 0)
+        self.assertIsNone(text)
+
+    SLUG = "https://dev.to/someauthor/how-i-rebuilt-my-agent-loop-in-2026-with-8-small-rules-4k9x2m7qzp1"
+
+    def test_evidence_url_with_long_slug_is_clean(self):
+        code, _ = lg.scan("[lesson] x", f"Evidence: {self.SLUG} and {self.SLUG}/")
+        self.assertEqual(code, 0)
+
+    def test_token_in_url_query_still_rejected(self):
+        code, cats = lg.scan("[lesson] x", f"see {self.SLUG}?key=" + "".join(["Zk3Qp9Xv", "2Lm8Rt5Y", "b7Nc4Hd6", "Jf1Wg0Sa"]))
+        self.assertEqual(code, lg.REJECT)
+        self.assertIn("token", cats)
+
+    def test_empty_body_is_clean(self):
+        self.assertEqual(lg.scan("[lesson] x", "")[0], 0)
+        p, text = self._run("[lesson] x", None)
+        self.assertEqual(p.returncode, 0)
+        self.assertIsNone(text)
+
+    def test_very_long_body_is_clean_and_not_via_env(self):
+        p, text = self._run("[lesson] x", "plain words here. " * 20000)
         self.assertEqual(p.returncode, 0)
         self.assertIsNone(text)
 

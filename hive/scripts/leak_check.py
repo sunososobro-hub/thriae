@@ -62,13 +62,17 @@ ISSUE_REF = re.compile(r"#\d+")
 B64 = re.compile(r"[A-Za-z0-9+/_-]{8,}={0,2}")
 ENT = re.compile(r"[A-Za-z0-9_+/=-]{32,}")
 NON_ALNUM = re.compile(r"[\W_]+")
-URL_PATH = re.compile(r"https?://[^\s?#]+", re.I)
 URL_ID = re.compile(r"/\d+(?=/|$)")
+URL_PATH = re.compile(r"https?://[^\s?#]+", re.I)
+
+
+SLUG_SEG = re.compile(r"/[A-Za-z0-9]{1,15}(?:-[A-Za-z0-9]{1,15}){2,}(?=/|$)")
 
 
 def drop_url_ids(s):
-    """Blank digit-only path segments of http(s) URLs (post IDs); query strings stay."""
-    return URL_PATH.sub(lambda m: URL_ID.sub("/", m.group(0)), s)
+    """In http(s) URL paths blank digit-only segments (post IDs) and hyphenated word
+    slugs (article titles). Query strings and other path segments stay scanned."""
+    return URL_PATH.sub(lambda m: SLUG_SEG.sub("/", URL_ID.sub("/", m.group(0))), s)
 
 
 def clean(s):

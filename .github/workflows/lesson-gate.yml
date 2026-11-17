@@ -1,9 +1,10 @@
 name: lesson-gate
 
-# Scans every issue title and body with hive/scripts/leak_check.py. A hit rejects
+# Scans every lesson issue (issue form label or "[lesson]" title; work orders are
+# not scanned) title and body with hive/scripts/leak_check.py. A hit rejects
 # the whole issue: fixed bilingual comment (never quotes the text), label
-# rejected:leak, close, lock. The issue text reaches the scanner as environment
-# variables only (never interpolated into a shell string) and is never executed.
+# rejected:leak, close, lock. The scanner reads the issue text from the event JSON
+# ($GITHUB_EVENT_PATH), never from env or a shell string, and never executes it.
 # The scanner is checked out from the default branch. Not pull_request_target.
 # Limit: the built-in token cannot delete an issue, so a real secret stays visible
 # in the issue history until a maintainer deletes it; revoke any such secret.
@@ -17,6 +18,9 @@ permissions:
 
 jobs:
   gate:
+    if: >-
+      startsWith(github.event.issue.title, '[lesson]') ||
+      contains(github.event.issue.labels.*.name, 'lesson')
     runs-on: ubuntu-latest
     env:
       LEAK_BLOCKLIST: ${{ secrets.LEAK_BLOCKLIST }}
@@ -27,9 +31,6 @@ jobs:
           persist-credentials: false
       - name: Scan issue
         id: scan
-        env:
-          ISSUE_TITLE: ${{ github.event.issue.title }}
-          ISSUE_BODY: ${{ github.event.issue.body }}
         run: |
           set +e
           python3 hive/scripts/lesson_gate.py --message "$RUNNER_TEMP/reject.md"
@@ -44,9 +45,11 @@ jobs:
           ISSUE_NUMBER: ${{ github.event.issue.number }}
           REPO: ${{ github.repository }}
         run: |
-          gh label create "rejected:leak" --repo "$REPO" --color b60205 \
-            --description "Rejected by the leak gate" --force
-          gh issue comment "$ISSUE_NUMBER" --repo "$REPO" --body-file "$RUNNER_TEMP/reject.md"
-          gh issue edit "$ISSUE_NUMBER" --repo "$REPO" --add-label "rejected:leak"
+          gh label create "rejected:leak" --repo "$REPO" --color b60205             --description "Rejected by the leak gate" --force
+          # Comment only once per issue: an existing rejected:leak label means we already did.
+          if ! gh issue view "$ISSUE_NUMBER" --repo "$REPO" --json labels --jq '.labels[].name'               | grep -qx "rejected:leak"; then
+            gh issue comment "$ISSUE_NUMBER" --repo "$REPO" --body-file "$RUNNER_TEMP/reject.md"
+          fi
+          gh issue edit "$ISSUE_NUMBER" --repo "$REPO" --add-label "rejected:leak" --remove-label lesson
           gh issue close "$ISSUE_NUMBER" --repo "$REPO" --reason "not planned"
-          gh issue lock "$ISSUE_NUMBER" --repo "$REPO" --reason spam
+          gh issue lock "$ISSUE_NUMBER" --repo "$REPO" --reason off-topic

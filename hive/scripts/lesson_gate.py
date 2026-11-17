@@ -1,13 +1,14 @@
 #!/usr/bin/env python3
 """Lesson gate: scan an issue's title and body with leak_check.py before it stays public.
 
-Reads ISSUE_TITLE and ISSUE_BODY from the environment (data only, never a shell
-string), writes them to a temp file and runs `leak_check.py --text` on it.
+Reads the issue title and body from the event JSON at $GITHUB_EVENT_PATH (data only,
+never a shell string or env var), writes them to a temp file and runs `leak_check.py --text` on it.
 Exit 0: clean, take no action. Exit 10: leak found; the fixed rejection message is
 written to --message FILE (it never quotes the issue). Any other exit: the scan itself
 failed, so the workflow fails and does nothing else.
 """
 import argparse
+import json
 import os
 import re
 import subprocess
@@ -59,11 +60,18 @@ def scan(title, body, blocklist_env=None):
     return p.returncode or 2, []
 
 
+def load_issue(path):
+    with open(path, encoding="utf-8") as fh:
+        issue = json.load(fh).get("issue") or {}
+    return issue.get("title") or "", issue.get("body") or ""
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--message", required=True, help="file to write the rejection message to")
     a = ap.parse_args()
-    code, cats = scan(os.environ.get("ISSUE_TITLE", ""), os.environ.get("ISSUE_BODY", ""))
+    title, body = load_issue(os.environ["GITHUB_EVENT_PATH"])
+    code, cats = scan(title, body)
     if code == REJECT:
         with open(a.message, "w", encoding="utf-8") as fh:
             fh.write(MESSAGE.format(cats=", ".join(cats)))
