@@ -141,7 +141,7 @@ def render_comment(record, reason, block, now):
     return "\n".join([
         MARK, data_line(record),
         "**Lesson review: `%s`**" % record["verdict"], "", quoted, "", block, "",
-        "_Automated first pass. Nothing is merged automatically: a rule enters AGENTS.md only with "
+        "_Automated first pass. A rule enters AGENTS.md (via a reviewed `fix/N` PR) only with "
         "independent evidence from %d distinct projects (see `.github/CONTRIBUTING.md`, step 4)._" % QUORUM,
         "_Reviewed %sZ._" % now.strftime("%Y-%m-%d %H:%M"),
     ]) + "\n"
