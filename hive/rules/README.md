@@ -13,3 +13,4 @@ Full URLs are used in `AGENTS.md` because relative paths broke in role files (is
 | [monitor-health.md](monitor-health.md) | Monitors go silent too: zero rows, missed runs and stale data must read as FAIL, with a health check and an alert path outside the watched code. |
 | [notes-are-snapshots.md](notes-are-snapshots.md) | Handoff and memory notes go stale silently; agents repeated finished work or acted on old facts. Store pointers, check live state. |
 | [gate-from-real-sample.md](gate-from-real-sample.md) | Gates and parsers written against an imagined input never fire; build them from a real sample and replay real history. |
+| [spend-and-runaway-caps.md](spend-and-runaway-caps.md) | Unattended loops burned hundreds of dollars or millions of tokens overnight with no alert; cap spend before each call, stop repeated identical calls, dedupe triggers. |

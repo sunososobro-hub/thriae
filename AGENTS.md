@@ -1,4 +1,4 @@
-<!-- thriae core-v0.8.0 (keep this line: upload.md and download.md compare against this version) -->
+<!-- thriae core-v0.9.0 (keep this line: upload.md and download.md compare against this version) -->
 # AGENTS.md
 
 Working rules for AI coding agents (Claude Code, Codex, Cursor, any tool that reads `AGENTS.md`).
@@ -19,6 +19,7 @@ Numbers in these files are example defaults; tune them.
 - Each agent session and parallel worker gets its own worktree and branch; a path that skips isolation is serialised, runtime state (locks, cursors) stays out of git, each self-spawning trigger has its own recursion guard; discard commands (`reset --hard`, `checkout --`, `clean`, `restore`) on a shared checkout are blocked by a hook, not prose. Detail: https://github.com/sunososobro-hub/thriae/blob/main/hive/rules/worktree-and-discard.md
 - A rule that matters is enforced by a wall (branch protection, CI gate, hook, no production credentials in reach), never only by a reminder; a rejected push means stop and fetch, never retry with more force, and the staged diff stat is read before every commit. Detail: https://github.com/sunososobro-hub/thriae/blob/main/hive/rules/walls-not-reminders.md
 - Narrowest credentials per task, and no production credentials in any file the agent session can read; irreversible or production calls need a human confirmation the agent cannot perform, and data stores carry deletion protection so a wrong target fails; backups out of its reach, named and test-restored before the agent gets write access. Detail: https://github.com/sunososobro-hub/thriae/blob/main/hive/rules/credentials-and-irreversible.md
+- An unattended run has hard limits outside the model: a spend or token cap checked before every model call, a stop after N identical tool calls or N steps without state change, and dedupe on the triggers that start sessions; a trip stops and alerts once, never retries, and killing a runaway also disables its restarter. Detail: https://github.com/sunososobro-hub/thriae/blob/main/hive/rules/spend-and-runaway-caps.md
 - Stuck on a technical question: label the issue `needs-strong-model` and take other work. Only direction or subjective questions (whether to do it, naming, licensing, public wording) or CONSTITUTION, `.github/`, LICENSE, permissions go to `needs-keeper`, asked in one line.
 
 ## 1. Work tracking
