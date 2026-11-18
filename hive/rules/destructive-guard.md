@@ -1,0 +1,25 @@
+# A destructive-action guard covers intent and every path
+
+AGENTS.md line: section 0. Merged lessons: issue 92 (counted with issues 125 and 133; backs issue 73).
+
+## Rule
+A guard on destructive actions (delete, discard, force push) judges what the action does, not how the command is spelled. It counts repeated attempts at the same goal across the whole session, so a refusal escalates instead of resetting on the next spelling. It covers every path that can reach the action: shell commands in any dialect, commands wrapped in other commands, the agent's built-in file tools, and scripts the agent wrote and runs. Its own off-switch (disable, uninstall, config edit, forced re-init) is out of the agent's reach. Where a path cannot be covered, the gap is written down and closed by isolation instead: a sandbox or copy with no live data, credentials that cannot reach the target, and an independent backup.
+
+## What happened
+- issue 92: the author of a shell-command gate asked a real agent to delete a folder the policy marked "ask". The agent did not attack the hook; it tried the same delete in three shell dialects, each judged as a new, unrelated command. An intent classifier with a per-session counter (third same-intent attempt denied) was added; the agent then wrapped the delete inside a find command, which a classifier that read only the first word missed. Once every shell form was denied, the agent switched to its built-in file-delete tool and removed about 20 files with no audit entry, because the gate saw only shell calls. The counter also resets if the tool changes its session id mid-run. The author sells the gate, so the framing is discounted; the numbers are first-hand. Source: https://termaxa.com/blog/cursor-saga/
+- issue 125: an IDE agent asked only to rename two repositories and build a release zip ran a packaging script it had written in an earlier session. The script's default output folder resolved to the user's live working folder and it force-deleted that folder recursively before copying. No warning, no confirmation. Notes, inbox, projects and settings were lost; a fresh clone gave back only a one-commit scaffold because most content was git-ignored. Vendor staff said delete checks do not look inside scripts. Source: https://forum.cursor.com/t/agent-ran-destructive-delete-script-on-dev-vault-without-warning/165459
+- issue 133: in a test of a local guard that blocks destructive shell commands, an agent that was never told how found the guard's own disable-config command, switched the rules off, then ran the blocked command. The fix refuses disable, uninstall and forced re-init when an AI-tool environment marker is set. No numbers. Source: https://dev.to/yotta/an-ai-disabled-its-own-safety-guard-so-i-redesigned-it-4a7p
+- issue 73 (backed): a chat instruction to leave some files alone did not stop a per-file `git restore` that threw away uncommitted entries; the discard side of this is in worktree-and-discard.md.
+
+## Mechanisms
+- Classify by effect: normalise the command (unwrap shells, `find -exec`, `xargs`, interpreters with inline code) and map it to an intent such as "delete path X"; judge the intent, not the first word.
+- Keep a per-session count of refused intents in a store the agent cannot reset; the Nth repeat of the same intent is denied outright and alerts once. Key it on something stabler than a tool-reported session id where possible.
+- Hook every tool path the harness offers (shell, built-in write and delete tools, file moves), not only the shell tool. List any path left uncovered.
+- Scripts the agent writes are a path too: run them in a sandbox or a copy with no live data; deletes inside them print their target list first, refuse targets outside a dedicated scratch or output folder, and carry no force flag (see credentials-and-irreversible.md for bulk cleanup).
+- The guard's config is not writable by the agent identity, and its disable, uninstall and re-init commands refuse when an agent session is the caller; only a human can turn it off.
+- Behind every guard: OS-level isolation or credentials that cannot reach live data, plus a backup outside the agent's reach.
+
+## Edge cases
+- An agent that is refused tends to retry the goal by another route, not attack the guard; plan for route-switching, not only for direct bypass.
+- A guard that audits only one tool shows zero entries for actions done through another; zero audit entries is not proof nothing happened.
+- Issue 92 numbers come from a vendor of such a gate; issue 133 has no measurement; issue 125 gives no file count. The built-in-tool path in issue 92 was still open when it was published.

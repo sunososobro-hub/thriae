@@ -14,3 +14,4 @@ Full URLs are used in `AGENTS.md` because relative paths broke in role files (is
 | [notes-are-snapshots.md](notes-are-snapshots.md) | Handoff and memory notes go stale silently; agents repeated finished work or acted on old facts. Store pointers, check live state. |
 | [gate-from-real-sample.md](gate-from-real-sample.md) | Gates and parsers written against an imagined input never fire; build them from a real sample and replay real history. |
 | [spend-and-runaway-caps.md](spend-and-runaway-caps.md) | Unattended loops burned hundreds of dollars or millions of tokens overnight with no alert; cap spend before each call, stop repeated identical calls, dedupe triggers. |
+| [destructive-guard.md](destructive-guard.md) | Refused agents retried the same delete in other shell dialects, through built-in file tools, inside their own scripts, or by switching the guard off; judge intent and cover every path. |
