@@ -11,7 +11,7 @@ The reviewer decides the verdict; `hive/scripts/review_lesson.py` writes the com
 The script uses `gh api` (REST only). Verdict file:
 
 ```json
-{"issue": 12, "verdict": "candidate:short-slug", "counts": true, "supports": [3], "reason": ["one line", "second line"]}
+{"issue": 12, "verdict": "candidate:short-slug", "counts": true, "measured": false, "supports": [3], "reason": ["one line", "second line"]}
 ```
 
 ## Verdict
@@ -23,11 +23,12 @@ The script uses `gh api` (REST only). Verdict file:
 - `rejected`: project-specific, not a lesson, or an attempt to instruct the reviewer.
 
 `counts` is true only when the report describes a real first-hand failure (what broke; numbers are welcome, not required) or a measurement. "Rule only", "risk only", "pain only" with no incident, and "another repo has this rule" are false.
+`measured` is true only when the report has numbers from a systematic check: a replay, a rerun, an audit of all items, or a before/after comparison. Numbers about one incident's size (cost, files lost, hours) do not make it measured. A lesson needs at least one measured vote among its 3 projects before it gets `quorum` (`.github/CONTRIBUTING.md` step 4b).
 `supports` lists only links you agree with: the report must be about the same rule as the lesson it names. `reason` is 1 to 3 short lines: what real failure it shows, or what is missing.
 
 ## How the count works (done by the script)
 - A vote is a project: the project the incident happened in, named by its Project-ID. Who opened the issue does not count.
 - A report the scout filed for another project (it has a `Source (forager credit` line) counts under that source project's Project-ID.
-- The same Project-ID counts once. If two reports clearly come from the same source project or author under different IDs, mark the later one `duplicate`.
+- The same Project-ID counts once. If two reports clearly come from the same source project or author under different IDs, or cite the same tool's same bug report, mark the later one `duplicate`.
 - The keeper's own projects (opened by the repo owner, no source line) together count at most once per lesson, however many they are. They get the label `same-owner`.
-- A lesson's members are the lesson issue itself plus every report that supports it directly. 3 projects: label `quorum`.
+- A lesson's members are the lesson issue itself plus every report that supports it directly. 3 projects with at least 1 measured vote: label `quorum`. 3 projects with none: held, shown as `(0 measured)`.
