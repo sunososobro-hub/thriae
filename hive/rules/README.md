@@ -15,3 +15,4 @@ Full URLs are used in `AGENTS.md` because relative paths broke in role files (is
 | [gate-from-real-sample.md](gate-from-real-sample.md) | Gates and parsers written against an imagined input never fire; build them from a real sample and replay real history. |
 | [spend-and-runaway-caps.md](spend-and-runaway-caps.md) | Unattended loops burned hundreds of dollars or millions of tokens overnight with no alert; cap spend before each call, stop repeated identical calls, dedupe triggers. |
 | [destructive-guard.md](destructive-guard.md) | Refused agents retried the same delete in other shell dialects, through built-in file tools, inside their own scripts, or by switching the guard off; judge intent and cover every path. |
+| [empty-done-fails.md](empty-done-fails.md) | The worst failures were items ticked done with zero lines behind them, and a gate on changed files passed an empty diff; review every change, fail the empty done, cite an artifact. |

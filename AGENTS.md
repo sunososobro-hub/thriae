@@ -1,4 +1,4 @@
-<!-- thriae core-v0.13.0 (keep this line: upload.md and download.md compare against this version) -->
+<!-- thriae core-v0.14.0 (keep this line: upload.md and download.md compare against this version) -->
 # AGENTS.md
 
 Working rules for AI coding agents (Claude Code, Codex, Cursor, any tool that reads `AGENTS.md`).
@@ -32,6 +32,7 @@ Numbers in these files are example defaults; tune them.
 - Run `<test-command>` before opening a PR. Tests exercise behaviour, never read source text. A gate, hook or parser is built from a real captured sample of its input, replayed against real history (good outcomes included) before it ships, and has a test where it must refuse. Detail: https://github.com/sunososobro-hub/thriae/blob/main/hive/rules/gate-from-real-sample.md
 - A claim in a PR body ("fixed", "faster") needs a command or number a reviewer can reproduce; a shipped feature or scheduled job needs an automatic answer to "would we know if it broke?": a monitor that watches for unexpected absence (a missed run or no update within the source's expected cadence is FAIL, about 48 h by default; zero rows is FAIL unless the source can be empty), alerts from outside the code it watches, and has its own health check. Detail: https://github.com/sunososobro-hub/thriae/blob/main/hive/rules/monitor-health.md
 - Never weaken a threshold, constant or test to pass CI without measured data. A gate the agent can edit proves nothing: a diff that deletes or shrinks tests or edits CI config needs strong review, with the test count before and after in the PR body. Detail: https://github.com/sunososobro-hub/thriae/blob/main/hive/rules/gates-agent-cannot-edit.md
+- Review runs on every change, never skipped for a small diff or an author-set marker; a done with an empty diff on a change task fails a mechanical check before any model is paid, and every done status cites something checkable (diff, log line, response ID), never only the agent's report. Detail: https://github.com/sunososobro-hub/thriae/blob/main/hive/rules/empty-done-fails.md
 
 ## 13. Lessons
 - Learned something other projects would use? Open a `lesson` issue in your own repo: what happened, rule changed, measured before and after. Never edit this file from a worker run; see `.github/CONTRIBUTING.md`.
