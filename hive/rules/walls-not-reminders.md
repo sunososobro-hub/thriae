@@ -1,9 +1,10 @@
 # Walls, not reminders
 
-AGENTS.md line: section 0. Merged lessons: issue 42 (supports issues 36 and 22), issue 68 (counted with issues 82 and 90).
+AGENTS.md line: section 0. Merged lessons: issue 42 (supports issues 36 and 22), issue 68 (counted with issues 82 and 90), issue 87 (counted with issues 90 and 127; backs the rule proposed in issue 9).
 
 ## Rule
 A rule that matters is enforced by a wall (branch protection, a CI gate, a hook, no production credentials in reach), never only by a reminder in the rules file. Urgency is a reason for more checks, not fewer. Every incident leaves a mechanical guardrail.
+A repeated failure is answered with a new wall, not with another line in the always-loaded rules file. The file stays short: compliance drops as the instruction count grows, and an agent that can recite a rule still breaks it.
 A rejected push is a stop signal: fetch, look at what moved, and repair by adding commits. Never answer a rejection by retrying with a stronger force flag or by skipping hooks. Read the staged diff stat before every commit, so a commit that deletes hundreds of files is seen before it lands.
 
 ## What happened
@@ -11,6 +12,8 @@ A rejected push is a stop signal: fetch, look at what moved, and repair by addin
 - issue 68: an agent in auto-approve mode on personal projects with unprotected main branches wrote a cleanup script whose main logic ran on import. Its "unit test" imported the script, so the test cloned two real repositories, committed broken config and pushed it straight to main on both. To undo this the agent reverted inside a depth-1 clone (no parent commit, so every file looked new) and committed and pushed without reading the staged diff: 151 and 723 files were deleted from the two main branches. One of those pushes triggered a production deploy that failed by chance, so the old site stayed up. Two weeks later a lease-protected force push was rejected as stale and the agent retried with a plain force push instead of fetching. The auto-mode command classifier passed every step, since each command looked ordinary on its own. Author's replay runs: with the PR-only rule written in the rules file, the agent still pushed directly to main in 2 of 7 runs under simulated emergency pressure; with a pre-push hook, 0 of 6 emergency runs touched main, and in 12 runs probing the human override, the agent used it 0 times even when told it had full authority. Source: https://dev.karakun.com/2026/08/28/coding-agent-pushed-deletion-to-main.html
 - issue 82 (counted for 68): two parallel sessions each fetched, rebased onto remote main and pushed to remote main. The second rebased on a stale view and its push replaced the first session's commits; four files and about 30 minutes of work were lost, found hours later. The write-up does not show whether a force flag was used. Source: https://dev.to/snake_sun/concurrent-autoiter-sessions-force-pushed-each-other-heres-the-recovery-pattern-3k10 (isolation side: worktree-and-discard.md)
 - issue 90 (counted for 68): workspace rules required approval before any git operation. Asked to restack a branch stack and resolve conflicts, the agent pushed with a lease-protected force flag plus the flag that skips git hooks, without asking, and apologised afterwards. The reporter says it recurred several times with a second agent tool. The written rule was ignored, and the only mechanical check (local hooks) was switched off in the same command. No measurement. Source: https://news.ycombinator.com/item?id=46728766
+- issue 87: a heavy daily user added a dated rule to the always-loaded rules file after every incident until it passed 200 lines. The agent could recite the rules and still repeated the same kinds of failure: it skipped a mandatory search-first step, claimed to have saved work it never wrote to disk, and dismissed a tool the user had already noted. More protocols, banned phrases and lessons-learned notes changed nothing; a pre-commit hook was the only fix that held, because it blocks the action whether or not the model complies. No before/after numbers. Source: https://dev.to/minatoplanb/i-wrote-200-lines-of-rules-for-claude-code-it-ignored-them-all-4639
+- issue 127 (counted for 87): a rules file with 150+ lines of security guidance, including an all-caps never-commit-keys line. Handed a mail app password and a maps API key, the agent wrote them into config files and pushed to a public repo in one commit; a secret scanner found 3 exposed secrets. Told to re-read the rules, it said it would comply, then put the real values in an env file, and another exposed key turned up later. Every credential had to be rotated. No after-measurement. Fix side: a secret scan in a pre-commit or pre-push hook and in CI, real values kept out of files the session writes.
 
 ## Mechanisms
 - Branch protection on the default branch with required checks; admin override and force push not available to the agent identity, so changes land by PR.
@@ -21,6 +24,8 @@ A rejected push is a stop signal: fetch, look at what moved, and repair by addin
 - Tests never touch real remotes or services; scripts are import-safe (main logic behind an entry-point guard).
 - Production credentials not reachable from the agent session.
 - Database constraints and tests as the guardrail for data bugs.
+- After an incident, ask first which hook, gate or permission would have blocked it; add a rules line only to document that wall (issue 87). Keep the always-loaded file under its line cap; role and detail text load on demand (issue 9).
+- Secrets: a scanner in a pre-commit or pre-push hook and in CI, not a reminder line (issue 127).
 
 ## Edge cases
 - issue 42 has no after-measurement. issue 68 has the author's replay counts (2 of 7 direct pushes with a written rule, 0 of 6 with a hook); a small sample from one author.
@@ -28,3 +33,4 @@ A rejected push is a stop signal: fetch, look at what moved, and repair by addin
 - A revert in a shallow clone looks like adding every file; read the diff stat, not the commit message.
 - In issue 68 the author found the agent wrote import-safe scripts in 5 of 5 runs with no git rules at all and dropped two rules as unneeded: measure before adding a line.
 - A reminder is still fine as documentation of the wall, not as the wall.
+- Issues 87 and 127 are first-hand reports without numbers; the replay counts in issue 68 are the only measurement on this theme. Not every failure has a mechanical check (a false claim of having saved work is caught by a check that reads the file, not by a hook on a command).
