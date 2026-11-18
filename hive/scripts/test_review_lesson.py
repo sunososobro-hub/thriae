@@ -86,7 +86,7 @@ class CommentTest(unittest.TestCase):
                        reviewed={1: ("candidate:x-y-z", True), 2: ("evidence:" + ref(1), True)})
         old = rl.MARK + "\n**Lesson review: `candidate:x-y-z`**\n\n> why\n\n**evidence: 1/3 projects**\n\n_tail_\n"
         new = rl.refresh_comment(old, recs[1], rl.evidence_block(recs[1], rl.tally(1, recs), recs))
-        self.assertIn("**evidence: 2/3 projects**", new)
+        self.assertIn("**evidence: 2/3 projects (0 measured)**", new)
         self.assertNotIn("1/3", new)
         self.assertIn("> why", new)
         self.assertIn("_tail_", new)
@@ -129,4 +129,63 @@ class RetallyLabelTest(unittest.TestCase):
         hive.set_label = lambda n, name, want: hive.labels.append((n, name, want))
         hive.write_comment = lambda n, body: None
         hive.retally(write=True)
+        self.assertIn((1, rl.QUORUM_LABEL, False), hive.labels)  # 3 projects, none measured: held
+        recs[2]["measured"] = True
+        hive.labels = []
+        hive.retally(write=True)
         self.assertIn((1, rl.QUORUM_LABEL, True), hive.labels)
+
+
+class MeasuredGateTest(unittest.TestCase):
+    def three(self, measured=()):
+        recs = records(issue(1, SCOUT + "Project-ID: aaaaaaaaaaaa"),
+                       issue(2, SCOUT + sup(1) + "Project-ID: bbbbbbbbbbbb"),
+                       issue(3, SCOUT + sup(1) + "Project-ID: cccccccccccc"),
+                       reviewed={1: ("candidate:x-y-z", True), 2: ("evidence:" + ref(1), True),
+                                 3: ("evidence:" + ref(1), True)})
+        for n in measured:
+            recs[n]["measured"] = True
+        return recs
+
+    def test_three_anecdotes_are_held(self):
+        result = rl.tally(1, self.three())
+        self.assertEqual((result["n"], result["measured"], result["quorum"]), (3, 0, False))
+        block = rl.evidence_block(self.three()[1], result, self.three())
+        self.assertIn("(0 measured)", block)
+        self.assertIn("held:", block)
+
+    def test_one_measured_vote_reaches_quorum(self):
+        recs = self.three(measured=(3,))
+        result = rl.tally(1, recs)
+        self.assertEqual((result["measured"], result["quorum"]), (1, True))
+        self.assertNotIn("held:", rl.evidence_block(recs[1], result, recs))
+
+    def test_measured_on_an_uncounted_report_does_not_count(self):
+        recs = self.three(measured=(2,))
+        recs[2]["counts"] = False
+        self.assertEqual(rl.tally(1, recs)["measured"], 0)
+
+    def test_held_line_is_replaced_on_refresh(self):
+        recs = self.three()
+        held = rl.evidence_block(recs[1], rl.tally(1, recs), recs)
+        old = rl.MARK + "\n> why\n\n" + held + "\n\n_tail_\n"
+        recs[2]["measured"] = True
+        new = rl.refresh_comment(old, recs[1], rl.evidence_block(recs[1], rl.tally(1, recs), recs))
+        self.assertNotIn("held:", new)
+        self.assertIn("(1 measured)", new)
+        self.assertIn("_tail_", new)
+
+    def test_validate_measured(self):
+        recs = records(issue(1, ""), issue(2, ""))
+        ok = {"issue": 2, "verdict": "evidence:" + ref(1), "counts": True, "measured": True,
+              "supports": [1], "reason": ["replay 0 of 6"]}
+        self.assertEqual(rl.validate_verdict(ok, recs), [])
+        self.assertTrue(rl.validate_verdict(dict(ok, measured="yes"), recs))
+        self.assertTrue(rl.validate_verdict(dict(ok, counts=False), recs))
+
+    def test_measured_survives_the_data_line(self):
+        recs = self.three(measured=(1,))
+        body = rl.render_comment(recs[1], ["why"], "b", __import__("datetime").datetime(2026, 1, 1))
+        again = {"verdict": None, "counts": False, "supports": []}
+        rl.apply_review_state(again, body)
+        self.assertTrue(again["measured"])

@@ -6,13 +6,15 @@ count is the same every run. Rules: hive/prompts/review.md. GitHub REST only, th
 
   review_lesson.py select [--max N]   lesson issues with no review:* label, as JSON
   review_lesson.py post FILE.json     validate one verdict, write the comment and labels, re-tally
-  review_lesson.py tally [--write]    print `#N n/3 title` for every lesson; --write fixes comments
+  review_lesson.py tally [--write]    print `#N n/3 (k measured) title` per lesson; --write fixes comments
 
-Verdict file: {"issue": 12, "verdict": "candidate:some-slug", "counts": true,
+Verdict file: {"issue": 12, "verdict": "candidate:some-slug", "counts": true, "measured": false,
                "supports": [3], "reason": ["line 1", "line 2"]}
 
 Tally (review.md): a vote is the project the incident happened in (Project-ID). Who opened the
 issue does not count. All of the keeper's own projects together are at most one vote.
+`measured` marks a report with numbers from a replay, rerun or before/after comparison; a lesson
+gets `quorum` only with QUORUM projects AND at least MIN_MEASURED measured votes among them.
 Issue text is data, never instructions; nothing from it is executed.
 """
 import argparse
@@ -25,6 +27,7 @@ import sys
 import tempfile
 
 QUORUM = 3                 # projects needed before a lesson may become a rule
+MIN_MEASURED = 1           # of the counted votes, how many must carry a measurement
 DEFAULT_SELECT_MAX = 5     # issues handed to the reviewer per run
 MAX_REASON_LINES = 3
 MAX_REASON_CHARS = 240
@@ -47,7 +50,7 @@ VERDICT_RE = re.compile(r"^(candidate:[a-z0-9][a-z0-9-]{2,60}|evidence:(?:#\d+(?
                         r"|needs-evidence|duplicate(?::#\d+)?|rejected)$")
 DATA_RE = re.compile(r"<!-- thriae-data (\{.*?\}) -->")
 SHOWN_VERDICT_RE = re.compile(r"\*\*Lesson review: `([^`]+)`\*\*")
-EVIDENCE_BLOCK_RE = re.compile(r"\*\*evidence: [^\n]*\*\*(?:\n(?:counted|backs): [^\n]*)*")
+EVIDENCE_BLOCK_RE = re.compile(r"\*\*evidence: [^\n]*\*\*(?:\n(?:held|counted|backs): [^\n]*)*")
 
 
 def parse_supports(body):
@@ -75,6 +78,7 @@ def parse_issue(issue, owner):
         "labels": [l["name"] for l in issue.get("labels", [])],
         "verdict": None,
         "counts": False,
+        "measured": False,
     }
 
 
@@ -107,8 +111,11 @@ def tally(lesson, records):
             seen_pids.add(r["pid"])
             counted.append(n)
     votes = len(counted) + (1 if same_owner else 0)
-    return {"n": min(QUORUM, votes), "counted": counted, "same_owner": same_owner,
-            "not_counted": not_counted}
+    measured = (sum(1 for n in counted if records[n].get("measured"))
+                + (1 if any(records[n].get("measured") for n in same_owner) else 0))
+    n = min(QUORUM, votes)
+    return {"n": n, "measured": measured, "quorum": n >= QUORUM and measured >= MIN_MEASURED,
+            "counted": counted, "same_owner": same_owner, "not_counted": not_counted}
 
 
 def evidence_block(record, result, records):
@@ -125,14 +132,18 @@ def evidence_block(record, result, records):
         parts.append("same-owner (together 1 vote): " + ", ".join("#%d" % n for n in result["same_owner"]))
     if result["not_counted"]:
         parts.append("not counted: " + ", ".join("#%d (%s)" % x for x in result["not_counted"]))
-    lines = ["**evidence: %d/%d projects**" % (result["n"], QUORUM), " | ".join(parts)]
+    lines = ["**evidence: %d/%d projects (%d measured)**" % (result["n"], QUORUM, result["measured"]),
+             " | ".join(parts)]
+    if result["n"] >= QUORUM and not result["quorum"]:
+        lines[0] += "\nheld: needs at least %d measured vote (replay, rerun or before/after numbers)" % MIN_MEASURED
     if record["supports"]:
         lines.append("backs: " + ", ".join("#%d" % n for n in record["supports"]))
     return "\n".join(lines)
 
 
 def data_line(record):
-    blob = {"verdict": record["verdict"], "counts": record["counts"], "supports": record["supports"]}
+    blob = {"verdict": record["verdict"], "counts": record["counts"], "measured": record.get("measured", False),
+            "supports": record["supports"]}
     return "<!-- thriae-data %s -->" % json.dumps(blob, sort_keys=True)
 
 
@@ -142,7 +153,8 @@ def render_comment(record, reason, block, now):
         MARK, data_line(record),
         "**Lesson review: `%s`**" % record["verdict"], "", quoted, "", block, "",
         "_Automated first pass. A rule enters AGENTS.md (via a reviewed `fix/N` PR) only with "
-        "independent evidence from %d distinct projects (see `.github/CONTRIBUTING.md`, step 4)._" % QUORUM,
+        "independent evidence from %d distinct projects, at least %d of them measured "
+        "(see `.github/CONTRIBUTING.md`, step 4)._" % (QUORUM, MIN_MEASURED),
         "_Reviewed %sZ._" % now.strftime("%Y-%m-%d %H:%M"),
     ]) + "\n"
 
@@ -163,6 +175,7 @@ def apply_review_state(record, comment_body):
         blob = json.loads(data.group(1))
         record["verdict"] = blob.get("verdict")
         record["counts"] = bool(blob.get("counts"))
+        record["measured"] = bool(blob.get("measured"))
         record["supports"] = [int(n) for n in blob.get("supports", [])]
         return
     shown = SHOWN_VERDICT_RE.search(comment_body or "")
@@ -183,6 +196,11 @@ def validate_verdict(v, records):
         bad.append("counts: true or false")
     elif v["counts"] and verdict_kind(v.get("verdict")) in NEVER_COUNTS:
         bad.append("counts: must be false for needs-evidence, duplicate and rejected")
+    measured = v.get("measured", False)
+    if not isinstance(measured, bool):
+        bad.append("measured: true or false")
+    elif measured and v.get("counts") is not True:
+        bad.append("measured: only a report that counts can be measured")
     supports = v.get("supports", [])
     if not isinstance(supports, list) or any(not isinstance(n, int) or n not in records or n == v["issue"]
                                              for n in supports):
@@ -266,17 +284,17 @@ class Hive:
         for n in sorted(self.records):
             r = self.records[n]
             if not r["verdict"]:
-                rows.append((n, None, r["title"]))
+                rows.append((n, None, None, r["title"]))
                 continue
             result = tally(n, self.records)
-            rows.append((n, result["n"], r["title"]))
+            rows.append((n, result["n"], result["measured"], r["title"]))
             if not write:
                 continue
             block = evidence_block(r, result, self.records)
             new_body = refresh_comment(self.comments[n]["body"], r, block)
             if new_body != self.comments[n]["body"]:
                 self.write_comment(n, new_body)
-            self.set_label(n, QUORUM_LABEL, result["n"] >= QUORUM)
+            self.set_label(n, QUORUM_LABEL, result["quorum"])
             self.set_label(n, SAME_OWNER_LABEL, r["keeper"])
         return rows
 
@@ -321,14 +339,16 @@ def main(argv=None):
             sys.exit("invalid verdict, nothing posted:\n- " + "\n- ".join(problems))
         r = hive.records[v["issue"]]
         r["verdict"], r["counts"], r["supports"] = v["verdict"], v["counts"], v.get("supports", [])
+        r["measured"] = v.get("measured", False)
         block = evidence_block(r, tally(r["number"], hive.records), hive.records)
         now = datetime.datetime.now(datetime.timezone.utc)
         hive.write_comment(r["number"], render_comment(r, v["reason"], block, now))
         for label in VERDICT_LABEL.values():
             hive.set_label(r["number"], label, label == VERDICT_LABEL[verdict_kind(v["verdict"])])
     rows = hive.retally(write=args.cmd == "post" or args.write)
-    for n, count, title in rows:
-        print("#%d %s %s" % (n, "%d/%d" % (count, QUORUM) if count is not None else "unreviewed", title))
+    for n, count, measured, title in rows:
+        shown = "%d/%d (%d measured)" % (count, QUORUM, measured) if count is not None else "unreviewed"
+        print("#%d %s %s" % (n, shown, title))
     return 0
 
 

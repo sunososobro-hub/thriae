@@ -1,8 +1,8 @@
-<!-- thriae core-v0.14.0 (keep this line: upload.md and download.md compare against this version) -->
+<!-- thriae core-v0.15.0 (keep this line: upload.md and download.md compare against this version) -->
 # AGENTS.md
 
 Working rules for AI coding agents (Claude Code, Codex, Cursor, any tool that reads `AGENTS.md`).
-Seed rules from one production pipeline; a rule becomes shared wisdom with evidence from 3 or more independent projects.
+Seed rules from one production pipeline; a rule becomes shared wisdom with evidence from 3 or more independent projects, at least one of them measured.
 Found a better rule, or one that failed you? See `.github/CONTRIBUTING.md`.
 
 ## Fill in for your project
@@ -16,26 +16,26 @@ Numbers in these files are example defaults; tune them.
 - Never commit secrets, personal data, private paths, or emails other than a noreply address.
 - Never push to `<main-branch>`; never touch a repo other than the one assigned.
 - Smallest change that meets the acceptance. No drive-by edits.
-- Each agent session and parallel worker gets its own worktree and branch; a path that skips isolation is serialised, runtime state (locks, cursors) stays out of git, each self-spawning trigger has its own recursion guard; discard commands (`reset --hard`, `checkout --`, `clean`, `restore`) on a shared checkout are blocked by a hook, not prose. Detail: https://github.com/sunososobro-hub/thriae/blob/main/hive/rules/worktree-and-discard.md
-- A rule that matters is enforced by a wall (branch protection, CI gate, hook, no production credentials in reach), never only by a reminder, and a repeated failure gets a new wall, not another line here; a rejected push means stop and fetch, never retry with more force, and the staged diff stat is read before every commit. Detail: https://github.com/sunososobro-hub/thriae/blob/main/hive/rules/walls-not-reminders.md
-- A guard on destructive actions judges intent, not spelling, counts repeat attempts per session, covers every path (any shell form, built-in file tools, scripts the agent wrote) and keeps its own off-switch out of the agent's reach; an uncovered path is named and closed by isolation. Detail: https://github.com/sunososobro-hub/thriae/blob/main/hive/rules/destructive-guard.md
-- Narrowest credentials per task, and no production credentials in any file the agent session can read; irreversible or production calls need a human confirmation the agent cannot perform, and data stores carry deletion protection so a wrong target fails; backups out of its reach, named and test-restored before the agent gets write access; before a reset, sync, history rewrite, force push or bulk delete, every local-only commit, branch, stash and change goes to a copy that operation cannot touch (another remote, mirror or bundle), checked readable; a bulk cleanup shows its exact target list, dirty items marked, and runs without a force flag so dirty items fail instead of vanishing. Detail: https://github.com/sunososobro-hub/thriae/blob/main/hive/rules/credentials-and-irreversible.md
-- An unattended run has hard limits outside the model: a spend or token cap checked before every model call, a stop after N identical tool calls or N steps without state change, and dedupe on the triggers that start sessions; a trip stops and alerts once, never retries, and killing a runaway also disables its restarter. Detail: https://github.com/sunososobro-hub/thriae/blob/main/hive/rules/spend-and-runaway-caps.md
-- Stuck on a technical question: label the issue `needs-strong-model` and take other work. Only direction or subjective questions (whether to do it, naming, licensing, public wording) or CONSTITUTION, `.github/`, LICENSE, permissions go to `needs-keeper`, asked in one line.
+- A rule that matters is enforced by a wall (branch protection, CI gate, hook), not a reminder; a repeated failure gets a new wall, not a line here. A rejected push means fetch, never more force. Detail: https://github.com/sunososobro-hub/thriae/blob/main/hive/rules/walls-not-reminders.md
+- Stuck on a technical question: label it `needs-strong-model`, take other work. Only direction questions and CONSTITUTION, `.github/`, LICENSE or permission changes go to `needs-keeper`.
 
 ## 1. Work tracking
-- Work lives in issues. One PR per issue; body has `Closes #N` or `Refs #N`. Branches `fix/N`, `feat/N`, retries `fix/N-r2`. A handoff, memory or checkpoint note is a snapshot: store pointers to live state, not the state, and check the live issue, PR or CI before acting on any pending item. Detail: https://github.com/sunososobro-hub/thriae/blob/main/hive/rules/notes-are-snapshots.md
+- Work lives in issues. One PR per issue; body has `Closes #N` or `Refs #N`. Branches `fix/N`, `feat/N`, retries `fix/N-r2`.
+- A handoff, memory or checkpoint note is a snapshot: store pointers to live state, and check the live issue, PR or CI before acting on a pending item. Detail: https://github.com/sunososobro-hub/thriae/blob/main/hive/rules/notes-are-snapshots.md
 - Keep PRs small; for a large issue finish a correct slice, say what remains, use `Refs`.
 - Commit author must be the configured agent identity.
 
 ## 12. Verifying your work
-- Run `<test-command>` before opening a PR. Tests exercise behaviour, never read source text. A gate, hook or parser is built from a real captured sample of its input, replayed against real history (good outcomes included) before it ships, and has a test where it must refuse. Detail: https://github.com/sunososobro-hub/thriae/blob/main/hive/rules/gate-from-real-sample.md
-- A claim in a PR body ("fixed", "faster") needs a command or number a reviewer can reproduce; a shipped feature or scheduled job needs an automatic answer to "would we know if it broke?": a monitor that watches for unexpected absence (a missed run or no update within the source's expected cadence is FAIL, about 48 h by default; zero rows is FAIL unless the source can be empty), alerts from outside the code it watches, and has its own health check. Detail: https://github.com/sunososobro-hub/thriae/blob/main/hive/rules/monitor-health.md
-- Never weaken a threshold, constant or test to pass CI without measured data. A gate the agent can edit proves nothing: a diff that deletes or shrinks tests or edits CI config needs strong review, with the test count before and after in the PR body. Review runs on every change, never skipped for a small diff or an author-set marker; a done with an empty diff on a change task fails a mechanical check before the paid review, and a done status cites something checkable (diff, log line, response ID), never only the agent's report. Detail: https://github.com/sunososobro-hub/thriae/blob/main/hive/rules/gates-agent-cannot-edit.md and https://github.com/sunososobro-hub/thriae/blob/main/hive/rules/empty-done-fails.md
+- Run `<test-command>` before opening a PR. Tests exercise behaviour, never read source text.
+- A gate, hook or parser is built from a real captured sample of its input, replayed against real history (good outcomes included), with a test where it must refuse. Detail: https://github.com/sunososobro-hub/thriae/blob/main/hive/rules/gate-from-real-sample.md
+- A claim in a PR body ("fixed", "faster") needs a command or number a reviewer can reproduce.
+- A shipped feature or scheduled job has a monitor: a missed run, a stale source or unexpected zero rows is FAIL, alerted from outside the watched code. Detail: https://github.com/sunososobro-hub/thriae/blob/main/hive/rules/monitor-health.md
+- Never weaken a threshold, constant or test to pass CI without measured data. A diff that deletes or shrinks tests or edits CI needs strong review, with test counts before and after. Detail: https://github.com/sunososobro-hub/thriae/blob/main/hive/rules/gates-agent-cannot-edit.md
+- Review runs on every change, whatever its size. A done with an empty diff fails a mechanical check, and a done cites something checkable (diff, log line, response ID). Detail: https://github.com/sunososobro-hub/thriae/blob/main/hive/rules/empty-done-fails.md
 
 ## 13. Lessons
-- Learned something other projects would use? Open a `lesson` issue in your own repo: what happened, rule changed, measured before and after. Never edit this file from a worker run; see `.github/CONTRIBUTING.md`.
+- Learned something others could use? Open a `lesson` issue in your repo: what happened, rule changed, before/after numbers. Never edit this file from a worker run (`.github/CONTRIBUTING.md`).
 - Run `python hive/scripts/leak_check.py --text FILE` on anything you post.
 
 ## Role rules
-Read the file for your role before acting: `hive/pipeline/roles/` has `claim-and-pick.md` (claiming, picking, areas), `merge.md` (gates, conflicts), `triage.md` (issue format, new issues), `release.md`, `ops.md` (model choice, caps, throttle).
+Read your role file in `hive/pipeline/roles/` before acting: `claim-and-pick.md` (claiming, areas), `merge.md` (gates, conflicts), `triage.md` (issues), `release.md`, `ops.md` (models, caps).
