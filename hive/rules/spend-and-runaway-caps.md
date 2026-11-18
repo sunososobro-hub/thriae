@@ -13,7 +13,8 @@ An agent run that nobody watches has hard limits that live outside the model: a 
 ## Mechanisms
 - Per-run (or per-agent) spend or token ceiling, checked by a wrapper before each model call, not summed afterwards. A trip is a hard stop plus one alert.
 - Repeat guard: hash tool name plus arguments; N identical calls in a row, or N steps with no state change, stops the run and reports what it was doing.
-- Trigger dedupe: identical incoming triggers within a cooldown window collapse into one session (hash of the message plus a time window).
+- Trigger dedupe: identical incoming triggers within a cooldown window collapse into one session; the key is the trigger source or sender plus a hash of the message, so two senders with the same text still get their own sessions.
+- Aggregate cap above the per-run cap: a ceiling per period across all sessions of one agent or trigger source. A trigger that keeps repeating after each cooldown would otherwise start fresh sessions, each under its own cap, forever; once the aggregate trips, new sessions need a human to resume.
 - Rate alerting: alert on token or spend rate in real time, not on a daily total read the next morning.
 - Kill path: stopping a runaway checks for a supervisor (service manager, cron, a restart loop) and disables it, then confirms the process stays down.
 - Before a full unattended run, a staged rollout that is large enough to show looping, not only a handful of items.
