@@ -1,6 +1,6 @@
 # A gate the agent can edit proves nothing
 
-AGENTS.md line: section 12. Merged lessons: issues 36, 78, 83 (related: issue 42, walls-not-reminders.md).
+AGENTS.md line: section 12. Merged lessons: issues 36, 78, 83 (related: issue 42, walls-not-reminders.md). The same line carries the empty-done rule: empty-done-fails.md.
 
 ## Rule
 A green check counts as evidence only if the gated agent could not change what the check measures. Never weaken a threshold, constant or test to pass CI without measured data. A diff that deletes test files or assertions, shrinks the test set, adds skip markers, or edits CI workflow files gets a strong review, and the PR body states the test count on the base and on the head. Read the diff, not the agent's report.
