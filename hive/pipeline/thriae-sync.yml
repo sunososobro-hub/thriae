@@ -1,13 +1,15 @@
-# Copy to <project>/.github/workflows/thriae-sync.yml. Weekly (and on demand) it refreshes the shared
+# Copy to <project>/.github/workflows/thriae-sync.yml. Hourly (and on demand) it refreshes the shared
 # part of AGENTS.md from Thriae and opens or updates ONE pull request. Nothing merges automatically;
 # AGENTS.md is a protected path, so the keeper reviews the PR.
 # Needs: repo setting "Allow GitHub Actions to create and approve pull requests" (Settings > Actions).
-# Cost: one small ubuntu job per week (about 1 minute). Data flows Thriae -> project only.
+# Cost: one small ubuntu job per hour; an in-sync run exits in seconds. Free on a public repo, about
+# 720 billed minutes a month on a private one (set a slower cron there if that matters).
+# Data flows Thriae -> project only.
 name: thriae-sync
 
 on:
   schedule:
-    - cron: "17 3 * * 1"    # Mondays 03:17 UTC
+    - cron: "17 * * * *"    # hourly at :17
   workflow_dispatch:
     inputs:
       ref:
