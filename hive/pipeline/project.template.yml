@@ -43,7 +43,7 @@ protected_paths:
   - ".agent/core/**"
   - ".agent/project.yml"
 
-throttle_issue: 0                 # issue number of "[pipeline] throttle"; body line 1 "level: N", optional line 2 "focus: a, b". Printed by bootstrap.sh
+throttle_issue: 0                 # issue number of "[pipeline] throttle"; body line 1 "level: N", optional line 2 "focus: a, b", optional line 3 "mix: bug 25, ..." (overrides budget_targets). Printed by bootstrap.sh
 ledger_issue: 0                   # issue number of the pinned "[pipeline] ledger". Printed by bootstrap.sh
 usage_line_prefix: "<project>-usage"  # replace <project>; PR body last line is "<prefix>: ... minutes=N"
 
