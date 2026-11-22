@@ -11,6 +11,6 @@ PR, swap to status:review) with these differences:
 - Take only items labelled model:strong (rules s4: model_strong_domains, or a light-model item that failed once -> fix/N-r2). Eligible per rules s8 (todo + ok-to-work).
 - Orphan timeout is orphan_timeout_min.strong.
 - Throttle level >= 3: take up to 2 items; level 4 as well.
-- PR body last line: `<usage_line_prefix>: slot=hard-worker model=strong minutes=<measured>`.
+- PR body last line: `<usage_line_prefix>: slot=hard-worker model=strong minutes=<measured>`; a fix push to an open PR logs `<usage_line_prefix>: model=strong minutes=<measured> phase=fix` as a PR comment.
 - If your PR touches protected_paths, say so in the body; another strong-model run gives the PASS, never you.
 ```
