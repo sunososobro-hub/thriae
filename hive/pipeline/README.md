@@ -8,7 +8,7 @@ Layout:
 - `scripts/bootstrap.sh` creates labels, control issues and a minimal CI workflow (default dry run).
 - Label `lesson`: `.github/workflows/lesson-label.yml` adds it to any issue whose title starts with "[lesson]" (create the label once; the sender never sets labels).
 - `scripts/sync_core.sh` vendors a tagged core into a project as a PR (default dry run; needs THRIAE_CORE_REPO).
-- `scripts/sync_agents.sh` + `thriae-sync.yml`: keep a project's AGENTS.md shared part (between `<!-- thriae:start -->` and `<!-- thriae:end -->`), `hive/pipeline/roles/` and `.agent/core/` in step with Thriae. Copy the workflow into the project's `.github/workflows/`; once a week it opens one PR, the project block is never touched, nothing merges automatically, and data only flows Thriae -> project.
+- `scripts/sync_agents.sh` + `thriae-sync.yml`: keep a project's AGENTS.md shared part (between `<!-- thriae:start -->` and `<!-- thriae:end -->`), `hive/pipeline/roles/` and `.agent/core/` in step with Thriae. Copy the workflow into the project's `.github/workflows/`; once an hour it checks and, when something changed, opens one PR, the project block is never touched, nothing merges automatically, and data only flows Thriae -> project.
 
 **Source of truth:** this directory (`hive/pipeline`) is the single source of the agent factory core. Projects vendor a tagged copy with `scripts/sync_core.sh`; they never read the tip. Older private copies are frozen. Change rules in [`GOVERNANCE.md`](GOVERNANCE.md).
 
